@@ -1,0 +1,46 @@
+option optimize_for = SPEED;
+
+import "ProtoFiles/common.proto";
+import "ProtoFiles/profile.proto";
+
+package proto_auth;
+
+message Auth {
+  enum AuthType
+  {
+      OAuth = 2;
+  }
+	enum OAuthProvider
+	{
+		VK = 0;
+		FB = 1;
+	}
+	
+	message Request 
+	{
+		message OAuth
+		{
+			required string access_token = 1;
+			required string uid = 2;
+			required string ip = 3;
+			required OAuthProvider provider = 4;
+		};
+		extend proto_common.Request 
+		{
+			optional proto_auth.Auth.Request auth_req = 10;
+		}
+	
+		required AuthType type = 1;
+		optional OAuth m_oauth = 2;
+	}
+	
+	message Response 
+	{
+    required proto_profile.UserInfo info = 1;
+  
+		extend proto_common.Response 
+		{
+			optional proto_auth.Auth.Response auth_res = 10;
+		}
+	}
+}

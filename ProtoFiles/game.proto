@@ -1,0 +1,290 @@
+option optimize_for = SPEED;
+
+import "ProtoFiles/common.proto";
+import "ProtoFiles/profile.proto";
+
+package proto_game;
+
+/* DATA TYPES */
+
+enum Weapons
+{
+  None = 0;
+  Starting = 1;
+  
+  Canon = 2;
+  Sniper = 3;
+  MachineGun = 4;
+  Flank = 5;
+  
+  Triple = 6;
+  TwinFlank = 7;
+  Quad = 8;
+  Triangle = 9;
+}
+
+enum Stats
+{
+  MaxHealth = 1;
+  HealthRegen = 2;
+  BulletDamage = 3;
+  SkillDamage = 4;
+  MovementSpeed = 5;
+  ReloadSpeed = 6;
+  Armor = 7;
+  BulletSpeed = 8;
+}
+
+message StatValue
+{
+  required Stats stat = 1;
+  required float value = 2;
+  required float multiplier = 3;
+}
+
+enum ExpBlocks
+{
+  Small = 0;
+  Medium = 1;
+  Big = 2;
+  Huge = 3;
+}
+
+message Vector 
+{
+  required float x = 1;
+  required float y = 2;
+}
+
+/* REQUESTS */
+
+message Ping 
+{
+  message Request 
+	{
+    required int64 timestamp = 1;
+    
+    extend proto_common.Request 
+		{
+			optional proto_game.Ping.Request ping_req = 12;
+		}
+  }
+  
+  message Response 
+  {
+    required int64 timestamp = 1;
+    
+    extend proto_common.Response 
+		{
+			optional proto_game.Ping.Response ping_req = 12;
+		}
+  }
+}
+
+message PlayerMove 
+{
+  message Request 
+	{
+    required Vector position = 1;
+    required int64 timestamp = 2;
+    required bool stop = 3;
+  
+    extend proto_common.Request 
+		{
+			optional proto_game.PlayerMove.Request plr_move_req = 2005;
+		}
+  }
+}
+
+message JoinGame
+{
+  required proto_profile.PlayerClasses class = 1;
+  
+  extend proto_common.Request
+  {
+    optional proto_game.JoinGame join_game_req = 2011;
+  }
+}
+
+/*  EVENTS */ 
+
+message PlayerStats
+{
+  repeated StatValue stats = 1;
+}
+
+message BlockAppeared
+{
+	required int32 guid = 1;
+  required Vector position = 2;
+  required float hp = 3;
+  required ExpBlocks type = 4;
+  required float max_hp = 5;
+
+	extend proto_common.Event 
+	{
+	  optional proto_game.BlockAppeared block_appeared_evt = 2001;
+	}
+}
+
+message UnitDie
+{
+  required int32 guid = 1;
+  
+  extend proto_common.Event 
+  {
+    optional proto_game.UnitDie unit_die_evt = 2003;
+  }
+}
+
+message UnitMove
+{
+  required int32 guid = 1;
+  required float x = 2;
+  required float y = 3;
+  required int64 timestamp = 4;
+  required bool stop = 5;
+  
+  extend proto_common.Event 
+	{
+	  optional proto_game.UnitMove move_evt = 2004;
+	}
+}
+
+message PlayerTurn
+{
+  required float angle = 1;
+  optional int32 guid = 2;
+  
+  extend proto_common.Event 
+	{
+	  optional proto_game.PlayerTurn turn_evt = 2009;
+	}
+  
+  extend proto_common.Request 
+	{
+	  optional proto_game.PlayerTurn turn_req = 2009;
+	}
+}
+
+message PlayerUpgrade
+{
+  required int32 guid = 1;
+  optional int32 weapon = 2;
+  
+  extend proto_common.Request 
+	{
+	  optional proto_game.PlayerUpgrade plr_upg_req = 2010;
+	}
+  
+  extend proto_common.Event 
+	{
+	  optional proto_game.PlayerUpgrade plr_upg_evt = 2010;
+	}
+}
+
+message PlayerExperience
+{
+  required int32 exp = 1;
+  
+  extend proto_common.Event 
+	{
+	  optional proto_game.PlayerExperience plr_exp_evt = 2012;
+	}
+}
+
+message PlayerLevelUp
+{
+  required int32 lvl = 1;
+  required int32 expLeft = 2;
+  
+  extend proto_common.Event 
+	{
+	  optional proto_game.PlayerLevelUp plr_lvl_up_evt = 2013;
+	}
+}
+
+message PlayerStatusChange
+{
+  required int32 guid = 1;
+  optional float hp = 2;
+  
+  extend proto_common.Event 
+	{
+	  optional proto_game.PlayerStatusChange plr_status_evt = 2011;
+	}
+}
+
+message UnitAttack
+{
+  required int32 guid = 1;
+  required float direction = 2;
+  
+  extend proto_common.Event 
+	{
+	  optional proto_game.UnitAttack unit_att_evt = 2006;
+	}
+  
+  extend proto_common.Request 
+	{
+	  optional proto_game.UnitAttack unit_att_req = 2006;
+	}
+}
+
+message PlayerAppeared
+{
+	required string name = 1;
+  required Vector position = 2;
+  required int32 guid = 3;
+  required PlayerStats stats = 4;
+  required float hp = 5;
+  required bool local = 6;
+
+	extend proto_common.Event 
+	{
+	  optional proto_game.PlayerAppeared player_appeared_evt = 2005;
+	}
+}
+
+message PlayerDisconnected
+{
+  required int32 who = 1;
+  
+  extend proto_common.Event
+  {
+    optional proto_game.PlayerDisconnected plr_disc_evt = 2007; 
+  }
+}
+
+message ScoreChanged
+{
+  required int32 guid = 1;
+  required int32 score = 2;
+  
+  extend proto_common.Event
+  {
+    optional proto_game.ScoreChanged plr_score_evt = 2014; 
+  }
+}
+
+message ApplyDamage
+{
+  required int32 target = 1;
+  required float damage = 2;
+  
+  extend proto_common.Request
+  {
+    optional proto_game.ApplyDamage dmg_req = 2004; 
+  }
+}
+
+message DamageDone
+{
+  required int32 target = 1;
+  required float hp_left = 2;
+  
+  extend proto_common.Event
+  {
+    optional proto_game.DamageDone dmg_done_evt = 2008; 
+  }
+}

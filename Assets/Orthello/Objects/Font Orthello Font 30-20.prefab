@@ -1,0 +1,1775 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &100000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400000}
+  - 114: {fileID: 11400000}
+  m_Layer: 0
+  m_Name: Font Orthello Font 30-20
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &400000
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 325.965271, y: -218.173599, z: -1768.02722}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af4a1540cdd5e45b1b27edcc21b1e8f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _name: Font Orthello Font 30-20
+  _sheetSize: {x: 256, y: 256}
+  texture: {fileID: 2800000, guid: 3fb4997cea7b8354aa9a9244307bd285, type: 3}
+  sizeTextures: []
+  generateSprites: 0
+  atlasData:
+  - name: 32
+    position: {x: 232, y: 22}
+    offset: {x: 0, y: 18}
+    rotated: 0
+    size: {x: 0, y: 0}
+    frameSize: {x: 0, y: 24}
+    metaData:
+    - key: dx
+      value: 6
+  - name: 33
+    position: {x: 244, y: 88}
+    offset: {x: 3, y: 2}
+    rotated: 0
+    size: {x: 6, y: 18}
+    frameSize: {x: 6, y: 24}
+    metaData:
+    - key: dx
+      value: 7
+  - name: 34
+    position: {x: 236, y: 162}
+    offset: {x: 1, y: 3}
+    rotated: 0
+    size: {x: 8, y: 8}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 7
+  - name: 35
+    position: {x: 112, y: 148}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 18, y: 18}
+    frameSize: {x: 18, y: 24}
+    metaData:
+    - key: dx
+      value: 16
+  - name: 36
+    position: {x: 124, y: 46}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 20}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 37
+    position: {x: 112, y: 128}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 18, y: 18}
+    frameSize: {x: 18, y: 24}
+    metaData:
+    - key: dx
+      value: 18
+  - name: 38
+    position: {x: 222, y: 108}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 16, y: 18}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 14
+  - name: 39
+    position: {x: 30, y: 170}
+    offset: {x: 1, y: 3}
+    rotated: 0
+    size: {x: 4, y: 8}
+    frameSize: {x: 4, y: 24}
+    metaData:
+    - key: dx
+      value: 4
+  - name: 40
+    position: {x: 36, y: 74}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 8, y: 22}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 8
+  - name: 41
+    position: {x: 36, y: 50}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 8, y: 22}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 8
+  - name: 42
+    position: {x: 132, y: 242}
+    offset: {x: 1, y: 3}
+    rotated: 0
+    size: {x: 12, y: 10}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 43
+    position: {x: 146, y: 162}
+    offset: {x: 3, y: 6}
+    rotated: 0
+    size: {x: 14, y: 14}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 17
+  - name: 44
+    position: {x: 154, y: 178}
+    offset: {x: 2, y: 15}
+    rotated: 0
+    size: {x: 6, y: 8}
+    frameSize: {x: 6, y: 24}
+    metaData:
+    - key: dx
+      value: 6
+  - name: 45
+    position: {x: 226, y: 162}
+    offset: {x: 1, y: 9}
+    rotated: 0
+    size: {x: 8, y: 6}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 7
+  - name: 46
+    position: {x: 162, y: 174}
+    offset: {x: 2, y: 14}
+    rotated: 0
+    size: {x: 6, y: 6}
+    frameSize: {x: 6, y: 24}
+    metaData:
+    - key: dx
+      value: 6
+  - name: 47
+    position: {x: 112, y: 46}
+    offset: {x: 0, y: 1}
+    rotated: 0
+    size: {x: 10, y: 20}
+    frameSize: {x: 10, y: 24}
+    metaData:
+    - key: dx
+      value: 7
+  - name: 48
+    position: {x: 208, y: 108}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 49
+    position: {x: 120, y: 186}
+    offset: {x: 2, y: 4}
+    rotated: 0
+    size: {x: 8, y: 16}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 50
+    position: {x: 148, y: 128}
+    offset: {x: 1, y: 4}
+    rotated: 0
+    size: {x: 12, y: 16}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 51
+    position: {x: 194, y: 108}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 52
+    position: {x: 132, y: 128}
+    offset: {x: 1, y: 4}
+    rotated: 0
+    size: {x: 14, y: 16}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 53
+    position: {x: 112, y: 222}
+    offset: {x: 1, y: 4}
+    rotated: 0
+    size: {x: 12, y: 16}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 54
+    position: {x: 180, y: 108}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 55
+    position: {x: 112, y: 204}
+    offset: {x: 1, y: 4}
+    rotated: 0
+    size: {x: 12, y: 16}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 56
+    position: {x: 166, y: 108}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 57
+    position: {x: 96, y: 228}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 58
+    position: {x: 242, y: 128}
+    offset: {x: 2, y: 6}
+    rotated: 0
+    size: {x: 6, y: 14}
+    frameSize: {x: 6, y: 24}
+    metaData:
+    - key: dx
+      value: 7
+  - name: 59
+    position: {x: 112, y: 186}
+    offset: {x: 2, y: 7}
+    rotated: 0
+    size: {x: 6, y: 16}
+    frameSize: {x: 6, y: 24}
+    metaData:
+    - key: dx
+      value: 7
+  - name: 60
+    position: {x: 238, y: 146}
+    offset: {x: 3, y: 5}
+    rotated: 0
+    size: {x: 14, y: 14}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 17
+  - name: 61
+    position: {x: 222, y: 146}
+    offset: {x: 3, y: 8}
+    rotated: 0
+    size: {x: 14, y: 8}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 17
+  - name: 62
+    position: {x: 206, y: 146}
+    offset: {x: 3, y: 5}
+    rotated: 0
+    size: {x: 14, y: 14}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 17
+  - name: 63
+    position: {x: 96, y: 208}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 11
+  - name: 64
+    position: {x: 46, y: 46}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 22, y: 20}
+    frameSize: {x: 22, y: 24}
+    metaData:
+    - key: dx
+      value: 20
+  - name: 65
+    position: {x: 148, y: 108}
+    offset: {x: 0, y: 2}
+    rotated: 0
+    size: {x: 16, y: 18}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 14
+  - name: 66
+    position: {x: 96, y: 188}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 14
+  - name: 67
+    position: {x: 130, y: 108}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 16, y: 18}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 15
+  - name: 68
+    position: {x: 96, y: 168}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 15
+  - name: 69
+    position: {x: 96, y: 148}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 70
+    position: {x: 96, y: 128}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 71
+    position: {x: 112, y: 108}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 16, y: 18}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 16
+  - name: 72
+    position: {x: 96, y: 108}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 15
+  - name: 73
+    position: {x: 236, y: 88}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 6, y: 18}
+    frameSize: {x: 6, y: 24}
+    metaData:
+    - key: dx
+      value: 6
+  - name: 74
+    position: {x: 222, y: 88}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 11
+  - name: 75
+    position: {x: 204, y: 88}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 16, y: 18}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 14
+  - name: 76
+    position: {x: 80, y: 228}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 77
+    position: {x: 186, y: 88}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 16, y: 18}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 17
+  - name: 78
+    position: {x: 80, y: 208}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 15
+  - name: 79
+    position: {x: 168, y: 88}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 16, y: 18}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 16
+  - name: 80
+    position: {x: 80, y: 188}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 81
+    position: {x: 150, y: 88}
+    offset: {x: 1, y: 3}
+    rotated: 0
+    size: {x: 16, y: 18}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 16
+  - name: 82
+    position: {x: 80, y: 168}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 14
+  - name: 83
+    position: {x: 80, y: 148}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 14
+  - name: 84
+    position: {x: 80, y: 128}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 85
+    position: {x: 80, y: 108}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 15
+  - name: 86
+    position: {x: 132, y: 88}
+    offset: {x: 0, y: 2}
+    rotated: 0
+    size: {x: 16, y: 18}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 87
+    position: {x: 46, y: 26}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 22, y: 18}
+    frameSize: {x: 22, y: 24}
+    metaData:
+    - key: dx
+      value: 19
+  - name: 88
+    position: {x: 114, y: 88}
+    offset: {x: 0, y: 2}
+    rotated: 0
+    size: {x: 16, y: 18}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 89
+    position: {x: 96, y: 88}
+    offset: {x: 0, y: 2}
+    rotated: 0
+    size: {x: 16, y: 18}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 90
+    position: {x: 80, y: 88}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 91
+    position: {x: 36, y: 26}
+    offset: {x: 3, y: 2}
+    rotated: 0
+    size: {x: 8, y: 22}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 8
+  - name: 92
+    position: {x: 100, y: 46}
+    offset: {x: 0, y: 1}
+    rotated: 0
+    size: {x: 10, y: 20}
+    frameSize: {x: 10, y: 24}
+    metaData:
+    - key: dx
+      value: 7
+  - name: 93
+    position: {x: 26, y: 218}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 8, y: 22}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 8
+  - name: 94
+    position: {x: 112, y: 240}
+    offset: {x: 5, y: 3}
+    rotated: 0
+    size: {x: 14, y: 8}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 20
+  - name: 95
+    position: {x: 46, y: 248}
+    offset: {x: 0, y: 20}
+    rotated: 0
+    size: {x: 12, y: 4}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 96
+    position: {x: 216, y: 162}
+    offset: {x: 3, y: 2}
+    rotated: 0
+    size: {x: 8, y: 6}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 97
+    position: {x: 190, y: 146}
+    offset: {x: 1, y: 6}
+    rotated: 0
+    size: {x: 14, y: 14}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 98
+    position: {x: 238, y: 68}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 99
+    position: {x: 176, y: 146}
+    offset: {x: 1, y: 6}
+    rotated: 0
+    size: {x: 12, y: 14}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 11
+  - name: 100
+    position: {x: 224, y: 68}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 101
+    position: {x: 162, y: 146}
+    offset: {x: 1, y: 6}
+    rotated: 0
+    size: {x: 12, y: 14}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 102
+    position: {x: 214, y: 68}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 8, y: 18}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 6
+  - name: 103
+    position: {x: 200, y: 68}
+    offset: {x: 1, y: 6}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 104
+    position: {x: 62, y: 228}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 105
+    position: {x: 36, y: 218}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 6, y: 18}
+    frameSize: {x: 6, y: 24}
+    metaData:
+    - key: dx
+      value: 5
+  - name: 106
+    position: {x: 18, y: 218}
+    offset: {x: 0, y: 2}
+    rotated: 0
+    size: {x: 6, y: 22}
+    frameSize: {x: 6, y: 24}
+    metaData:
+    - key: dx
+      value: 5
+  - name: 107
+    position: {x: 62, y: 208}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 11
+  - name: 108
+    position: {x: 36, y: 198}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 6, y: 18}
+    frameSize: {x: 6, y: 24}
+    metaData:
+    - key: dx
+      value: 5
+  - name: 109
+    position: {x: 180, y: 68}
+    offset: {x: 2, y: 6}
+    rotated: 0
+    size: {x: 18, y: 14}
+    frameSize: {x: 18, y: 24}
+    metaData:
+    - key: dx
+      value: 18
+  - name: 110
+    position: {x: 132, y: 226}
+    offset: {x: 2, y: 6}
+    rotated: 0
+    size: {x: 12, y: 14}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 111
+    position: {x: 146, y: 146}
+    offset: {x: 1, y: 6}
+    rotated: 0
+    size: {x: 14, y: 14}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 112
+    position: {x: 62, y: 188}
+    offset: {x: 2, y: 6}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 113
+    position: {x: 62, y: 168}
+    offset: {x: 1, y: 6}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 114
+    position: {x: 36, y: 238}
+    offset: {x: 2, y: 6}
+    rotated: 0
+    size: {x: 8, y: 14}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 8
+  - name: 115
+    position: {x: 132, y: 210}
+    offset: {x: 1, y: 6}
+    rotated: 0
+    size: {x: 12, y: 14}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 11
+  - name: 116
+    position: {x: 240, y: 108}
+    offset: {x: 1, y: 4}
+    rotated: 0
+    size: {x: 8, y: 16}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 6
+  - name: 117
+    position: {x: 132, y: 194}
+    offset: {x: 2, y: 6}
+    rotated: 0
+    size: {x: 12, y: 14}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 118
+    position: {x: 132, y: 178}
+    offset: {x: 0, y: 6}
+    rotated: 0
+    size: {x: 12, y: 14}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 11
+  - name: 119
+    position: {x: 160, y: 68}
+    offset: {x: 1, y: 6}
+    rotated: 0
+    size: {x: 18, y: 14}
+    frameSize: {x: 18, y: 24}
+    metaData:
+    - key: dx
+      value: 15
+  - name: 120
+    position: {x: 132, y: 162}
+    offset: {x: 0, y: 6}
+    rotated: 0
+    size: {x: 12, y: 14}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 121
+    position: {x: 62, y: 148}
+    offset: {x: 1, y: 6}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 11
+  - name: 122
+    position: {x: 132, y: 146}
+    offset: {x: 1, y: 6}
+    rotated: 0
+    size: {x: 12, y: 14}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 123
+    position: {x: 18, y: 194}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 10, y: 22}
+    frameSize: {x: 10, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 124
+    position: {x: 12, y: 194}
+    offset: {x: 5, y: 2}
+    rotated: 0
+    size: {x: 4, y: 22}
+    frameSize: {x: 4, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 125
+    position: {x: 18, y: 170}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 10, y: 22}
+    frameSize: {x: 10, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 126
+    position: {x: 18, y: 242}
+    offset: {x: 2, y: 9}
+    rotated: 0
+    size: {x: 16, y: 6}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 17
+  - name: 161
+    position: {x: 36, y: 178}
+    offset: {x: 3, y: 2}
+    rotated: 0
+    size: {x: 6, y: 18}
+    frameSize: {x: 6, y: 24}
+    metaData:
+    - key: dx
+      value: 7
+  - name: 162
+    position: {x: 62, y: 128}
+    offset: {x: 1, y: 4}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 163
+    position: {x: 62, y: 108}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 164
+    position: {x: 226, y: 128}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 14}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 165
+    position: {x: 112, y: 168}
+    offset: {x: 0, y: 4}
+    rotated: 0
+    size: {x: 14, y: 16}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 166
+    position: {x: 12, y: 218}
+    offset: {x: 5, y: 3}
+    rotated: 0
+    size: {x: 4, y: 20}
+    frameSize: {x: 4, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 167
+    position: {x: 86, y: 46}
+    offset: {x: 1, y: 1}
+    rotated: 0
+    size: {x: 12, y: 20}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 168
+    position: {x: 206, y: 162}
+    offset: {x: 3, y: 1}
+    rotated: 0
+    size: {x: 8, y: 6}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 169
+    position: {x: 140, y: 68}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 18, y: 18}
+    frameSize: {x: 18, y: 24}
+    metaData:
+    - key: dx
+      value: 17
+  - name: 170
+    position: {x: 174, y: 162}
+    offset: {x: 1, y: 3}
+    rotated: 0
+    size: {x: 10, y: 10}
+    frameSize: {x: 10, y: 24}
+    metaData:
+    - key: dx
+      value: 9
+  - name: 171
+    position: {x: 162, y: 162}
+    offset: {x: 1, y: 8}
+    rotated: 0
+    size: {x: 10, y: 10}
+    frameSize: {x: 10, y: 24}
+    metaData:
+    - key: dx
+      value: 9
+  - name: 172
+    position: {x: 2, y: 242}
+    offset: {x: 3, y: 8}
+    rotated: 0
+    size: {x: 14, y: 8}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 17
+  - name: 173
+    position: {x: 228, y: 22}
+    offset: {x: 0, y: 18}
+    rotated: 0
+    size: {x: 2, y: 2}
+    frameSize: {x: 2, y: 24}
+    metaData:
+    - key: dx
+      value: 0
+  - name: 174
+    position: {x: 120, y: 68}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 18, y: 18}
+    frameSize: {x: 18, y: 24}
+    metaData:
+    - key: dx
+      value: 17
+  - name: 175
+    position: {x: 62, y: 248}
+    offset: {x: 3, y: 3}
+    rotated: 0
+    size: {x: 8, y: 4}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 176
+    position: {x: 196, y: 162}
+    offset: {x: 1, y: 3}
+    rotated: 0
+    size: {x: 8, y: 8}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 7
+  - name: 177
+    position: {x: 210, y: 128}
+    offset: {x: 3, y: 5}
+    rotated: 0
+    size: {x: 14, y: 14}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 17
+  - name: 178
+    position: {x: 146, y: 206}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 10, y: 12}
+    frameSize: {x: 10, y: 24}
+    metaData:
+    - key: dx
+      value: 8
+  - name: 179
+    position: {x: 146, y: 192}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 10, y: 12}
+    frameSize: {x: 10, y: 24}
+    metaData:
+    - key: dx
+      value: 8
+  - name: 180
+    position: {x: 186, y: 162}
+    offset: {x: 4, y: 2}
+    rotated: 0
+    size: {x: 8, y: 6}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 181
+    position: {x: 46, y: 228}
+    offset: {x: 0, y: 6}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 182
+    position: {x: 46, y: 208}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 183
+    position: {x: 246, y: 162}
+    offset: {x: 2, y: 8}
+    rotated: 0
+    size: {x: 6, y: 6}
+    frameSize: {x: 6, y: 24}
+    metaData:
+    - key: dx
+      value: 6
+  - name: 184
+    position: {x: 146, y: 244}
+    offset: {x: 3, y: 16}
+    rotated: 0
+    size: {x: 8, y: 8}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 10
+  - name: 185
+    position: {x: 146, y: 178}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 6, y: 12}
+    frameSize: {x: 6, y: 24}
+    metaData:
+    - key: dx
+      value: 8
+  - name: 186
+    position: {x: 146, y: 232}
+    offset: {x: 1, y: 3}
+    rotated: 0
+    size: {x: 10, y: 10}
+    frameSize: {x: 10, y: 24}
+    metaData:
+    - key: dx
+      value: 9
+  - name: 187
+    position: {x: 146, y: 220}
+    offset: {x: 1, y: 8}
+    rotated: 0
+    size: {x: 10, y: 10}
+    frameSize: {x: 10, y: 24}
+    metaData:
+    - key: dx
+      value: 9
+  - name: 188
+    position: {x: 100, y: 68}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 18, y: 18}
+    frameSize: {x: 18, y: 24}
+    metaData:
+    - key: dx
+      value: 18
+  - name: 189
+    position: {x: 80, y: 68}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 18, y: 18}
+    frameSize: {x: 18, y: 24}
+    metaData:
+    - key: dx
+      value: 18
+  - name: 190
+    position: {x: 92, y: 26}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 20, y: 18}
+    frameSize: {x: 20, y: 24}
+    metaData:
+    - key: dx
+      value: 18
+  - name: 191
+    position: {x: 46, y: 188}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 11
+  - name: 192
+    position: {x: 18, y: 146}
+    offset: {x: 0, y: -2}
+    rotated: 0
+    size: {x: 16, y: 22}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 14
+  - name: 193
+    position: {x: 18, y: 122}
+    offset: {x: 0, y: -2}
+    rotated: 0
+    size: {x: 16, y: 22}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 14
+  - name: 194
+    position: {x: 18, y: 98}
+    offset: {x: 0, y: -2}
+    rotated: 0
+    size: {x: 16, y: 22}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 14
+  - name: 195
+    position: {x: 18, y: 74}
+    offset: {x: 0, y: -2}
+    rotated: 0
+    size: {x: 16, y: 22}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 14
+  - name: 196
+    position: {x: 18, y: 50}
+    offset: {x: 0, y: -2}
+    rotated: 0
+    size: {x: 16, y: 22}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 14
+  - name: 197
+    position: {x: 18, y: 26}
+    offset: {x: 0, y: -2}
+    rotated: 0
+    size: {x: 16, y: 22}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 14
+  - name: 198
+    position: {x: 228, y: 2}
+    offset: {x: 0, y: 2}
+    rotated: 0
+    size: {x: 22, y: 18}
+    frameSize: {x: 22, y: 24}
+    metaData:
+    - key: dx
+      value: 20
+  - name: 199
+    position: {x: 210, y: 2}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 16, y: 22}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 15
+  - name: 200
+    position: {x: 194, y: 2}
+    offset: {x: 2, y: -2}
+    rotated: 0
+    size: {x: 14, y: 22}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 201
+    position: {x: 178, y: 2}
+    offset: {x: 2, y: -2}
+    rotated: 0
+    size: {x: 14, y: 22}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 202
+    position: {x: 162, y: 2}
+    offset: {x: 2, y: -2}
+    rotated: 0
+    size: {x: 14, y: 22}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 203
+    position: {x: 146, y: 2}
+    offset: {x: 2, y: -2}
+    rotated: 0
+    size: {x: 14, y: 22}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 204
+    position: {x: 136, y: 2}
+    offset: {x: 1, y: -2}
+    rotated: 0
+    size: {x: 8, y: 22}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 6
+  - name: 205
+    position: {x: 126, y: 2}
+    offset: {x: 2, y: -2}
+    rotated: 0
+    size: {x: 8, y: 22}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 6
+  - name: 206
+    position: {x: 2, y: 218}
+    offset: {x: 0, y: -2}
+    rotated: 0
+    size: {x: 8, y: 22}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 6
+  - name: 207
+    position: {x: 2, y: 194}
+    offset: {x: 1, y: -2}
+    rotated: 0
+    size: {x: 8, y: 22}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 6
+  - name: 208
+    position: {x: 62, y: 88}
+    offset: {x: 0, y: 2}
+    rotated: 0
+    size: {x: 16, y: 18}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 15
+  - name: 209
+    position: {x: 2, y: 170}
+    offset: {x: 2, y: -2}
+    rotated: 0
+    size: {x: 14, y: 22}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 15
+  - name: 210
+    position: {x: 108, y: 2}
+    offset: {x: 1, y: -2}
+    rotated: 0
+    size: {x: 16, y: 22}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 16
+  - name: 211
+    position: {x: 90, y: 2}
+    offset: {x: 1, y: -2}
+    rotated: 0
+    size: {x: 16, y: 22}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 16
+  - name: 212
+    position: {x: 72, y: 2}
+    offset: {x: 1, y: -2}
+    rotated: 0
+    size: {x: 16, y: 22}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 16
+  - name: 213
+    position: {x: 54, y: 2}
+    offset: {x: 1, y: -2}
+    rotated: 0
+    size: {x: 16, y: 22}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 16
+  - name: 214
+    position: {x: 36, y: 2}
+    offset: {x: 1, y: -2}
+    rotated: 0
+    size: {x: 16, y: 22}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 16
+  - name: 215
+    position: {x: 194, y: 128}
+    offset: {x: 3, y: 5}
+    rotated: 0
+    size: {x: 14, y: 14}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 17
+  - name: 216
+    position: {x: 62, y: 68}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 16, y: 18}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 16
+  - name: 217
+    position: {x: 2, y: 146}
+    offset: {x: 2, y: -2}
+    rotated: 0
+    size: {x: 14, y: 22}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 15
+  - name: 218
+    position: {x: 2, y: 122}
+    offset: {x: 2, y: -2}
+    rotated: 0
+    size: {x: 14, y: 22}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 15
+  - name: 219
+    position: {x: 2, y: 98}
+    offset: {x: 2, y: -2}
+    rotated: 0
+    size: {x: 14, y: 22}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 15
+  - name: 220
+    position: {x: 2, y: 74}
+    offset: {x: 2, y: -2}
+    rotated: 0
+    size: {x: 14, y: 22}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 15
+  - name: 221
+    position: {x: 18, y: 2}
+    offset: {x: 0, y: -2}
+    rotated: 0
+    size: {x: 16, y: 22}
+    frameSize: {x: 16, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 222
+    position: {x: 46, y: 168}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 223
+    position: {x: 46, y: 148}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 224
+    position: {x: 46, y: 128}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 225
+    position: {x: 46, y: 108}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 226
+    position: {x: 46, y: 88}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 227
+    position: {x: 46, y: 68}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 228
+    position: {x: 238, y: 46}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 229
+    position: {x: 70, y: 46}
+    offset: {x: 1, y: 0}
+    rotated: 0
+    size: {x: 14, y: 20}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 230
+    position: {x: 70, y: 26}
+    offset: {x: 1, y: 6}
+    rotated: 0
+    size: {x: 20, y: 14}
+    frameSize: {x: 20, y: 24}
+    metaData:
+    - key: dx
+      value: 18
+  - name: 231
+    position: {x: 224, y: 46}
+    offset: {x: 1, y: 6}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 11
+  - name: 232
+    position: {x: 210, y: 46}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 233
+    position: {x: 196, y: 46}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 234
+    position: {x: 182, y: 46}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 235
+    position: {x: 168, y: 46}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 236
+    position: {x: 36, y: 158}
+    offset: {x: 0, y: 2}
+    rotated: 0
+    size: {x: 8, y: 18}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 5
+  - name: 237
+    position: {x: 36, y: 138}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 8, y: 18}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 5
+  - name: 238
+    position: {x: 36, y: 118}
+    offset: {x: 0, y: 2}
+    rotated: 0
+    size: {x: 8, y: 18}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 5
+  - name: 239
+    position: {x: 36, y: 98}
+    offset: {x: 0, y: 2}
+    rotated: 0
+    size: {x: 8, y: 18}
+    frameSize: {x: 8, y: 24}
+    metaData:
+    - key: dx
+      value: 5
+  - name: 240
+    position: {x: 152, y: 46}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 241
+    position: {x: 138, y: 46}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 242
+    position: {x: 234, y: 26}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 243
+    position: {x: 218, y: 26}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 244
+    position: {x: 202, y: 26}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 245
+    position: {x: 186, y: 26}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 246
+    position: {x: 170, y: 26}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 18}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 247
+    position: {x: 178, y: 128}
+    offset: {x: 3, y: 5}
+    rotated: 0
+    size: {x: 14, y: 14}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 17
+  - name: 248
+    position: {x: 162, y: 128}
+    offset: {x: 1, y: 6}
+    rotated: 0
+    size: {x: 14, y: 14}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 249
+    position: {x: 156, y: 26}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 250
+    position: {x: 142, y: 26}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 251
+    position: {x: 128, y: 26}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 252
+    position: {x: 114, y: 26}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 12, y: 18}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 12
+  - name: 253
+    position: {x: 2, y: 50}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 22}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 11
+  - name: 254
+    position: {x: 2, y: 26}
+    offset: {x: 2, y: 2}
+    rotated: 0
+    size: {x: 12, y: 22}
+    frameSize: {x: 12, y: 24}
+    metaData:
+    - key: dx
+      value: 13
+  - name: 255
+    position: {x: 2, y: 2}
+    offset: {x: 1, y: 2}
+    rotated: 0
+    size: {x: 14, y: 22}
+    frameSize: {x: 14, y: 24}
+    metaData:
+    - key: dx
+      value: 11
+  offsetSizing: 1
+  metaType: FONT
+  metaData: []
+  _atlasDataFile: {fileID: 4900000, guid: d1af43375462eb747ab5b8095896f829, type: 3}
+  reloadData: 0
+  bytesDataFile: 19172
+  id: 1
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 100000}
+  m_IsPrefabParent: 1

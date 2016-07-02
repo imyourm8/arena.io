@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags: []
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Sky
+    uniqueID: 517584083
+    locked: 0
+  - name: BehindLand
+    uniqueID: 554056435
+    locked: 0
+  - name: Land
+    uniqueID: 3691668447
+    locked: 0
+  - name: p3
+    uniqueID: 1907914507
+    locked: 0
+  - name: p2
+    uniqueID: 1655711695
+    locked: 0
+  - name: p1
+    uniqueID: 3393773513
+    locked: 0
+  - name: p0
+    uniqueID: 548750687
+    locked: 0
+  - name: GameObjects
+    uniqueID: 1746010513
+    locked: 0
+  - name: SFX
+    uniqueID: 3906915319
+    locked: 0
+  - name: FloatingNumbers
+    uniqueID: 2023860675
+    locked: 0
+  - name: FrontObjects
+    uniqueID: 4203780185
+    locked: 0

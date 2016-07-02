@@ -1,0 +1,27 @@
+option optimize_for = SPEED;
+
+import "ProtoFiles/common.proto";
+
+package proto_sim;
+
+message SimulateBattle
+{
+  message Request
+  {
+	required int32 hp = 1;
+  required int32 dps = 2;
+  
+    extend proto_common.Request 
+    {
+      optional proto_sim.SimulateBattle.Request sim_btl_req = 11;
+    }
+  }
+
+  message Response
+  {
+    extend proto_common.Response 
+    {
+      optional proto_sim.SimulateBattle.Response sim_btl_res = 11;
+    }
+  }
+}

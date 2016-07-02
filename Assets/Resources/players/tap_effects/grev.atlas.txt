@@ -1,0 +1,83 @@
+
+grev.png
+size: 1024,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+g_def_1
+  rotate: false
+  xy: 499, 46
+  size: 76, 76
+  orig: 76, 76
+  offset: 0, 0
+  index: -1
+g_def_10
+  rotate: true
+  xy: 655, 54
+  size: 22, 86
+  orig: 22, 92
+  offset: 0, 0
+  index: -1
+g_def_11
+  rotate: true
+  xy: 272, 46
+  size: 76, 140
+  orig: 76, 140
+  offset: 0, 0
+  index: -1
+g_def_2
+  rotate: false
+  xy: 577, 46
+  size: 76, 76
+  orig: 76, 76
+  offset: 0, 0
+  index: -1
+g_def_3
+  rotate: false
+  xy: 2, 2
+  size: 88, 22
+  orig: 88, 22
+  offset: 0, 0
+  index: -1
+g_def_4
+  rotate: false
+  xy: 759, 111
+  size: 41, 11
+  orig: 41, 11
+  offset: 0, 0
+  index: -1
+g_def_5
+  rotate: false
+  xy: 414, 46
+  size: 83, 76
+  orig: 83, 76
+  offset: 0, 0
+  index: -1
+g_def_6
+  rotate: true
+  xy: 272, 34
+  size: 10, 81
+  orig: 10, 81
+  offset: 0, 0
+  index: -1
+g_def_7
+  rotate: true
+  xy: 138, 34
+  size: 88, 132
+  orig: 88, 132
+  offset: 0, 0
+  index: -1
+g_def_8
+  rotate: true
+  xy: 2, 26
+  size: 96, 134
+  orig: 96, 134
+  offset: 0, 0
+  index: -1
+g_def_9
+  rotate: true
+  xy: 655, 78
+  size: 44, 102
+  orig: 46, 102
+  offset: 1, 0
+  index: -1

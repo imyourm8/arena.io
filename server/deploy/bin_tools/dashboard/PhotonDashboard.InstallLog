@@ -1,0 +1,15 @@
+﻿Installing assembly 'C:\Users\imyuorm8\Documents\prototype_tapper\TapServer\deploy\bin_Tools\dashboard\PhotonDashboard.exe'.
+Affected parameters are:
+   logtoconsole = 
+   assemblypath = C:\Users\imyuorm8\Documents\prototype_tapper\TapServer\deploy\bin_Tools\dashboard\PhotonDashboard.exe
+   i = 
+   logfile = C:\Users\imyuorm8\Documents\prototype_tapper\TapServer\deploy\bin_Tools\dashboard\PhotonDashboard.InstallLog
+Installing service PhontonDashboardService...
+Service PhontonDashboardService has been successfully installed.
+Creating EventLog source PhontonDashboardService in log Application...
+Committing assembly 'C:\Users\imyuorm8\Documents\prototype_tapper\TapServer\deploy\bin_Tools\dashboard\PhotonDashboard.exe'.
+Affected parameters are:
+   logtoconsole = 
+   assemblypath = C:\Users\imyuorm8\Documents\prototype_tapper\TapServer\deploy\bin_Tools\dashboard\PhotonDashboard.exe
+   i = 
+   logfile = C:\Users\imyuorm8\Documents\prototype_tapper\TapServer\deploy\bin_Tools\dashboard\PhotonDashboard.InstallLog

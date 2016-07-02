@@ -1,0 +1,60 @@
+option optimize_for = SPEED;
+
+import "ProtoFiles/common.proto";
+
+package proto_profile;
+
+enum PlayerClasses
+{
+  Assault = 1;
+  Gunner = 2;
+}
+
+message BumpInfo
+{
+  required int32 id = 1;
+  required int32 max_value = 2;
+}
+
+message ClassInfo
+{
+  required PlayerClasses class = 1;
+  required bool unlocked = 2;
+  required int32 levelRequired = 3;
+  required int32 coinsPrice = 4;
+}
+
+message UserInfo
+{
+  required int32 coins = 1;
+  repeated ClassInfo classesInfo = 2;
+  required string name = 3;
+  
+  extend proto_common.Event 
+  {
+    optional proto_profile.UserInfo user_info_evt = 1001;
+  }
+}
+
+message ChangeNickname
+{
+  message Request
+  {
+    required string name = 1;
+    
+    extend proto_common.Request
+    {
+      optional proto_profile.ChangeNickname.Request chn_nick_req = 2012;
+    }
+  }
+  
+  message Response 
+  {
+    required bool success = 2;
+    
+    extend proto_common.Response
+    {
+      optional proto_profile.ChangeNickname.Response chn_nick_req = 2012;
+    }
+  }
+}

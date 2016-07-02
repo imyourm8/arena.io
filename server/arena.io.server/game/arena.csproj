@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{22EFBB27-2AE3-4705-A5F4-EA3EFA84F561}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>arena</RootNamespace>
+    <AssemblyName>arena</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\deploy\arena.io.server\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ExitGames.Logging.Log4Net">
+      <HintPath>..\..\lib\ExitGames.Logging.Log4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="ExitGamesLibs">
+      <HintPath>..\..\lib\ExitGamesLibs.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>..\..\lib\Mono.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql">
+      <HintPath>..\..\lib\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql.EntityFramework">
+      <HintPath>..\..\lib\Npgsql.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql.EntityFrameworkLegacy">
+      <HintPath>..\..\lib\Npgsql.EntityFrameworkLegacy.dll</HintPath>
+    </Reference>
+    <Reference Include="Photon.SocketServer">
+      <HintPath>..\..\lib\Photon.SocketServer.dll</HintPath>
+    </Reference>
+    <Reference Include="PhotonHostRuntimeInterfaces">
+      <HintPath>..\..\lib\PhotonHostRuntimeInterfaces.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="PhotonLoadbalancingApi">
+      <HintPath>..\..\lib\PhotonLoadbalancingApi.dll</HintPath>
+    </Reference>
+    <Reference Include="PowerCollections">
+      <HintPath>..\..\lib\PowerCollections.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\lib\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoLib">
+      <HintPath>..\..\..\Assets\lib\Protobuf\Debug\ProtoLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\Assets\scripts\Common\AbstractFactory.cs">
+      <Link>Common\AbstractFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Attributes\Attribute.cs">
+      <Link>Common\Attributes\Attribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Attributes\AttributeID.cs">
+      <Link>Common\Attributes\AttributeID.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Attributes\AttributeManager.cs">
+      <Link>Common\Attributes\AttributeManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Attributes\BaseAttribute.cs">
+      <Link>Common\Attributes\BaseAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Attributes\UnitAttributes.cs">
+      <Link>Common\Attributes\UnitAttributes.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Battle\PlayerExperience.cs">
+      <Link>Common\Battle\PlayerExperience.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\ClientState.cs">
+      <Link>Common\ClientState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\CooldownManager.cs">
+      <Link>Common\CooldownManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\OperationConditions.cs">
+      <Link>Common\OperationConditions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\OperationParameters.cs">
+      <Link>Common\OperationParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\ProtoExtractor.cs">
+      <Link>Common\ProtoExtractor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Singleton.cs">
+      <Link>Common\Singleton.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\SingletonFactory.cs">
+      <Link>Common\SingletonFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Database\Database.cs">
+      <Link>Database\Database.cs</Link>
+    </Compile>
+    <Compile Include="..\Database\DatabaseConnectionDefines.cs">
+      <Link>Database\DatabaseConnectionDefines.cs</Link>
+    </Compile>
+    <Compile Include="..\Database\IAuthDB.cs">
+      <Link>Database\IAuthDB.cs</Link>
+    </Compile>
+    <Compile Include="..\Database\ICreatureDB.cs">
+      <Link>Database\ICreatureDB.cs</Link>
+    </Compile>
+    <Compile Include="..\Database\IDatabaseImpl.cs">
+      <Link>Database\IDatabaseImpl.cs</Link>
+    </Compile>
+    <Compile Include="..\Database\IDatabaseResultUser.cs">
+      <Link>Database\IDatabaseResultUser.cs</Link>
+    </Compile>
+    <Compile Include="..\Database\IDatabaseSerializable.cs">
+      <Link>Database\IDatabaseSerializable.cs</Link>
+    </Compile>
+    <Compile Include="..\Database\ILootDB.cs">
+      <Link>Database\ILootDB.cs</Link>
+    </Compile>
+    <Compile Include="..\Database\IPlayerDB.cs">
+      <Link>Database\IPlayerDB.cs</Link>
+    </Compile>
+    <Compile Include="..\Database\ISpellDB.cs">
+      <Link>Database\ISpellDB.cs</Link>
+    </Compile>
+    <Compile Include="..\Database\IWorldDB.cs">
+      <Link>Database\IWorldDB.cs</Link>
+    </Compile>
+    <Compile Include="Application.cs" />
+    <Compile Include="battle\BlockSpawner.cs" />
+    <Compile Include="battle\Entity.cs" />
+    <Compile Include="battle\ExpBlock.cs" />
+    <Compile Include="battle\Game.cs" />
+    <Compile Include="battle\GameModes\FFA.cs" />
+    <Compile Include="battle\GameModes\GameMode.cs" />
+    <Compile Include="battle\Mob.cs" />
+    <Compile Include="battle\MobAI\BaseAI.cs" />
+    <Compile Include="battle\MobAI\ChasingAI.cs" />
+    <Compile Include="battle\Player.cs" />
+    <Compile Include="battle\PlayerClass.cs" />
+    <Compile Include="battle\PlayerClassEntry.cs" />
+    <Compile Include="battle\PlayerClasses.cs" />
+    <Compile Include="battle\Room.cs" />
+    <Compile Include="battle\RoomManager.cs" />
+    <Compile Include="battle\SpatialHash.cs" />
+    <Compile Include="Database\Postgres\AuthDB.cs" />
+    <Compile Include="Database\Postgres\PlayerDB.cs" />
+    <Compile Include="Database\Postgres\PostgresImpl.cs" />
+    <Compile Include="Factories\PlayerClassFactory.cs" />
+    <Compile Include="helpers\CurrentTime.cs" />
+    <Compile Include="helpers\Geom.cs" />
+    <Compile Include="helpers\MathHelper.cs" />
+    <Compile Include="helpers\Parsing.cs" />
+    <Compile Include="player\OperationHandler.cs" />
+    <Compile Include="player\PlayerConnection.cs" />
+    <Compile Include="player\PlayerController.cs" />
+    <Compile Include="player\RequestHandler.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

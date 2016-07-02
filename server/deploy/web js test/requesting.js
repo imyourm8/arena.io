@@ -1,0 +1,10 @@
+$(document).ready(function()
+{
+  $.ajax({
+    type:"POST",
+    url:"http://localhost:8080",
+    data:{"hero":{"hp":100,"dps":100}},
+    success:function(){},
+    dataType:"json"
+  });
+});

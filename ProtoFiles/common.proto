@@ -1,0 +1,92 @@
+option optimize_for = SPEED;
+
+package proto_common;
+
+message Common {
+	enum CommonErrors
+	{
+		CE_NO_ERROR = 0;
+		CE_ERROR = -1;
+	}
+}
+
+enum Commands
+{
+	UNKNOWN_CMD = -1;
+	AUTH = 10;
+  SIMULATE_BATTLE = 11;
+  PING = 12;
+  ENTER_AREA = 2001;
+  
+  DAMAGE = 2004;
+  PLAYER_MOVE = 2005;
+  ATTACK = 2006;
+  
+  TURN = 2009;
+  PLAYER_UPGRADE = 2010;
+  JOIN_GAME = 2011;
+  CHANGE_NICKNAME = 2012;
+};
+
+enum Events
+{
+	UNKNOWN_EVT = -1;
+	BLOCK_APPEARED = 2001;
+  UNIT_DIE = 2003;
+  UNIT_MOVE = 2004;
+  PLAYER_APPEARED = 2005;
+  UNIT_ATTACK = 2006;
+  PLAYER_DISCONNECTED = 2007;
+  DAMAGE_DONE = 2008;
+  PLAYER_TURN = 2009;
+  PLAYER_UPGRADE_CHANGES = 2010;
+  PLAYER_STATUS_CHANGED = 2011;
+  PLAYER_EXPERIENCE = 2012;
+  PLAYER_LEVEL_UP = 2013;
+  PLAYER_SCORE = 2014;
+};
+
+enum PacketFlags
+{
+	EVENT = 1;
+};
+
+/*
+	*******************************
+	        Packet structure
+	*******************************
+	   1. Protocol ver. (1 Byte)
+	   2. Flags (4 bytes)
+	   3. Data length (2 Bytes)	
+	   4. Data (Data length bytes)
+	*******************************
+*/
+
+/*
+	auth 10 to 1000
+	profile 1001 to 2000
+	game 2001 to 3000
+*/
+
+message Request {
+	required int32 id = 1;
+	required Commands type = 2;
+
+	extensions 10 to max;
+}
+
+message Response {
+	required int32 id = 1;
+	required Commands type = 2;
+	required int32 error = 3 [default = 0];
+  required int64 timestamp = 4;
+  
+	extensions 10 to max;
+}
+
+message Event {
+	required Events type = 1;
+  required int64 timestamp = 2;
+  
+	extensions 10 to max;
+}
