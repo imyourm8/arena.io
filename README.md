@@ -1,2 +1,1 @@
-# rpg
 # arena.io
