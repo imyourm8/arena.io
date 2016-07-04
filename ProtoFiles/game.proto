@@ -98,11 +98,24 @@ message PlayerMove
 
 message JoinGame
 {
-  required proto_profile.PlayerClasses class = 1;
-  
-  extend proto_common.Request
+  message Request
   {
-    optional proto_game.JoinGame join_game_req = 2011;
+    required proto_profile.PlayerClasses class = 1;
+  
+    extend proto_common.Request
+    {
+      optional proto_game.JoinGame.Request join_game_req = 2011;
+    }
+  }
+  
+  message Response
+  {
+    required int32 time_left = 1;
+  
+    extend proto_common.Response
+    {
+      optional proto_game.JoinGame.Response join_game_res = 2011;
+    }
   }
 }
 
@@ -239,6 +252,7 @@ message PlayerAppeared
   required PlayerStats stats = 4;
   required float hp = 5;
   required bool local = 6;
+  required proto_profile.PlayerClasses class = 7;
 
 	extend proto_common.Event 
 	{
@@ -275,6 +289,16 @@ message ApplyDamage
   extend proto_common.Request
   {
     optional proto_game.ApplyDamage dmg_req = 2004; 
+  }
+}
+
+message ProfileExperience
+{
+  required int32 exp = 1;
+  
+  extend proto_common.Event
+  {
+    optional proto_game.ProfileExperience pro_exp_evt = 2015;
   }
 }
 

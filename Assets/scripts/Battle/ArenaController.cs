@@ -61,6 +61,7 @@ namespace arena
         private void Start()
         {
             GameApp.Instance.Client.OnServerEvent += HandleEvent;
+            GameApp.Instance.Client.OnServerResponse += HandleResponse;
 
             foreach(var entity in entities_)
             {
@@ -235,9 +236,22 @@ namespace arena
                 HandlePlayerExperience(evt);
             }
         }
+
+        private void HandleResponse(proto_common.Response response)
+        {
+            if (response.type == proto_common.Commands.JOIN_GAME)
+            {
+                HandleJoinGame(response);
+            }
+        }
         #endregion
 
         #region Network Handlers
+        private void HandleJoinGame(proto_common.Response response)
+        {
+            var joinResponse = response.Extract<proto_game.JoinGame.Response>(proto_common.Commands.JOIN_GAME);
+        }
+
         private void HandlePlayerExperience(proto_common.Event evt)
         {
             var expPacket = evt.Extract<proto_game.PlayerExperience>(proto_common.Events.PLAYER_EXPERIENCE);
@@ -459,6 +473,13 @@ namespace arena
 
             if (player_ != null)
                 player_.OnAttack -= HandlePlayerAttack;
+        }
+
+        public void OnJoinGame()
+        {
+            var joinReq = new proto_game.JoinGame.Request();
+            joinReq.@class = User.Instance.ClassSelected;
+            GameApp.Instance.Client.Send(joinReq, proto_common.Commands.JOIN_GAME);
         }
     }
 }

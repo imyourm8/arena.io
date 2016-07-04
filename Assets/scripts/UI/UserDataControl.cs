@@ -13,4 +13,11 @@ public class UserDataControl : MonoBehaviour
 
     [SerializeField]
     private Text profileLevel;
+
+    void Update()
+    {
+        nickname.text = User.Instance.Name;
+        profileLevel.text = User.Instance.Level.ToString();
+        coins.text = User.Instance.Coins.ToString();
+    }
 }

@@ -5,16 +5,55 @@ using System.Collections;
 
 public class ClassHolder : MonoBehaviour 
 {
-    public Action<proto_profile.PlayerClasses> OnUnlock;
+    public Action<proto_profile.PlayerClasses, ClassHolder> OnUnlock;
+    public Action<proto_profile.PlayerClasses> OnSelect;
 
     [SerializeField]
     private proto_profile.PlayerClasses playerClass;
+
+    [SerializeField]
+    private bool unlocked = false;
+
+    [SerializeField]
+    private GameObject disabledOverlay;
+
+    private Events.Slot<string> evtSlot_;
+
+    public void Start()
+    {
+        if (unlocked)
+        {
+            SetUnlocked();
+        }
+
+        evtSlot_ = new Events.Slot<string>(Events.GlobalNotifier.Instance);
+        evtSlot_.SubscribeOn(ClassSelection.UlockEvent, HandleUnlock);  
+    }
+
+    public void HandleValueChanged(bool value)
+    {
+        if (value && OnSelect != null && unlocked)
+        {
+            OnSelect(playerClass);
+        }
+    }
+
+    private void HandleUnlock(Events.IEvent<string> evt)
+    {
+        SetUnlocked();
+    }
+
+    private void SetUnlocked()
+    {
+        disabledOverlay.SetActive(false);
+        unlocked = true;
+    }
 
     public void Unlock()
     {
         if (OnUnlock != null)
         {
-            OnUnlock(playerClass);
+            OnUnlock(playerClass, this);
         }
     }
 }

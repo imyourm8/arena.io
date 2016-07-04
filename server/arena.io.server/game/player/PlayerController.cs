@@ -29,6 +29,7 @@ namespace arena.player
             AddOperationHandler(proto_common.Commands.TURN, new OperationHandler(HandlePlayerTurn));
             AddOperationHandler(proto_common.Commands.DAMAGE, new OperationHandler(HandlePlayerDamage));
             AddOperationHandler(proto_common.Commands.CHANGE_NICKNAME, new OperationHandler(HandleChangeNickname));
+            AddOperationHandler(proto_common.Commands.JOIN_GAME, new OperationHandler(HandleJoinGame));
 
             fiber_.Start();
         }
@@ -51,7 +52,7 @@ namespace arena.player
             }
         }
 
-        private void SendResponse(proto_common.Commands cmd, object data, int id = 0, int error = 0)
+        public void SendResponse(proto_common.Commands cmd, object data, int id = 0, int error = 0)
         {
             var response = new proto_common.Response();
             response.type = cmd;
@@ -273,6 +274,14 @@ namespace arena.player
         {
             var damageRequest = request.Extract<proto_game.ApplyDamage>(proto_common.Commands.DAMAGE);
             player_.Game.UnitDamaged(player_, damageRequest);
+        }
+
+        private void HandleJoinGame(proto_common.Request request)
+        {
+            var joinReq = request.Extract<proto_game.JoinGame.Request>(proto_common.Commands.JOIN_GAME);
+
+            player_.SelectedClass = joinReq.@class;
+            player_.Game.PlayerJoin(player_);
         }
         #endregion
 

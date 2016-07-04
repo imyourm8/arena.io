@@ -19,6 +19,9 @@ namespace arena.battle
             exp_ = new PlayerExperience(this);
         }
 
+        public proto_profile.PlayerClasses SelectedClass
+        { get; set; }
+
         public string UniqueID
         { get; set; }
 

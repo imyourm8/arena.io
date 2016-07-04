@@ -24,12 +24,15 @@ namespace arena.battle
         private long lastUpdateTime_;
         private SpatialHash map_;
         private GameModes.GameMode mode_;
+        private long matchFinishAt_;
 
         public Game(GameModes.GameMode mode)
         {
             fiber_.ScheduleOnInterval(Update, 200, 200);
             fiber_.ScheduleOnInterval(SendPlayerStatuses, 500, 500);
             fiber_.ScheduleOnInterval(UpdateSpawner, 0, 10000);
+            fiber_.Schedule(FinishGame, mode.GetMatchDuration());
+            matchFinishAt_ = CurrentTime.Instance.CurrentTimeInMs + mode.GetMatchDuration();
 
             lastUpdateTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
 
@@ -84,11 +87,15 @@ namespace arena.battle
             fiber_.Enqueue(() =>
             {
                 player.ID = GenerateID();
-
                 mode_.SpawnPlayer(player);
-
                 map_.Add(player);
+    
+                //send join game packet
+                var joinPacket = new proto_game.JoinGame.Response();
+                joinPacket.time_left = (int)(matchFinishAt_ - CurrentTime.Instance.CurrentTimeInMs);
+                player.Controller.SendResponse(proto_common.Commands.JOIN_GAME, joinPacket);
 
+                //broadcast new player across other players
                 var appearedPacket = player.GetAppearedPacket();
                 Broadcast(proto_common.Events.PLAYER_APPEARED, appearedPacket, player);
 
@@ -248,6 +255,11 @@ namespace arena.battle
         void player.IActionInvoker.Execute(Action action)
         {
             fiber_.Enqueue(action);
+        }
+
+        private void FinishGame()
+        {
+ 
         }
     }
 }

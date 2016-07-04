@@ -15,5 +15,7 @@ namespace arena.battle.GameModes
         { }
         public virtual proto_game.ExpBlocks GetBlockTypeByPoint(float x, float y)
         { return proto_game.ExpBlocks.Small; }
+
+        public virtual int GetMatchDuration() { return 0; }
     }
 }

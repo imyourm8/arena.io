@@ -59,5 +59,10 @@ namespace arena.battle.GameModes
             }
             return type;
         }
+
+        public override int GetMatchDuration()
+        {
+            return 60000;
+        }
     }
 }

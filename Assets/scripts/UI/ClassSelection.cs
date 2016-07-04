@@ -6,11 +6,21 @@ using System.Collections.Generic;
 
 public class ClassSelection : MonoBehaviour 
 {
+    public static string UlockEvent = "evt_unlock_class";
+
     [SerializeField]
-    private List<Toggle> classes;
+    private List<ClassHolder> classes;
 
 	void Start () 
     {
-        
+        foreach(var t in classes)
+        {
+            t.OnSelect = HandleSelect;
+        }
 	}
+
+    private void HandleSelect(proto_profile.PlayerClasses cl)
+    {
+        User.Instance.ClassSelected = cl;
+    }
 }
