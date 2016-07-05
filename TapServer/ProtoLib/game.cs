@@ -31,12 +31,12 @@ namespace proto_game
       get { return _value; }
       set { _value = value; }
     }
-    private float _multiplier;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"multiplier", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public float multiplier
+    private float _step;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"step", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float step
     {
-      get { return _multiplier; }
-      set { _multiplier = value; }
+      get { return _step; }
+      set { _step = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -147,6 +147,16 @@ namespace proto_game
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"FindRoom")]
+  public partial class FindRoom : global::ProtoBuf.IExtensible
+  {
+    public FindRoom() {}
+    
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -584,10 +594,10 @@ namespace proto_game
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ProfileExperience")]
-  public partial class ProfileExperience : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"GameFinished")]
+  public partial class GameFinished : global::ProtoBuf.IExtensible
   {
-    public ProfileExperience() {}
+    public GameFinished() {}
     
     private int _exp;
     [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"exp", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
@@ -595,6 +605,13 @@ namespace proto_game
     {
       get { return _exp; }
       set { _exp = value; }
+    }
+    private int _coins;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"coins", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int coins
+    {
+      get { return _coins; }
+      set { _coins = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)

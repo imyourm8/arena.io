@@ -155,7 +155,10 @@ namespace proto_common
       JOIN_GAME = 2011,
             
       [global::ProtoBuf.ProtoEnum(Name=@"CHANGE_NICKNAME", Value=2012)]
-      CHANGE_NICKNAME = 2012
+      CHANGE_NICKNAME = 2012,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"FIND_ROOM", Value=2013)]
+      FIND_ROOM = 2013
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"Events")]
@@ -204,8 +207,8 @@ namespace proto_common
       [global::ProtoBuf.ProtoEnum(Name=@"PLAYER_SCORE", Value=2014)]
       PLAYER_SCORE = 2014,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"PROFILE_EXPERIENCE", Value=2015)]
-      PROFILE_EXPERIENCE = 2015
+      [global::ProtoBuf.ProtoEnum(Name=@"GAME_FINISHED", Value=2015)]
+      GAME_FINISHED = 2015
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"PacketFlags")]

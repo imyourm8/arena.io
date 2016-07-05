@@ -17,7 +17,7 @@ public class UserDataControl : MonoBehaviour
     void Update()
     {
         nickname.text = User.Instance.Name;
-        profileLevel.text = User.Instance.Level.ToString();
+        profileLevel.text = User.Instance.ProfileExperience.Level.ToString();
         coins.text = User.Instance.Coins.ToString();
     }
 }

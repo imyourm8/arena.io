@@ -39,7 +39,7 @@ message StatValue
 {
   required Stats stat = 1;
   required float value = 2;
-  required float multiplier = 3;
+  required float step = 3;
 }
 
 enum ExpBlocks
@@ -93,6 +93,14 @@ message PlayerMove
 		{
 			optional proto_game.PlayerMove.Request plr_move_req = 2005;
 		}
+  }
+}
+
+message FindRoom
+{
+  extend proto_common.Request
+  {
+    optional proto_game.FindRoom fnd_room_req = 2013;
   }
 }
 
@@ -292,13 +300,14 @@ message ApplyDamage
   }
 }
 
-message ProfileExperience
+message GameFinished
 {
   required int32 exp = 1;
+  required int32 coins = 2;
   
   extend proto_common.Event
   {
-    optional proto_game.ProfileExperience pro_exp_evt = 2015;
+    optional proto_game.GameFinished game_finished_evt = 2015;
   }
 }
 

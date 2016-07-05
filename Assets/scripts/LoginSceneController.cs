@@ -19,7 +19,6 @@ public class LoginSceneController : MonoBehaviour
 	public Button okBtn;
 	public Text nickname;
     public GameObject arena_;
-    public GameObject arenaUI_;
 
 	void Start () 
     {
@@ -154,6 +153,7 @@ public class LoginSceneController : MonoBehaviour
             User.Instance.Coins = authRes.info.coins;
             User.Instance.Classes = authRes.info.classesInfo;
             User.Instance.Name = authRes.info.name;
+            User.Instance.Level = authRes.info.level;
             
             ShowArena();
         }
@@ -182,7 +182,6 @@ public class LoginSceneController : MonoBehaviour
     public void SwitchArenaView(bool show)
     {
         arena_.SetActive(show);
-        arenaUI_.SetActive(show);
         gameObject.SetActive(!show);
     }
 

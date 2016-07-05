@@ -41,7 +41,7 @@ namespace arena.battle
             foreach (var stat in Stats)
             {
                 var s = new proto_game.StatValue();
-                s.multiplier = stat.Multipler;
+                s.step = stat.Step;
                 s.stat = stat.ID;
                 s.value = stat.FinalValue;
                 stats.stats.Add(s);

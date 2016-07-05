@@ -29,6 +29,7 @@ message UserInfo
   required int32 coins = 1;
   repeated ClassInfo classesInfo = 2;
   required string name = 3;
+  required int32 level = 4;
   
   extend proto_common.Event 
   {

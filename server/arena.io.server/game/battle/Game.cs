@@ -25,9 +25,11 @@ namespace arena.battle
         private SpatialHash map_;
         private GameModes.GameMode mode_;
         private long matchFinishAt_;
+        private Room room_;
 
-        public Game(GameModes.GameMode mode)
+        public Game(GameModes.GameMode mode, Room room)
         {
+            room_ = room;
             fiber_.ScheduleOnInterval(Update, 200, 200);
             fiber_.ScheduleOnInterval(SendPlayerStatuses, 500, 500);
             fiber_.ScheduleOnInterval(UpdateSpawner, 0, 10000);
@@ -89,6 +91,7 @@ namespace arena.battle
                 player.ID = GenerateID();
                 mode_.SpawnPlayer(player);
                 map_.Add(player);
+                player.AssignStats();
     
                 //send join game packet
                 var joinPacket = new proto_game.JoinGame.Response();
@@ -161,6 +164,7 @@ namespace arena.battle
 
                 if (target.HP < 0.00001f)
                 {
+                    mode_.HandleEntityKill(player, target);
                     Broadcast(proto_common.Events.UNIT_DIE, target.GetDiePacket());
 
                     int expGenerated = target.Exp;
@@ -259,7 +263,30 @@ namespace arena.battle
 
         private void FinishGame()
         {
- 
+            proto_game.GameFinished finishPacket = new proto_game.GameFinished();
+
+            foreach (var player in players_)
+            {
+                finishPacket.exp = mode_.GetExpFor(player);
+                finishPacket.coins = mode_.GetCoinsFor(player);
+                player.Controller.SendEvent(proto_common.Events.GAME_FINISHED, finishPacket);
+                //kick
+                Remove(player);
+            }
+
+            room_.OnGameFinished();
+        }
+
+        public void Close()
+        {
+            fiber_.Enqueue(() =>
+                {
+                    fiber_.Dispose();
+                    units_.Clear();
+                    players_.Clear();
+                    mode_ = null;
+                    map_.Clear();
+                });
         }
     }
 }

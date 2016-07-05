@@ -30,6 +30,7 @@ namespace arena.player
             AddOperationHandler(proto_common.Commands.DAMAGE, new OperationHandler(HandlePlayerDamage));
             AddOperationHandler(proto_common.Commands.CHANGE_NICKNAME, new OperationHandler(HandleChangeNickname));
             AddOperationHandler(proto_common.Commands.JOIN_GAME, new OperationHandler(HandleJoinGame));
+            AddOperationHandler(proto_common.Commands.FIND_ROOM, new OperationHandler(HandleFindRoom));
 
             fiber_.Start();
         }
@@ -189,6 +190,7 @@ namespace arena.player
 
             proto_profile.UserInfo info = new proto_profile.UserInfo();
             info.coins = (int)data["coins"];
+            info.level = (int)data["level"];
             info.name = player_.Name;
 
             var reader = new JsonTextReader(new StringReader((string)data["unlocked_classes"]));
@@ -210,10 +212,8 @@ namespace arena.player
             }
 
             authRes.info = info;
-            state_ = TapCommon.ClientState.Logged | TapCommon.ClientState.SwitchGameServer;
+            state_ = TapCommon.ClientState.Logged;
             SendResponse(proto_common.Commands.AUTH, authRes);
-
-            battle.RoomManager.Instance.AssignPlayerToRandomRoom(player_);
         }
 
         private void HandleCreateUser(QueryResult result, IDataReader data)
@@ -230,10 +230,18 @@ namespace arena.player
             }
         }
 
+        private void HandleFindRoom(proto_common.Request request)
+        {
+            battle.RoomManager.Instance.AssignPlayerToRandomRoom(player_);
+
+            state_ |= TapCommon.ClientState.SwitchGameServer;
+        }
+
         private void HandleJoinGame(proto_common.Request request)
         {
-            var joinReq = request.Extract<proto_game.JoinGame>(proto_common.Commands.JOIN_GAME);
+            var joinReq = request.Extract<proto_game.JoinGame.Request>(proto_common.Commands.JOIN_GAME);
 
+            player_.SelectedClass = joinReq.@class;
             player_.Game.PlayerJoin(player_);
 
             state_ &= ~TapCommon.ClientState.SwitchGameServer;
@@ -276,13 +284,6 @@ namespace arena.player
             player_.Game.UnitDamaged(player_, damageRequest);
         }
 
-        private void HandleJoinGame(proto_common.Request request)
-        {
-            var joinReq = request.Extract<proto_game.JoinGame.Request>(proto_common.Commands.JOIN_GAME);
-
-            player_.SelectedClass = joinReq.@class;
-            player_.Game.PlayerJoin(player_);
-        }
         #endregion
 
         void IActionInvoker.Execute(Action action)

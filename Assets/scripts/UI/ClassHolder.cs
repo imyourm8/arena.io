@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 using System;
 using System.Collections;
@@ -9,13 +10,13 @@ public class ClassHolder : MonoBehaviour
     public Action<proto_profile.PlayerClasses> OnSelect;
 
     [SerializeField]
-    private proto_profile.PlayerClasses playerClass;
+    private proto_profile.PlayerClasses playerClass = proto_profile.PlayerClasses.Assault;
 
     [SerializeField]
     private bool unlocked = false;
 
     [SerializeField]
-    private GameObject disabledOverlay;
+    private GameObject disabledOverlay = null;
 
     private Events.Slot<string> evtSlot_;
 
@@ -28,6 +29,17 @@ public class ClassHolder : MonoBehaviour
 
         evtSlot_ = new Events.Slot<string>(Events.GlobalNotifier.Instance);
         evtSlot_.SubscribeOn(ClassSelection.UlockEvent, HandleUnlock);  
+
+        if (playerClass == User.Instance.ClassSelected)
+        {
+            StartCoroutine(SwitchOn());
+        }
+    }
+
+    private IEnumerator SwitchOn()
+    {
+        yield return null;
+        GetComponent<Toggle>().isOn = true;
     }
 
     public void HandleValueChanged(bool value)

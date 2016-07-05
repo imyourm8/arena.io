@@ -7,7 +7,7 @@ public class SmoothFollow : MonoBehaviour
     private GameObject target = null;
 
     [SerializeField]
-    private float smoothTime;
+    private float smoothTime = 1.0f;
 
     private Vector2 velocity;
     private Transform thisTransform;
@@ -17,6 +17,11 @@ public class SmoothFollow : MonoBehaviour
     {
 	    thisTransform = transform;
 	}
+
+    public void SetTarget(GameObject target)
+    {
+        this.target = target;
+    }
 
 	void Update () 
     {

@@ -26,6 +26,7 @@ enum Commands
   PLAYER_UPGRADE = 2010;
   JOIN_GAME = 2011;
   CHANGE_NICKNAME = 2012;
+  FIND_ROOM = 2013;
 };
 
 enum Events
@@ -44,7 +45,7 @@ enum Events
   PLAYER_EXPERIENCE = 2012;
   PLAYER_LEVEL_UP = 2013;
   PLAYER_SCORE = 2014;
-  PROFILE_EXPERIENCE = 2015;
+  GAME_FINISHED = 2015;
 };
 
 enum PacketFlags

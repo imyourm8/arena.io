@@ -108,11 +108,17 @@
     <Compile Include="..\..\..\Assets\scripts\Common\CooldownManager.cs">
       <Link>Common\CooldownManager.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Experience.cs">
+      <Link>Common\Experience.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\OperationConditions.cs">
       <Link>Common\OperationConditions.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\OperationParameters.cs">
       <Link>Common\OperationParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\PlayerProfileExperience.cs">
+      <Link>Common\PlayerProfileExperience.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\ProtoExtractor.cs">
       <Link>Common\ProtoExtractor.cs</Link>

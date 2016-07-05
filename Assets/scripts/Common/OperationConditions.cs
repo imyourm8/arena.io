@@ -44,6 +44,7 @@ namespace TapCommon
             {(int)proto_common.Commands.PING, new OperationCondition(ClientState.Logged, 1, ExecutionMethod.AlwaysExecute)},
             {(int)proto_common.Commands.DAMAGE, new OperationCondition(ClientState.Logged|ClientState.InBattle, 1, ExecutionMethod.Queued)},
             {(int)proto_common.Commands.JOIN_GAME, new OperationCondition(ClientState.Logged|ClientState.SwitchGameServer, 1, ExecutionMethod.Queued)},
+            {(int)proto_common.Commands.CHANGE_NICKNAME, new OperationCondition(ClientState.Logged, 1, ExecutionMethod.AlwaysExecute)},
             {(int)proto_common.Commands.CHANGE_NICKNAME, new OperationCondition(ClientState.Logged, 1, ExecutionMethod.AlwaysExecute)}
 
 		};

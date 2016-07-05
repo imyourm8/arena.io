@@ -17,5 +17,9 @@ namespace arena.battle.GameModes
         { return proto_game.ExpBlocks.Small; }
 
         public virtual int GetMatchDuration() { return 0; }
+
+        public virtual void HandleEntityKill(Player killer, Entity victim) { }
+        public virtual int GetExpFor(Player player) { return 0; }
+        public virtual int GetCoinsFor(Player player) { return 0; }
     }
 }

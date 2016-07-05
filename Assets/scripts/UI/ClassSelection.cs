@@ -9,7 +9,7 @@ public class ClassSelection : MonoBehaviour
     public static string UlockEvent = "evt_unlock_class";
 
     [SerializeField]
-    private List<ClassHolder> classes;
+    private List<ClassHolder> classes = null;
 
 	void Start () 
     {

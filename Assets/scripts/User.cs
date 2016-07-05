@@ -1,11 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class User : TapCommon.Singleton<User> 
+public class User : TapCommon.Singleton<User>, PlayerExperience.IExpProvider
 {
-    public int Level { get; set; }
+    public User()
+    {
+        exp_ = new PlayerProfileExperience(this);
+    }
+
+    private PlayerProfileExperience exp_;
+    public PlayerProfileExperience ProfileExperience { get { return exp_; }}
     public int Coins { get; set; }
     public string Name { get; set; }
     public List<proto_profile.ClassInfo> Classes { get; set; }
     public proto_profile.PlayerClasses ClassSelected { get; set; }
+
+    int PlayerExperience.IExpProvider.Exp
+    {
+        get; set;
+    }
+
+    public int Level
+    {
+        get; set;
+    }
 }

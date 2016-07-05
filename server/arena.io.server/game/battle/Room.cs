@@ -9,7 +9,15 @@ namespace arena.battle
     class Room
     {
         private List<Player> players_ = new List<Player>();
-        private Game game_ = new Game(new GameModes.FFA());
+        private Game game_;
+        private bool closed_ = false;
+
+        public Room()
+        {
+            game_ = new Game(new GameModes.FFA(), this);
+        }
+
+        public bool Closed { get { return closed_; } }
 
         public int PlayersCount
         {
@@ -28,6 +36,12 @@ namespace arena.battle
             players_.Remove(player);
             game_.Remove(player);
             player.Room = null;
+        }
+
+        public void OnGameFinished()
+        {
+            closed_ = true;
+            game_.Close();
         }
     }
 }

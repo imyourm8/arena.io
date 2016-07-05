@@ -1,8 +1,6 @@
-﻿
-
-public static class PlayerProfileExperience 
+﻿public class PlayerProfileExperience : Experience
 {
-    public static int[] Experience = new int[]
+    public static int[] Values = new int[]
     {
         100, //1
         200, //2
@@ -15,4 +13,8 @@ public static class PlayerProfileExperience
         400, //9
         400 //10
     };
+
+    public PlayerProfileExperience(IExpProvider provider)
+        : base(provider, Values)
+    { }
 }

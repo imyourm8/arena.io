@@ -62,7 +62,17 @@ namespace arena.battle.GameModes
 
         public override int GetMatchDuration()
         {
-            return 60000;
+            return 15000;
+        }
+
+        public override int GetExpFor(Player player)
+        {
+            return 100;
+        }
+
+        public override int GetCoinsFor(Player player)
+        {
+            return 20;
         }
     }
 }

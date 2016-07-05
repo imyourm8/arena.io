@@ -6,6 +6,7 @@ namespace Attributes
         protected float value_;
         protected float percentValue_;
         protected float multiplier_;
+        protected float step_;
         protected T id_;
 
         public BaseAttribute()
@@ -25,6 +26,12 @@ namespace Attributes
         public BaseAttribute<T> SetMultiplier(float m)
         {
             multiplier_ = m;
+            return this;
+        }
+
+        public BaseAttribute<T> SetStep(float s)
+        {
+            step_ = s;
             return this;
         }
 
@@ -51,6 +58,11 @@ namespace Attributes
             get { return value_; }
         }
 
+        public float Step
+        {
+            get { return step_; }
+        }
+
         public float PercentValue
         {
             get { return percentValue_; }
@@ -63,5 +75,11 @@ namespace Attributes
 
         public virtual void CalculateValue ()
         {}
+
+        public void IncreaseByStep()
+        {
+            value_ += step_;
+            CalculateValue();
+        }
     }
 }

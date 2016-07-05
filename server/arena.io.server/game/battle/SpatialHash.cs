@@ -87,5 +87,15 @@ namespace arena.battle
         {
             return (x << 16) | y;
         }
+
+        public void Clear()
+        {
+            foreach (var c in hash_)
+            {
+                c.Value.Clear();
+            }
+
+            hash_.Clear();
+        }
     }
 }

@@ -9,13 +9,6 @@ namespace arena
 {
     public class ArenaController : MonoBehaviour 
     {
-        [System.Serializable]
-        struct PlayerLevelData
-        {
-            public AnimatedProgress progressBar;
-            public Text progressText;
-        }
-
         [Header("Arena Set-Up")]
         [SerializeField]
         private Joystick moveJoystick_ = null;
@@ -48,13 +41,14 @@ namespace arena
         private ExpBlocksDict blockPrefabs = null;
 
         [SerializeField]
-        private PlayerLevelData plrLevelData;
+        private ui.ArenaUIController arenaUI;
 
         [SerializeField]
-        private StatsPanel statsPanel = null;
+        private CustomizeHeroScreen customizeScreen;
 
         private Player player_ = null;
-
+        private long prevTime_ = 0;
+        private Vector2 prevPos;
         private Timer positionTimer_;
         private Dictionary<int, Entity> entities_ = new Dictionary<int, Entity>();
 
@@ -63,17 +57,19 @@ namespace arena
             GameApp.Instance.Client.OnServerEvent += HandleEvent;
             GameApp.Instance.Client.OnServerResponse += HandleResponse;
 
+            ResetState();
+        }
+
+        private void ResetState()
+        {
             foreach(var entity in entities_)
             {
-                entity.Value.gameObject.Detach();
-                Destroy(entity.Value.gameObject);
+                DestroyEntity(entity.Value, false);
             }
 
             entities_.Clear();
-
-            plrLevelData.progressBar.ShowSmooth();
-            plrLevelData.progressBar.Progress = 0.0f;
-            plrLevelData.progressText.text = "1";
+            customizeScreen.Show();
+            arenaUI.Hide();
         }
 
         private void OnGameJoin()
@@ -86,7 +82,9 @@ namespace arena
             positionTimer_.Start();
 
             player_ = CreatePlayer();
-            player_.Local = true;
+
+            arenaUI.Show();
+            customizeScreen.Hide();
         }
 
         private Player CreatePlayer()
@@ -124,7 +122,7 @@ namespace arena
 
     	private void Update () 
         {
-            if (player_ == null) return;
+            if (player_ == null || !player_.Local) return;
 
     	    Vector3 dir = Vector3.zero;
 
@@ -166,8 +164,6 @@ namespace arena
             return true;
         }
 
-        private long prevTime_ = 0;
-        private Vector2 prevPos;
         private void SendLocalPlayerMoved(bool stop = false)
         {
             proto_game.PlayerMove.Request moveReq = new proto_game.PlayerMove.Request();
@@ -235,6 +231,10 @@ namespace arena
             {
                 HandlePlayerExperience(evt);
             }
+            else if (evt.type == proto_common.Events.GAME_FINISHED)
+            {
+                HandleGameFinished(evt);
+            }
         }
 
         private void HandleResponse(proto_common.Response response)
@@ -247,9 +247,21 @@ namespace arena
         #endregion
 
         #region Network Handlers
+        private void HandleGameFinished(proto_common.Event evt)
+        {
+            var finishedResponse = evt.Extract<proto_game.GameFinished>(proto_common.Events.GAME_FINISHED);
+            User.Instance.Coins += finishedResponse.coins;
+            User.Instance.ProfileExperience.AddExperience(finishedResponse.exp);
+
+            ResetState();
+        }
+
         private void HandleJoinGame(proto_common.Response response)
         {
             var joinResponse = response.Extract<proto_game.JoinGame.Response>(proto_common.Commands.JOIN_GAME);
+
+            arenaUI.Init(joinResponse.time_left);
+            OnGameJoin();
         }
 
         private void HandlePlayerExperience(proto_common.Event evt)
@@ -257,9 +269,7 @@ namespace arena
             var expPacket = evt.Extract<proto_game.PlayerExperience>(proto_common.Events.PLAYER_EXPERIENCE);
 
             player_.PlayerExperience.AddExperience(expPacket.exp);
-
-            plrLevelData.progressBar.Progress = player_.PlayerExperience.ExpProgress;
-            plrLevelData.progressText.text = player_.Level.ToString();
+            arenaUI.DrawLevelData(player_.PlayerExperience);
         }
 
         private void HandlePlayerDisconnected(proto_common.Event evt)
@@ -333,6 +343,7 @@ namespace arena
                 player_.OnAttack += HandlePlayerAttack;
                 player_.OnStop += HandlePlayerStop;
                 player_.OnStartMove += HandlePlayerStartMove;
+                followCamera.SetTarget(playerToInited.gameObject);
                 followCamera.SnapNextTick();
             }
 
@@ -345,6 +356,11 @@ namespace arena
             playerToInited.Health = plrPacket.hp;
             playerToInited.ApplyStats(plrPacket.stats);
             AddEntity(playerToInited);
+
+            if (playerToInited == player_)
+            {
+                player_.Local = true;
+            }
         }
 
         private void CreateHpBar(Entity entity)
@@ -425,6 +441,10 @@ namespace arena
             Entity entity = GetEntity(unitDiePacket.guid);
             if (entity != null)
             {
+                if (entity == player_)
+                {
+                    customizeScreen.Show();
+                }
                 DestroyEntity(entity);
             }
         }
@@ -433,35 +453,31 @@ namespace arena
 
         private void HandleLevelUp(int level)
         {
-            statsPanel.AddPoints(1);
+            arenaUI.ShowUpgradePanel(1);
         }
 
         private void DestroyEntity(int who)
         {
             Entity entity = GetEntity(who);
-            if (entity != null && entity != player_)
+            if (entity != null)
             {
                 DestroyEntity(entity);
             }
-            else if (entity == player_)
+        }
+
+        private void DestroyEntity(Entity entity, bool rm = true)
+        {
+            entity.gameObject.ReturnPooled();
+            if (rm)
             {
-                loginScene.SwitchArenaView(false);
+                RemoveEntity(entity);
             }
         }
 
-        private void DestroyEntity(Entity entity)
+        private void RemoveEntity(Entity entity)
         {
             entity.OnRemove();
             entities_.Remove(entity.ID);
-
-            if (entity == player_)
-            {
-                loginScene.SwitchArenaView(false);
-            }
-            else
-            {
-                entity.gameObject.ReturnPooled();
-            }
         }
 
         private void OnDisable() 

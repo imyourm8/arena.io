@@ -14,18 +14,23 @@ namespace arena.battle
 
         public void AssignPlayerToRandomRoom(Player player)
         {
-            if (rooms_.Count == 0)
-            {
-                rooms_.Add(CreateRoom());
-            }
+            Room room = null;
 
-            foreach (var room in rooms_)
+            foreach (var r in rooms_)
             {
-                if (room.PlayersCount < MaxPlayersPerRoom)
+                if (!r.Closed && r.PlayersCount < MaxPlayersPerRoom)
                 {
-                    room.Add(player);
+                    room = r;
+                    break;
                 }
             }
+
+            if (room == null)
+            {
+                room = CreateRoom();
+            }
+
+            room.Add(player);
         }
 
         public void RemovePlayer(Player player)

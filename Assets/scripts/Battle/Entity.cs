@@ -252,7 +252,7 @@ public class Entity : MonoBehaviour
     {
         foreach(var s in stats.stats)
         {
-            stats_.Get(s.stat).SetValue(s.value).SetMultiplier(s.multiplier);
+            stats_.Get(s.stat).SetValue(s.value).SetStep(s.step);
         }
     }
 }

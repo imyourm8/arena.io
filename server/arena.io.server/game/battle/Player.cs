@@ -40,6 +40,19 @@ namespace arena.battle
         public player.PlayerController Controller
         { get; private set; }
 
+        public void AssignStats()
+        {
+            var entry = Factories.PlayerClassFactory.Instance.GetEntry(SelectedClass);
+            Stats.SetValue(proto_game.Stats.MaxHealth, entry.Health);
+            Stats.SetValue(proto_game.Stats.BulletDamage, entry.BulletDamage);
+            Stats.SetValue(proto_game.Stats.BulletSpeed, entry.BulletSpeed);
+            Stats.SetValue(proto_game.Stats.HealthRegen, entry.HealthRegen);
+            Stats.SetValue(proto_game.Stats.MovementSpeed, entry.MovementSpeed);
+            Stats.SetValue(proto_game.Stats.ReloadSpeed, entry.ReloadSpeed);
+            Stats.SetValue(proto_game.Stats.SkillDamage, entry.SkillDamage);
+            Stats.SetValue(proto_game.Stats.Armor, entry.Armor);
+        }
+
         public proto_game.PlayerAppeared GetAppearedPacket()
         {
             var appearData = new proto_game.PlayerAppeared();
@@ -51,6 +64,7 @@ namespace arena.battle
             appearData.position = new proto_game.Vector();
             appearData.position.x = X;
             appearData.position.y = Y;
+            appearData.@class = SelectedClass;
 
             return appearData;
         }
