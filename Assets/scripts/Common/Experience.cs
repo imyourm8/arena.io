@@ -25,8 +25,9 @@
         {
             int expNeed = expTable_[expProvider_.Level - 1];
 
-            while (expProvider_.Level - 1 <= expTable_.Length && expGenerated > 0)
+            while (expProvider_.Level - 1 < expTable_.Length && expGenerated > 0)
             {
+                expNeed = expTable_[expProvider_.Level - 1];
                 expProvider_.Exp += expGenerated;
                 expGenerated = expProvider_.Exp > expNeed ? expProvider_.Exp - expNeed : 0;
 
@@ -37,8 +38,6 @@
                     if (OnLevelUp != null)
                         OnLevelUp(expProvider_.Level);
                 }
-
-                expNeed = expTable_[expProvider_.Level - 1];
             }
         }
     }

@@ -36,13 +36,14 @@ namespace Attributes
             return value;
         }
 
-        public void SetValue(T id, float value)
+        public Attribute<T> SetValue(T id, float value)
         {
             Attribute<T> att = Get(id);
             if (att != null)
             {
                 att.SetValue(value);
             }
+            return att;
         }
 
         public IEnumerator<Attribute<T>> GetEnumerator()

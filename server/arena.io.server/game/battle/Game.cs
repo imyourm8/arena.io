@@ -16,6 +16,7 @@ namespace arena.battle
         private Area wholeArea_ = new Area(-45, 45, -45, 45);
         private const int MAX_EXP_BLOCKS = 800;
 
+        private HashSet<Player> joinedPlayers_ = new HashSet<Player>();
         private Dictionary<int, Entity> units_ = new Dictionary<int, Entity>();//use concurrent dictionary
         private List<Player> players_ = new List<Player>();
         private PoolFiber fiber_ = new PoolFiber();
@@ -107,6 +108,16 @@ namespace arena.battle
                 player.Controller.SendEvent(proto_common.Events.PLAYER_APPEARED, appearedPacket);
 
                 Add((Entity)player);
+                joinedPlayers_.Add(player);
+            });
+        }
+
+        private void PlayerDead(Player player)
+        {
+            fiber_.Enqueue(() =>
+            {
+                joinedPlayers_.Remove(player);
+                Remove((Entity)player);
             });
         }
 
@@ -115,6 +126,7 @@ namespace arena.battle
             fiber_.Enqueue(() =>
             {
                 players_.Remove(player);
+                joinedPlayers_.Remove(player);
                 player.Game = null;
                 Remove((Entity)player);
 
@@ -171,7 +183,7 @@ namespace arena.battle
 
                     if (target is Player)
                     {
-                        Remove(target as Player);
+                        PlayerDead(target as Player);
                         expGenerated /= 10;
                     }
                     else
@@ -220,7 +232,7 @@ namespace arena.battle
 
         private void SendPlayerStatuses()
         {
-            foreach (var player in players_)
+            foreach (var player in joinedPlayers_)
             {
                 if (Math.Abs(player.HP - player.Stats.GetFinValue(proto_game.Stats.MaxHealth)) > 0.001f) //make fields as classes to utilize message packing
                     Broadcast(proto_common.Events.PLAYER_STATUS_CHANGED, player.GetStatusChanged());
@@ -269,24 +281,26 @@ namespace arena.battle
             {
                 finishPacket.exp = mode_.GetExpFor(player);
                 finishPacket.coins = mode_.GetCoinsFor(player);
+                //apply new data to player's profile 
+                player.Profile.AddExperience(finishPacket.exp);
+                player.Profile.AddCoins(finishPacket.coins);
+                player.Controller.SaveToDB();
+                //send data
                 player.Controller.SendEvent(proto_common.Events.GAME_FINISHED, finishPacket);
                 //kick
                 Remove(player);
-            }
+            }  
 
             room_.OnGameFinished();
         }
 
         public void Close()
         {
-            fiber_.Enqueue(() =>
-                {
-                    fiber_.Dispose();
-                    units_.Clear();
-                    players_.Clear();
-                    mode_ = null;
-                    map_.Clear();
-                });
+            players_.Clear();
+            fiber_.Dispose();
+            units_.Clear();
+            mode_ = null;
+            map_.Clear();
         }
     }
 }

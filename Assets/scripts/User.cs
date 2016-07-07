@@ -6,6 +6,7 @@ public class User : TapCommon.Singleton<User>, PlayerExperience.IExpProvider
     public User()
     {
         exp_ = new PlayerProfileExperience(this);
+        ClassSelected = proto_profile.PlayerClasses.Assault;
     }
 
     private PlayerProfileExperience exp_;

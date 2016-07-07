@@ -12,5 +12,6 @@ namespace arena.Database
     {
         void GetClasses(Database.QueryCallback cb);
         void ChangeNickname(string userID, string name, Database.NonQueryCallback cb);
+        void SaveProfile(player.Profile profile, Database.NonQueryCallback cb);
     }
 }

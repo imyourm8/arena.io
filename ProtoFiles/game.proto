@@ -98,9 +98,20 @@ message PlayerMove
 
 message FindRoom
 {
-  extend proto_common.Request
+  message Request 
   {
-    optional proto_game.FindRoom fnd_room_req = 2013;
+    extend proto_common.Request
+    {
+      optional proto_game.FindRoom.Request fnd_room_req = 2013;
+    }
+  }
+  
+  message Response 
+  {
+    extend proto_common.Response
+    {
+      optional proto_game.FindRoom.Response fnd_room_res = 2013;
+    }
   }
 }
 

@@ -11,11 +11,6 @@ namespace arena.battle
     {
         public PlayerClassEntry(IDataReader data)
         {
-            if (!data.Read())
-            {
-                return;
-            }
-
             @Class = helpers.Parsing.ParseEnum<proto_profile.PlayerClasses>((string)data["class"]);
             Price = (int)data["price"];
             MinLevel = (int)data["level_required"];

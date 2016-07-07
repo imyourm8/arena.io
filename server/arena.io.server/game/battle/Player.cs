@@ -11,24 +11,25 @@ namespace arena.battle
         private HashSet<Entity> visibleEntities_ = new HashSet<Entity>();
         private PlayerExperience exp_;
 
-        public Player(player.PlayerController controller)
+        public Player(player.PlayerController controller, player.Profile profile)
         {
             Controller = controller;
 
             Level = 1;
+            Profile = profile;
             exp_ = new PlayerExperience(this);
         }
 
-        public proto_profile.PlayerClasses SelectedClass
-        { get; set; }
+        public player.Profile Profile
+        { get; private set; }
 
-        public string UniqueID
+        public proto_profile.PlayerClasses SelectedClass
         { get; set; }
 
         public int Level
         { get; set; }
 
-        public string Name
+        public int Highscore
         { get; set; }
 
         public Room Room
@@ -43,21 +44,21 @@ namespace arena.battle
         public void AssignStats()
         {
             var entry = Factories.PlayerClassFactory.Instance.GetEntry(SelectedClass);
-            Stats.SetValue(proto_game.Stats.MaxHealth, entry.Health);
-            Stats.SetValue(proto_game.Stats.BulletDamage, entry.BulletDamage);
-            Stats.SetValue(proto_game.Stats.BulletSpeed, entry.BulletSpeed);
-            Stats.SetValue(proto_game.Stats.HealthRegen, entry.HealthRegen);
-            Stats.SetValue(proto_game.Stats.MovementSpeed, entry.MovementSpeed);
-            Stats.SetValue(proto_game.Stats.ReloadSpeed, entry.ReloadSpeed);
-            Stats.SetValue(proto_game.Stats.SkillDamage, entry.SkillDamage);
-            Stats.SetValue(proto_game.Stats.Armor, entry.Armor);
+            Stats.SetValue(proto_game.Stats.MaxHealth, entry.Health).SetStep(entry.HealthStep);
+            Stats.SetValue(proto_game.Stats.BulletDamage, entry.BulletDamage).SetStep(entry.BulletDamageStep);
+            Stats.SetValue(proto_game.Stats.BulletSpeed, entry.BulletSpeed).SetStep(entry.BulletSpeedStep);
+            Stats.SetValue(proto_game.Stats.HealthRegen, entry.HealthRegen).SetStep(entry.HealthRegenStep);
+            Stats.SetValue(proto_game.Stats.MovementSpeed, entry.MovementSpeed).SetStep(entry.MovementSpeedStep);
+            Stats.SetValue(proto_game.Stats.ReloadSpeed, entry.ReloadSpeed).SetStep(entry.ReloadSpeedStep * -1.0f);
+            Stats.SetValue(proto_game.Stats.SkillDamage, entry.SkillDamage).SetStep(entry.SkillDamageStep);
+            Stats.SetValue(proto_game.Stats.Armor, entry.Armor).SetStep(entry.ArmorStep);
         }
 
         public proto_game.PlayerAppeared GetAppearedPacket()
         {
             var appearData = new proto_game.PlayerAppeared();
 
-            appearData.name = Name;
+            appearData.name = Profile.Name;
             appearData.guid = ID;
             appearData.hp = HP;
             appearData.stats = GetStatsPacket();

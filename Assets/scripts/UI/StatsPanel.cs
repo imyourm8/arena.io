@@ -8,7 +8,7 @@ using DG.Tweening;
 public class StatsPanel : MonoBehaviour 
 {
     [SerializeField]
-    private List<StatControl> stats;
+    private List<StatControl> stats = null;
 
     [SerializeField]
     private float hideDelay = 2.0f;
@@ -20,7 +20,7 @@ public class StatsPanel : MonoBehaviour
     private Ease hideEase = Ease.OutCubic;
 
     [SerializeField]
-    private CanvasGroup canvasGroup;
+    private CanvasGroup canvasGroup = null;
 
     private Tweener hideTweener_;
     private int statsPointsLeft_ = 0;
@@ -29,11 +29,21 @@ public class StatsPanel : MonoBehaviour
     {
         foreach(var control in stats)
         {
-            control.OnStatUpgrade = RemovePoint;
+            control.OnStatUpgrade = HandleStatUpgrade;
         }
-
         SetHidden(false);
 	}
+
+    public Player Player
+    { get; set; }
+
+    public void Reset()
+    {
+        foreach(var control in stats)
+        {
+            control.Reset();
+        }
+    }
 
     public void AddPoints(int value)
     {
@@ -41,10 +51,11 @@ public class StatsPanel : MonoBehaviour
         RefreshState();
     }
 
-    private void RemovePoint()
+    private void HandleStatUpgrade(proto_game.Stats stat)
     {
         statsPointsLeft_--;
         RefreshState();
+        Player.Stats.Get(stat).IncreaseByStep();
     }
 
     private void SetHidden(bool animated)

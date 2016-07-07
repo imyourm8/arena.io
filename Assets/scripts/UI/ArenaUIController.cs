@@ -21,13 +21,16 @@ namespace ui {
         [SerializeField]
         private StatsPanel upgradePanel = null;
 
-        public void Init(int timerTime)
+        public void Init(int timerTime, Player player)
         {
             timer.Init(timerTime);
 
             plrLevelData.progressBar.ShowSmooth();
             plrLevelData.progressBar.Progress = 0.0f;
             plrLevelData.progressText.text = "1";
+
+            upgradePanel.Reset();
+            upgradePanel.Player = player;
         }
 
         public void ShowUpgradePanel(int points)

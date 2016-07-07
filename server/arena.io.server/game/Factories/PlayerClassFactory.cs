@@ -25,11 +25,11 @@ namespace arena.Factories
                 return;
             }
 
-            do
+            while(data.Read())
             {
                 var entry = new PlayerClassEntry(data);
                 classes_.Add(entry.@Class, entry);
-            } while (data.Read());
+            };
         }
 
         public PlayerClassEntry GetEntry(proto_profile.PlayerClasses cls)

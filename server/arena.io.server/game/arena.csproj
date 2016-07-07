@@ -190,6 +190,7 @@
     <Compile Include="player\OperationHandler.cs" />
     <Compile Include="player\PlayerConnection.cs" />
     <Compile Include="player\PlayerController.cs" />
+    <Compile Include="player\Profile.cs" />
     <Compile Include="player\RequestHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

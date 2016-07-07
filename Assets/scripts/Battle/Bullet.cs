@@ -13,11 +13,8 @@ public class Bullet : MonoBehaviour
     private int collsionCount_ = 0;
     private float damage_ = 0;
 
-    private const float MaxDistanceToTravel = 12;
+    private const float timeAlive = 1.4f;
     private Tweener moveTween_;
-
-    [SerializeField]
-    private Collider2D collider_ = null;
 
     public void Init(Entity owner, Vector3 direction, float speed, Vector3 spawnPoint, float damage)
     {
@@ -30,11 +27,12 @@ public class Bullet : MonoBehaviour
         collsionCount_ = 0;
         damage_ = damage;
 
+        var MaxDistanceToTravel = timeAlive * speed_;
         var move = direction_;
         move.x *= MaxDistanceToTravel;
         move.y *= MaxDistanceToTravel;
 
-        moveTween_ = transform.DOLocalMove(move+transform.localPosition, MaxDistanceToTravel / speed);
+        moveTween_ = transform.DOLocalMove(move+transform.localPosition, timeAlive);
         moveTween_.SetEase(Ease.InSine);
         moveTween_.OnComplete(()=>
         {

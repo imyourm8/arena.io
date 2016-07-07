@@ -17,9 +17,6 @@ namespace arena
         private Joystick shootJoystick_ = null;
 
         [SerializeField]
-        private GameObject playerPrefab = null;
-
-        [SerializeField]
         private GameObject bulletPrefab = null;
 
         [SerializeField]
@@ -41,10 +38,13 @@ namespace arena
         private ExpBlocksDict blockPrefabs = null;
 
         [SerializeField]
-        private ui.ArenaUIController arenaUI;
+        private PlayerClassesDict playerClassesPrefabs = null;
 
         [SerializeField]
-        private CustomizeHeroScreen customizeScreen;
+        private ui.ArenaUIController arenaUI = null;
+
+        [SerializeField]
+        private CustomizeHeroScreen customizeScreen = null;
 
         private Player player_ = null;
         private long prevTime_ = 0;
@@ -67,9 +67,17 @@ namespace arena
                 DestroyEntity(entity.Value, false);
             }
 
+            player_ = null;
             entities_.Clear();
             customizeScreen.Show();
             arenaUI.Hide();
+
+            if (positionTimer_ != null)
+            {
+                positionTimer_.Stop();
+                positionTimer_.Dispose();
+                positionTimer_ = null;
+            }
         }
 
         private void OnGameJoin()
@@ -81,18 +89,19 @@ namespace arena
             };
             positionTimer_.Start();
 
-            player_ = CreatePlayer();
+            player_ = CreatePlayer(User.Instance.ClassSelected);
 
             arenaUI.Show();
             customizeScreen.Hide();
         }
 
-        private Player CreatePlayer()
+        private Player CreatePlayer(proto_profile.PlayerClasses cl)
         {
-            var player = playerPrefab.GetPooled();
+            var player = playerClassesPrefabs[cl].GetPooled();
 
             var playerScript = player.GetComponent<Player>();
             playerScript.PlayerExperience.OnLevelUp = HandleLevelUp;
+            playerScript.Local = false;
 
             var nameObj = nicknamePrefab.GetPooled();
             playerScript.NicknameText = nameObj.GetComponent<Text>();
@@ -147,20 +156,22 @@ namespace arena
 
         private bool NotifyServerAboutPlayerPosition()
         {
-            if (player_.Moved) 
+            if (player_ != null)
             {
-                SendLocalPlayerMoved();
+                if (player_.Moved) 
+                {
+                    SendLocalPlayerMoved();
+                }
+
+                if (player_.Rotated)
+                {
+                    proto_game.PlayerTurn turnReq = new proto_game.PlayerTurn();
+                    turnReq.angle = player_.Rotation;
+                    turnReq.guid = player_.ID;
+
+                    GameApp.Instance.Client.Send (turnReq, proto_common.Commands.TURN);
+                }
             }
-
-            if (player_.Rotated)
-            {
-                proto_game.PlayerTurn turnReq = new proto_game.PlayerTurn();
-                turnReq.angle = player_.Rotation;
-                turnReq.guid = player_.ID;
-
-                GameApp.Instance.Client.Send (turnReq, proto_common.Commands.TURN);
-            }
-
             return true;
         }
 
@@ -260,8 +271,9 @@ namespace arena
         {
             var joinResponse = response.Extract<proto_game.JoinGame.Response>(proto_common.Commands.JOIN_GAME);
 
-            arenaUI.Init(joinResponse.time_left);
+            //onGameJoin will create player script
             OnGameJoin();
+            arenaUI.Init(joinResponse.time_left, player_);
         }
 
         private void HandlePlayerExperience(proto_common.Event evt)
@@ -335,7 +347,7 @@ namespace arena
 
             if (!plrPacket.local)
             {
-                playerToInited = CreatePlayer();
+                playerToInited = CreatePlayer(plrPacket.@class);
             }
             else 
             {
@@ -468,6 +480,7 @@ namespace arena
         private void DestroyEntity(Entity entity, bool rm = true)
         {
             entity.gameObject.ReturnPooled();
+
             if (rm)
             {
                 RemoveEntity(entity);

@@ -42,6 +42,11 @@ namespace arena.battle
         {
             closed_ = true;
             game_.Close();
+
+            foreach(var player in players_)
+            {
+                player.Controller.OnGameFinished();
+            }
         }
     }
 }

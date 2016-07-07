@@ -86,7 +86,10 @@ namespace arena.player
 
         public void HandleRequest(RequestDataType request)
         {
-            bool result = HandleRequestInternal(request);
+            GetActionInvoker().Execute(() =>
+            {
+                bool result = HandleRequestInternal(request);
+            });
         }
 
         private bool HandleRequestInternal(RequestDataType request)

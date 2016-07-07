@@ -18,25 +18,59 @@ public class ClassHolder : MonoBehaviour
     [SerializeField]
     private GameObject disabledOverlay = null;
 
-    private Events.Slot<string> evtSlot_;
+    [SerializeField]
+    private Text unlockPrice = null;
 
-    public void Start()
+    private Events.Slot<string> evtSlot_;
+    private proto_profile.ClassInfo info_;
+
+    public proto_profile.PlayerClasses Class
+    { get { return playerClass; }}
+
+    void Awake()
     {
+        evtSlot_ = new Events.Slot<string>(Events.GlobalNotifier.Instance);
+        evtSlot_.SubscribeOn(ClassSelection.UlockEvent, HandleUnlock);
+
         if (unlocked)
         {
             SetUnlocked();
+        } 
+    }
+
+    void Start()
+    {
+        unlockPrice.text = info_.coinsPrice.ToString();
+    }
+
+    public void Refresh()
+    {
+        info_ = User.Instance.Classes.Find((proto_profile.ClassInfo info)=>
+        {
+            return info.@class == Class;
+        });
+
+        if (info_ != null)
+        {
+            if (info_.levelRequired <= User.Instance.Level)
+            {
+                SetUnlocked();
+            }
         }
 
-        evtSlot_ = new Events.Slot<string>(Events.GlobalNotifier.Instance);
-        evtSlot_.SubscribeOn(ClassSelection.UlockEvent, HandleUnlock);  
-
-        if (playerClass == User.Instance.ClassSelected)
+        if (Class == User.Instance.ClassSelected)
         {
-            StartCoroutine(SwitchOn());
+            SwitchOn();
         }
     }
 
-    private IEnumerator SwitchOn()
+    private void SwitchOn()
+    {
+        //StartCoroutine(SwitchOnInternal());
+        GetComponent<Toggle>().isOn = true;
+    }
+
+    private IEnumerator SwitchOnInternal()
     {
         yield return null;
         GetComponent<Toggle>().isOn = true;

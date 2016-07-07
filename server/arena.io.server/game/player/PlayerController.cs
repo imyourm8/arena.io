@@ -5,15 +5,19 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Data;
+
 using ExitGames.Concurrency.Fibers;
+using ExitGames.Logging;
+using ExitGames.Logging.Log4Net;
+
 using arena.Database;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+
 
 namespace arena.player
 {
     class PlayerController : RequestHandler, player.IActionInvoker
     {
+        private static ILogger log = LogManager.GetCurrentClassLogger();
         private TapCommon.ClientState state_ = TapCommon.ClientState.Unlogged;
         private battle.Player player_;
         private PoolFiber fiber_ = new PoolFiber();
@@ -88,6 +92,22 @@ namespace arena.player
             fiber_.Stop();
         }
 
+        public void OnGameFinished()
+        {
+            state_ &= ~TapCommon.ClientState.InBattle;
+        }
+
+        public void SaveToDB()
+        {
+            Database.Database.Instance.GetPLayerDB().SaveProfile(player_.Profile, (QueryResult result) =>
+                {
+                    if (result == QueryResult.Fail)
+                    {
+                        log.ErrorFormat("Failed saving of profile with id {0}", player_.Profile.UniqueID);
+                    }
+                });
+        }
+
         #region Request Handlers
         public override bool FilterRequest(proto_common.Request request)
         {
@@ -130,9 +150,9 @@ namespace arena.player
             var name = changeNickReq.name.Trim();
             var nickResponse = new proto_profile.ChangeNickname.Response();
 
-            if (name != player_.Name)
+            if (name != player_.Profile.Name)
             {
-                Database.Database.Instance.GetPLayerDB().ChangeNickname(player_.UniqueID, name, (QueryResult result) =>
+                Database.Database.Instance.GetPLayerDB().ChangeNickname(player_.Profile.UniqueID, name, (QueryResult result) =>
                     {
                         if (result == QueryResult.Success)
                         {
@@ -184,34 +204,23 @@ namespace arena.player
             var authRes = new proto_auth.Auth.Response();
             loginInProcess_ = false;
 
-            player_ = new battle.Player(this);
-            player_.Name = (string)data["name"];
-            player_.UniqueID = (string)data["authUserID"];
+            var profile = new Profile(data);
+            player_ = new battle.Player(this, profile);
 
-            proto_profile.UserInfo info = new proto_profile.UserInfo();
-            info.coins = (int)data["coins"];
-            info.level = (int)data["level"];
-            info.name = player_.Name;
+            var info = player_.Profile.GetInfoPacket();
+            authRes.info = info;
 
-            var reader = new JsonTextReader(new StringReader((string)data["unlocked_classes"]));
-            HashSet<proto_profile.PlayerClasses> unclockedClasses = new HashSet<proto_profile.PlayerClasses>();
-            while (reader.Read())
-            {
-                if (reader.TokenType == JsonToken.StartArray || reader.TokenType == JsonToken.EndArray) continue;
-                //json looks like array of classes ids
-                unclockedClasses.Add(helpers.Parsing.ParseEnum<proto_profile.PlayerClasses>((string)reader.Value));
-            }
-
+            var unlockedClasses = player_.Profile.GetUnlockedClasses();
             foreach (var entry in Factories.PlayerClassFactory.Instance.GetAllClasses())
             {
                 proto_profile.ClassInfo clInfo = new proto_profile.ClassInfo();
                 clInfo.@class = entry.Value.Class;
                 clInfo.coinsPrice = entry.Value.Price;
                 clInfo.levelRequired = entry.Value.MinLevel;
-                clInfo.unlocked = unclockedClasses.Contains(clInfo.@class);
+                clInfo.unlocked = unlockedClasses.Contains(clInfo.@class);
+                info.classesInfo.Add(clInfo);
             }
 
-            authRes.info = info;
             state_ = TapCommon.ClientState.Logged;
             SendResponse(proto_common.Commands.AUTH, authRes);
         }
@@ -232,6 +241,9 @@ namespace arena.player
 
         private void HandleFindRoom(proto_common.Request request)
         {
+            var response = new proto_game.FindRoom.Response();
+            SendResponse(proto_common.Commands.FIND_ROOM, response);
+
             battle.RoomManager.Instance.AssignPlayerToRandomRoom(player_);
 
             state_ |= TapCommon.ClientState.SwitchGameServer;

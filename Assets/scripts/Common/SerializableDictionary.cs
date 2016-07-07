@@ -203,3 +203,6 @@ using proto_game;
 
     [Serializable]
     public class ExpBlocksDict : SerializableDictionaryBase<proto_game.ExpBlocks, GameObject> { }
+
+    [Serializable]
+    public class PlayerClassesDict : SerializableDictionaryBase<proto_profile.PlayerClasses, GameObject> { }

@@ -19,6 +19,24 @@ public class ClassSelection : MonoBehaviour
         }
 	}
 
+    public void Show()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void Hide()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void Refresh()
+    {
+        foreach(var t in classes)
+        {
+            t.Refresh();
+        }
+    }
+
     private void HandleSelect(proto_profile.PlayerClasses cl)
     {
         User.Instance.ClassSelected = cl;
