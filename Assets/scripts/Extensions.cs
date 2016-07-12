@@ -58,6 +58,20 @@ public static class Extensions
     {
         return obj.transform.parent == null ? null : obj.transform.parent.gameObject;
     }
+
+    public static void Map(this GameObject obj, Action<GameObject> functor)
+    {   
+        List<GameObject> toMap = ListPool<GameObject>.Get();
+        var tran = obj.transform;
+        int count = tran.childCount;
+        for(var i = 0; i < count; ++i)
+        {
+            toMap.Add(tran.GetChild(i).gameObject);
+        }
+        for (var i = 0; i < count; ++i)
+            functor(toMap[i]);
+        ListPool<GameObject>.Release(toMap);
+    }
     /*
     public static void DetachChildren(this GameObject obj)
     {

@@ -133,6 +133,9 @@ namespace proto_common
       [global::ProtoBuf.ProtoEnum(Name=@"PING", Value=12)]
       PING = 12,
             
+      [global::ProtoBuf.ProtoEnum(Name=@"ADMIN_AUTH", Value=13)]
+      ADMIN_AUTH = 13,
+            
       [global::ProtoBuf.ProtoEnum(Name=@"ENTER_AREA", Value=2001)]
       ENTER_AREA = 2001,
             

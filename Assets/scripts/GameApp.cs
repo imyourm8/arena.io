@@ -6,6 +6,11 @@ using DG.Tweening;
 
 public class GameApp : SingletonMonobehaviour<GameApp> 
 {
+    public static string ConnectToServerSuccess = "connect_to_srv_evt";
+
+    [SerializeField]
+    private LoginSceneController loginUI;
+
 	private readonly DateTime Jan1St1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 	private proto_profile.UserInfo userInfo_;
 	private ServerClient client_;
@@ -22,14 +27,16 @@ public class GameApp : SingletonMonobehaviour<GameApp>
     
 	void Start () 
     {
-        //string ip = "127.0.0.1:4530";
-        string ip = "46.188.22.12:4530";
+        string ip = "127.0.0.1:4530";
+        //string ip = "46.188.22.12:4530";
 		client_ = new ServerClient (ip, ExitGames.Client.Photon.ConnectionProtocol.Tcp);
 		client_.OnStatusChange += HandleOnStatusChange;
 		timeSync_ = new ServerTimeSync ();
 
         nextBytesReceivedUpdate_ = ClientTimeMs() + 1000;
         DOTween.SetTweensCapacity(1500, 10);
+
+        client_.Connect();
 	}
 
 	void HandleOnStatusChange (ExitGames.Client.Photon.StatusCode status)
@@ -37,6 +44,8 @@ public class GameApp : SingletonMonobehaviour<GameApp>
 		if (status == ExitGames.Client.Photon.StatusCode.Connect)
 		{
 			timeSync_.Start();
+            Events.GlobalNotifier.Instance.Trigger(ConnectToServerSuccess);
+            loginUI.ShowUI();
 		}
 	}
 

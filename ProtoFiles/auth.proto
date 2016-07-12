@@ -44,3 +44,26 @@ message Auth {
 		}
 	}
 }
+
+message AdminAuth
+{
+  message Request
+  {
+    required string name = 1;
+    
+    extend proto_common.Request 
+		{
+			optional proto_auth.AdminAuth.Request adm_auth_req = 13;
+		}
+  }
+
+  message Response 
+	{
+    required proto_profile.UserInfo info = 1;
+  
+		extend proto_common.Response 
+		{
+			optional proto_auth.AdminAuth.Response adm_auth_res = 13;
+		}
+	}
+}

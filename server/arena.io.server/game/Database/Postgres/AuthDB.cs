@@ -49,5 +49,46 @@ namespace arena.Database.Postgres
                 (this as IAuthDB).LoginUser(authEntry, cb);
             }
         }
+
+
+        void IAuthDB.LoginUserByNickname(string name, Database.QueryCallback cb)
+        {
+            using (var conn = new NpgsqlConnection(DatabaseConnectionDefines.PostgresParams))
+            {
+                conn.Open();
+                using (var cmd = new NpgsqlCommand("SELECT * FROM users WHERE name = @name", conn))
+                {
+                    cmd.Parameters.AddWithValue("name", name);
+                    var reader = cmd.ExecuteReader();
+
+                    if (reader != null)
+                    {
+                        cb(QueryResult.Success, reader);
+                    }
+                }
+            }
+        }
+
+
+        void IAuthDB.CreateUserWithNickname(string name, Database.QueryCallback cb)
+        {
+            int result = 0;
+
+            using (var conn = new NpgsqlConnection(DatabaseConnectionDefines.PostgresParams))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand("INSERT INTO users (name) VALUES (@name)", conn))
+                {
+                    cmd.Parameters.AddWithValue("name", name);
+                    result = cmd.ExecuteNonQuery();
+                }
+            }
+
+            if (result == 1)
+            {
+                (this as IAuthDB).LoginUserByNickname(name, cb);
+            }
+        }
     }
 }

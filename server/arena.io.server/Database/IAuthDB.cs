@@ -14,6 +14,8 @@ namespace arena.Database
     interface IAuthDB
     {        
         void LoginUser(AuthEntry authEntry, Database.QueryCallback cb);
+        void LoginUserByNickname(string authEntry, Database.QueryCallback cb);
         void CreateUser(AuthEntry authEntry, Database.QueryCallback cb);
+        void CreateUserWithNickname(string name, Database.QueryCallback cb);
     }
 }

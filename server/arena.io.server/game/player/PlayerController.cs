@@ -35,6 +35,7 @@ namespace arena.player
             AddOperationHandler(proto_common.Commands.CHANGE_NICKNAME, new OperationHandler(HandleChangeNickname));
             AddOperationHandler(proto_common.Commands.JOIN_GAME, new OperationHandler(HandleJoinGame));
             AddOperationHandler(proto_common.Commands.FIND_ROOM, new OperationHandler(HandleFindRoom));
+            AddOperationHandler(proto_common.Commands.ADMIN_AUTH, new OperationHandler(HandleAdminAuth));
 
             fiber_.Start();
         }
@@ -296,6 +297,39 @@ namespace arena.player
             player_.Game.UnitDamaged(player_, damageRequest);
         }
 
+        #endregion
+
+        #region Admin Handlers
+        private void HandleAdminAuth(proto_common.Request request)
+        {
+            if (loginInProcess_)
+            {
+                return;
+            }
+
+            var authReq =
+                ProtoBuf.Extensible.GetValue<proto_auth.AdminAuth.Request>(request, (int)proto_common.Commands.ADMIN_AUTH);
+
+            var authEntry = new AuthEntry();
+            authEntry.authUserID = authReq.name;
+            currentAuthEntry_ = authEntry;
+
+            Database.Database.Instance.GetAuthDB().LoginUserByNickname(authReq.name, HandleAdminDBLogin);
+            loginInProcess_ = true;
+        }
+
+        private void HandleAdminDBLogin(QueryResult result, IDataReader data)
+        {
+            if (data.Read())
+            {
+                LoadUserFromDB(data);
+            }
+            else
+            {
+                //create user if no one found
+                Database.Database.Instance.GetAuthDB().CreateUserWithNickname(currentAuthEntry_.authUserID, HandleCreateUser);
+            }
+        }
         #endregion
 
         void IActionInvoker.Execute(Action action)

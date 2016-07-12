@@ -16,41 +16,90 @@ public class LoginSceneController : MonoBehaviour
     [SerializeField]
     private GameObject nicknamePanel;
 
-	public Button okBtn;
-	public Text nickname;
-    public GameObject arena_;
+    [SerializeField]
+    private GameObject loginPanel;
+
+    [SerializeField]
+    private Button fbLogin;
+
+    [SerializeField]
+    private Text nicknameLoginField;
+
+    [SerializeField]
+    private Button nicknameLogin;
+
+    [SerializeField]
+    private Button changeNicknameBtn; 
+
+    [SerializeField]
+	private Text nickname;
+
+    [SerializeField]
+    private GameObject arena_;
+
+    private Events.Slot<string> evtSlot_;
 
 	void Start () 
-    {
-		Debug.Log ("Started login scene");      
+    {      
+        evtSlot_ = new Events.Slot<string>(Events.GlobalNotifier.Instance);
+        evtSlot_.SubscribeOn(GameApp.ConnectToServerSuccess, HandleServerConnection);
 
-        if (!FB.IsInitialized) {
+        gameObject.SetActive(false);
+	}
+
+    public void ShowUI()
+    {
+        gameObject.SetActive(true);
+    }
+
+    private void HandleServerConnection(Events.IEvent<string> evt)
+    {
+        if (!FB.IsInitialized) 
+        {
             // Initialize the Facebook SDK
             FB.Init("559037884173991", onInitComplete: InitCallback);
-        } else {
+        } else 
+        {
             // Already initialized, signal an app activation App Event
-            //FB.ActivateApp();
+            FB.ActivateApp();
         }
-	}
+
+        GameApp.Instance.Client.OnServerResponse += HandleResponse;
+        GameApp.Instance.Client.OnStatusChange += HandleOnStatusChange;
+        Prepare();
+    }
 
     private void Prepare()
     {
-        okBtn.interactable = true;
+        loginPanel.SetActive(true);
+        nicknamePanel.SetActive(false);
+        fbLogin.interactable = FB.IsInitialized;
+        changeNicknameBtn.interactable = true;
     }
 
     private void InitCallback ()
     {
-        if (FB.IsInitialized) {
-            // Signal an app activation App Event
+        if (FB.IsInitialized) 
+        {
             FB.ActivateApp();
-            // Continue with Facebook SDK
-            FB.LogInWithReadPermissions (
+            fbLogin.interactable = true;
+        } else 
+        {
+            Debug.Log("Failed to Initialize the Facebook SDK");
+        }
+    }
+
+    public void LoginWithNickname()
+    {
+        TryLoginWithNickname();
+    }
+
+    public void LoginWithFB()
+    {
+        FB.LogInWithReadPermissions (
                 new List<string>() {"public_profile", "email", "user_friends"},
                 AuthCallback
             );
-        } else {
-            Debug.Log("Failed to Initialize the Facebook SDK");
-        }
     }
 
     private void AuthCallback(ILoginResult result)
@@ -61,26 +110,34 @@ public class LoginSceneController : MonoBehaviour
             var aToken = Facebook.Unity.AccessToken.CurrentAccessToken;
             // Print current access token's User ID
             Debug.Log(aToken.UserId);
-            TryLogin();
+            TryLoginWithFB();
         } else
         {
             Debug.Log("User cancelled login");
         }
     }
 
-	void TryLogin () 
+    void TryLoginWithNickname () 
     {
-        GameApp.Instance.Client.OnServerResponse += HandleResponse;
-        GameApp.Instance.Client.OnStatusChange += HandleOnStatusChange;
-		Debug.Log ("Login clicked");
-
         if (GameApp.Instance.Client.Status == ExitGames.Client.Photon.StatusCode.Connect)
         {
-            Auth();
+            AuthWithNickname();
         }
-        else if (!GameApp.Instance.Client.Connect ()) 
+        else 
         {
-			Debug.LogError("No connection to Internet");
+            Debug.LogError("No connection to server!");
+        }
+    }
+
+	void TryLoginWithFB () 
+    {
+        if (GameApp.Instance.Client.Status == ExitGames.Client.Photon.StatusCode.Connect)
+        {
+            AuthWithFB();
+        }
+        else 
+        {
+			Debug.LogError("No connection to server!");
 		}
 	}
 
@@ -88,7 +145,7 @@ public class LoginSceneController : MonoBehaviour
 	{
 		if (status == ExitGames.Client.Photon.StatusCode.Connect) 
         {
-			Auth();
+			AuthWithFB();
 		}
         else if (status == ExitGames.Client.Photon.StatusCode.Disconnect)
         {
@@ -96,7 +153,15 @@ public class LoginSceneController : MonoBehaviour
         }
 	}
 
-	private void Auth () 
+    private void AuthWithNickname()
+    {
+        proto_auth.AdminAuth.Request authReq = new proto_auth.AdminAuth.Request ();
+        authReq.name = nicknameLoginField.text;
+
+        GameApp.Instance.Client.Send(authReq, proto_common.Commands.ADMIN_AUTH);
+    }
+
+	private void AuthWithFB () 
     {
 		proto_auth.Auth.Request authReq = new proto_auth.Auth.Request ();
 		proto_auth.Auth.Request.OAuth oauth = new proto_auth.Auth.Request.OAuth ();
@@ -125,6 +190,10 @@ public class LoginSceneController : MonoBehaviour
         {
             HandleNicknameChanged(response);
         }
+        else if (response.type == Commands.ADMIN_AUTH)
+        {
+            HandleAdminAuth(response);
+        }
 	}
 
     private void HandleNicknameChanged(proto_common.Response response)
@@ -136,32 +205,45 @@ public class LoginSceneController : MonoBehaviour
         }
     }
 
+    private void HandleAdminAuth(proto_common.Response response) 
+    {
+        var authRes = 
+            ProtoBuf.Extensible.GetValue<proto_auth.AdminAuth.Response> (response, (int)proto_common.Commands.ADMIN_AUTH);
+
+        LoadUser(authRes.info);
+    }
+
     private void HandleAuth(proto_common.Response response) 
     {
 		var authRes = 
 			ProtoBuf.Extensible.GetValue<proto_auth.Auth.Response> (response, (int)proto_common.Commands.AUTH);
 
-        User.Instance.Coins = authRes.info.coins;
-        User.Instance.Classes = authRes.info.classesInfo;
-        User.Instance.Name = authRes.info.name;
-        User.Instance.Level = authRes.info.level;
+        LoadUser(authRes.info);
+	}
 
-        if (authRes.info.name == "" || authRes.info.name == null)
+    private void LoadUser(proto_profile.UserInfo info)
+    {
+        User.Instance.Coins = info.coins;
+        User.Instance.Classes = info.classesInfo;
+        User.Instance.Name = info.name;
+        User.Instance.Level = info.level;
+
+        if (info.name == "" || info.name == null)
         {
             //create nickname first
             nicknamePanel.SetActive(true);
 
-            okBtn.onClick.AddListener (OnNicknameChange);
+            nicknameLogin.onClick.AddListener (OnNicknameChange);
         }
         else 
         {
             ShowArena();
         }
-	}
+    }
 
     void OnNicknameChange()
     {
-        okBtn.interactable = false;
+        nicknameLogin.interactable = false;
 
         var req = new proto_profile.ChangeNickname.Request();
         req.name = nickname.text;

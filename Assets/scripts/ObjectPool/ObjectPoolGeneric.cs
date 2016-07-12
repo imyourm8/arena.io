@@ -25,6 +25,14 @@ namespace ObjectPool
 		[SerializeField]
 		private bool fixedSize_ = false;
 
+        public ObjectPoolGeneric(bool init = false)
+        {
+            if (init)
+            {
+                Init(1, 100, false);
+            }
+        }
+
 		private void IncreasePoolSize(int addCount)
 		{
 			if (addCount < 1)

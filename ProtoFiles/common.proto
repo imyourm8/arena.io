@@ -16,6 +16,7 @@ enum Commands
 	AUTH = 10;
   SIMULATE_BATTLE = 11;
   PING = 12;
+  ADMIN_AUTH = 13;
   ENTER_AREA = 2001;
   
   DAMAGE = 2004;
