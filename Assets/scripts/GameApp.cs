@@ -22,8 +22,8 @@ public class GameApp : SingletonMonobehaviour<GameApp>
     
 	void Start () 
     {
-        string ip = "127.0.0.1:4530";
-        //string ip = "192.168.0.100:4530";
+        //string ip = "127.0.0.1:4530";
+        string ip = "46.188.22.12:4530";
 		client_ = new ServerClient (ip, ExitGames.Client.Photon.ConnectionProtocol.Tcp);
 		client_.OnStatusChange += HandleOnStatusChange;
 		timeSync_ = new ServerTimeSync ();
