@@ -1,0 +1,212 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.5.3
+-- Dumped by pg_dump version 9.5.3
+
+-- Started on 2016-07-12 17:11:28
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 1 (class 3079 OID 12355)
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- TOC entry 2140 (class 0 OID 0)
+-- Dependencies: 1
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 183 (class 1259 OID 16566)
+-- Name: classes; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE classes (
+    price integer DEFAULT 0 NOT NULL,
+    level_required integer DEFAULT 0 NOT NULL,
+    class text,
+    health real DEFAULT 0 NOT NULL,
+    health_step real DEFAULT 0 NOT NULL,
+    health_regen real DEFAULT 0 NOT NULL,
+    health_regen_step real DEFAULT 0 NOT NULL,
+    bullet_damage real DEFAULT 0 NOT NULL,
+    bullet_damage_step real DEFAULT 0 NOT NULL,
+    skill_damage real DEFAULT 0 NOT NULL,
+    skill_damage_step real DEFAULT 0 NOT NULL,
+    movement_speed real DEFAULT 0 NOT NULL,
+    movement_speed_step real DEFAULT 0 NOT NULL,
+    reload_speed real DEFAULT 0 NOT NULL,
+    reload_speed_step real DEFAULT 0 NOT NULL,
+    armor real DEFAULT 0 NOT NULL,
+    armor_step real DEFAULT 0 NOT NULL,
+    bullet_speed real DEFAULT 0 NOT NULL,
+    bullet_speed_step real DEFAULT 0 NOT NULL,
+    id integer NOT NULL
+);
+
+
+ALTER TABLE classes OWNER TO postgres;
+
+--
+-- TOC entry 184 (class 1259 OID 16590)
+-- Name: classes_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE classes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE classes_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2141 (class 0 OID 0)
+-- Dependencies: 184
+-- Name: classes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE classes_id_seq OWNED BY classes.id;
+
+
+--
+-- TOC entry 181 (class 1259 OID 16394)
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE users (
+    name text DEFAULT ''::text NOT NULL,
+    coins integer DEFAULT 0 NOT NULL,
+    unlocked_classes json DEFAULT '[]'::json NOT NULL,
+    id integer NOT NULL,
+    "authUserID" text DEFAULT ''::text NOT NULL,
+    level integer DEFAULT 1 NOT NULL,
+    exp integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE users OWNER TO postgres;
+
+--
+-- TOC entry 182 (class 1259 OID 16410)
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE users_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2142 (class 0 OID 0)
+-- Dependencies: 182
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE users_id_seq OWNED BY users.id;
+
+
+--
+-- TOC entry 2014 (class 2604 OID 16592)
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY classes ALTER COLUMN id SET DEFAULT nextval('classes_id_seq'::regclass);
+
+
+--
+-- TOC entry 1990 (class 2604 OID 16412)
+-- Name: id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+
+
+--
+-- TOC entry 2131 (class 0 OID 16566)
+-- Dependencies: 183
+-- Data for Name: classes; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY classes (price, level_required, class, health, health_step, health_regen, health_regen_step, bullet_damage, bullet_damage_step, skill_damage, skill_damage_step, movement_speed, movement_speed_step, reload_speed, reload_speed_step, armor, armor_step, bullet_speed, bullet_speed_step, id) FROM stdin;
+0	1	Assault	80	15	30	5	15	4	60	8	4	0.300000012	0.5	0.0199999996	5	3	10	1	1
+100	20	Gunner	60	13	20	5	9	5	40	5	3.4000001	0.25	0.449999988	0.0250000004	3	2	12	1	2
+\.
+
+
+--
+-- TOC entry 2143 (class 0 OID 0)
+-- Dependencies: 184
+-- Name: classes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('classes_id_seq', 2, true);
+
+
+--
+-- TOC entry 2129 (class 0 OID 16394)
+-- Dependencies: 181
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY users (name, coins, unlocked_classes, id, "authUserID", level, exp) FROM stdin;
+imyourm8	0	[]	14	100000551366317	1	0
+\.
+
+
+--
+-- TOC entry 2144 (class 0 OID 0)
+-- Dependencies: 182
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('users_id_seq', 14, true);
+
+
+--
+-- TOC entry 2139 (class 0 OID 0)
+-- Dependencies: 6
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+-- Completed on 2016-07-12 17:11:29
+
+--
+-- PostgreSQL database dump complete
+--
+
