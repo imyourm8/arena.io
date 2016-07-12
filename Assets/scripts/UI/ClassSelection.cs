@@ -16,6 +16,7 @@ public class ClassSelection : MonoBehaviour
         foreach(var t in classes)
         {
             t.OnSelect = HandleSelect;
+            t.OnUnlock = HandleUnlock;
         }
 	}
 
@@ -40,5 +41,18 @@ public class ClassSelection : MonoBehaviour
     private void HandleSelect(proto_profile.PlayerClasses cl)
     {
         User.Instance.ClassSelected = cl;
+    }
+
+    private void HandleUnlock(proto_profile.PlayerClasses cl, ClassHolder callee)
+    {
+        var info = User.Instance.Classes.Find((proto_profile.ClassInfo i)=>
+        {
+            return i.@class == cl;
+        });
+
+        if (info != null)
+        {
+            
+        }
     }
 }

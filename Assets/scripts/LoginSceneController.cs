@@ -140,7 +140,12 @@ public class LoginSceneController : MonoBehaviour
     {
 		var authRes = 
 			ProtoBuf.Extensible.GetValue<proto_auth.Auth.Response> (response, (int)proto_common.Commands.AUTH);
-            
+
+        User.Instance.Coins = authRes.info.coins;
+        User.Instance.Classes = authRes.info.classesInfo;
+        User.Instance.Name = authRes.info.name;
+        User.Instance.Level = authRes.info.level;
+
         if (authRes.info.name == "" || authRes.info.name == null)
         {
             //create nickname first
@@ -150,11 +155,6 @@ public class LoginSceneController : MonoBehaviour
         }
         else 
         {
-            User.Instance.Coins = authRes.info.coins;
-            User.Instance.Classes = authRes.info.classesInfo;
-            User.Instance.Name = authRes.info.name;
-            User.Instance.Level = authRes.info.level;
-            
             ShowArena();
         }
 	}
@@ -165,7 +165,7 @@ public class LoginSceneController : MonoBehaviour
 
         var req = new proto_profile.ChangeNickname.Request();
         req.name = nickname.text;
-
+        User.Instance.Name = nickname.text;
         GameApp.Instance.Client.Send(req, Commands.CHANGE_NICKNAME);
     }
 

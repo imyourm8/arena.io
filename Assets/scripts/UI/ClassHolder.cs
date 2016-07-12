@@ -52,7 +52,7 @@ public class ClassHolder : MonoBehaviour
 
         if (info_ != null)
         {
-            if (info_.levelRequired <= User.Instance.Level)
+            if (info_.levelRequired <= User.Instance.Level || info_.unlocked)
             {
                 SetUnlocked();
             }
@@ -86,7 +86,10 @@ public class ClassHolder : MonoBehaviour
 
     private void HandleUnlock(Events.IEvent<string> evt)
     {
-        SetUnlocked();
+        if (evt.UserData == this)
+        {
+            SetUnlocked();
+        }
     }
 
     private void SetUnlocked()

@@ -3,4 +3,4 @@ REM change dir to location of script
 SET mypath=%~dp0
 CD %mypath%
 
-PhotonSocketServer.exe /install Default
+PhotonSocketServer.exe /install arena

@@ -12,7 +12,7 @@ if %errorlevel% NEQ 1 goto ERROR
 
 echo.
 echo Starting Photon as application.
-start PhotonSocketServer.exe /debug Default
+start PhotonSocketServer.exe /debug arena
 ::echo _start - %ERRORLEVEL%
 goto END
 
