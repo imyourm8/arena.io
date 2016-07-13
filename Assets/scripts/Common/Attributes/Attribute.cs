@@ -7,6 +7,8 @@ namespace Attributes
         private float rawValue_;
         private float finalValue_;
         protected List<Attribute<T>> attributes_;
+        protected int steps_;
+        protected float step_;
 
         public Attribute()
         {
@@ -107,6 +109,29 @@ namespace Attributes
             }
 
             return value;
+        }
+
+        public Attribute<T> SetStep(float s)
+        {
+            step_ = s;
+            return this;
+        }
+
+        public int Steps
+        {
+            get { return steps_; }
+        }
+
+        public void ResetSteps()
+        {
+            steps_ = 0;
+        }
+
+        public void IncreaseByStep()
+        {
+            rawValue_ += step_;
+            steps_++;
+            CalculateValue();
         }
     }
 }

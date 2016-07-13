@@ -36,6 +36,7 @@ namespace arena.player
             AddOperationHandler(proto_common.Commands.JOIN_GAME, new OperationHandler(HandleJoinGame));
             AddOperationHandler(proto_common.Commands.FIND_ROOM, new OperationHandler(HandleFindRoom));
             AddOperationHandler(proto_common.Commands.ADMIN_AUTH, new OperationHandler(HandleAdminAuth));
+            AddOperationHandler(proto_common.Commands.STAT_UPGRADE, new OperationHandler(HandleStatUpgrade));
 
             fiber_.Start();
         }
@@ -138,6 +139,23 @@ namespace arena.player
             }
 
             return filtered && !alwaysExecute;
+        }
+
+        private void HandleStatUpgrade(proto_common.Request request)
+        {
+            var statReq = request.Extract<proto_game.StatUpgrade.Request>(proto_common.Commands.STAT_UPGRADE);
+            var stat = player_.Stats.Get(statReq.stat);
+            var response = new proto_game.StatUpgrade.Response();
+            int error = 0;
+            if (stat.Steps == 8)
+            {
+                error = 1;
+            }
+            else
+            {
+                stat.IncreaseByStep();
+            }
+            SendResponse(proto_common.Commands.STAT_UPGRADE, response, request.id, error);
         }
 
         private void HandleChangeNickname(proto_common.Request request)

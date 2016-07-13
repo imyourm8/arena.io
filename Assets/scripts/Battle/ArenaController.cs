@@ -58,6 +58,8 @@ namespace arena
             GameApp.Instance.Client.OnServerResponse += HandleResponse;
 
             ResetState();
+
+            arenaUI.StatsPanel.OnStatUpgrade = HandleUpgradeStat;
         }
 
         private void ResetState()
@@ -207,10 +209,12 @@ namespace arena
             if (evt.type == proto_common.Events.UNIT_MOVE) 
             {
                 HandleUnitMove(evt);
-            } else if (evt.type == proto_common.Events.PLAYER_APPEARED)
+            } 
+            else if (evt.type == proto_common.Events.PLAYER_APPEARED)
             {
                 HandlePlayerAppeared(evt);
-            } else if (evt.type == proto_common.Events.PLAYER_DISCONNECTED)
+            } 
+            else if (evt.type == proto_common.Events.PLAYER_DISCONNECTED)
             {
                 HandlePlayerDisconnected(evt);
             }
@@ -463,6 +467,26 @@ namespace arena
 
         #endregion
 
+        private void HandleUpgradeStat(proto_game.Stats stat)
+        {
+            proto_game.StatUpgrade.Request statReq = new proto_game.StatUpgrade.Request();
+            statReq.stat = stat;
+
+            int id = GameApp.Instance.Client.Send(statReq, proto_common.Commands.STAT_UPGRADE);
+            GameApp.Instance.RequestsManager.AddRequest(id, (proto_common.Response response)=>
+            {
+                if (response.error != 0)
+                {
+                    //cancel 1 step
+                    arenaUI.StatsPanel.DecreaseLevelOf(stat);
+                }
+                else
+                {
+                    player_.Stats.Get(stat).IncreaseByStep();
+                }
+            });
+        }
+
         private void HandleLevelUp(int level)
         {
             arenaUI.ShowUpgradePanel(1);
@@ -496,6 +520,7 @@ namespace arena
         private void OnDisable() 
         {
             GameApp.Instance.Client.OnServerEvent -= HandleEvent;
+            GameApp.Instance.Client.OnServerResponse -= HandleResponse;
 
             if (positionTimer_ != null)
                 positionTimer_.Stop();

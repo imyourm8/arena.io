@@ -24,7 +24,8 @@ public class GameApp : SingletonMonobehaviour<GameApp>
 
     [SerializeField]
     private int movementUpdateFrequency = 5;
-    
+    private RequestsManager requestsManager_ = new RequestsManager();
+
 	void Start () 
     {
         //string ip = "127.0.0.1:4530";
@@ -36,6 +37,7 @@ public class GameApp : SingletonMonobehaviour<GameApp>
         nextBytesReceivedUpdate_ = ClientTimeMs() + 1000;
         DOTween.SetTweensCapacity(1500, 10);
 
+        client_.OnServerResponse += (proto_common.Response response) => requestsManager_.Update(response);
         client_.Connect();
 	}
 
@@ -78,6 +80,9 @@ public class GameApp : SingletonMonobehaviour<GameApp>
 				Destroy(this.gameObject);
 		}
 	}
+
+    public RequestsManager RequestsManager
+    { get { return requestsManager_; }}
 
 	public long ClientTimeMs()
 	{

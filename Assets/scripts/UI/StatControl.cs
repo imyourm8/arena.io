@@ -25,6 +25,14 @@ public class StatControl : MonoBehaviour
         Reset();
     }
 
+    public proto_game.Stats Stat
+    { get { return stat; }}
+
+    public void StepBack()
+    {
+        statPoints[--statsCountUpgraded_].GetComponent<Image>().color = Color.grey;
+    }
+
     public void Reset()
     {
         foreach(var obj in statPoints)

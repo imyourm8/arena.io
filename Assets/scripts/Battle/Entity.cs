@@ -139,11 +139,15 @@ public class Entity : MonoBehaviour
         get { return new Vector2(transform.localPosition.x, transform.localPosition.y); }
         set { transform.localPosition = new Vector3(value.x, value.y, 0); }
     }
-
-    private AnimatedProgress hpBar_;
+      
+    public AnimatedProgress hpBar_;
     public AnimatedProgress HpBar
     {
-        set { hpBar_ = value; }
+        set 
+        { 
+            hpBar_ = value; 
+            UpdateHpBarPosition(); 
+        }
     }
 
     public arena.ArenaController Controller
@@ -218,8 +222,7 @@ public class Entity : MonoBehaviour
             Position = moveInterpolator_.GetPosition();
         }
 
-        //Health = Mathf.Min(MaxHealth, Health + HealthRegeneration * Time.deltaTime);
-        hpBar_.transform.position = transform.localPosition + hpBarOffset_;
+        UpdateHpBarPosition();
 
         if (!Moved && !stopped_ && local)
         {
@@ -232,6 +235,11 @@ public class Entity : MonoBehaviour
             stopped_ = false;
         }
 	}
+
+    private void UpdateHpBarPosition()
+    {
+        hpBar_.transform.position = transform.localPosition + hpBarOffset_;
+    }
 
     public void DealDamage(Entity target, float damage)
     {
@@ -252,7 +260,7 @@ public class Entity : MonoBehaviour
     {
         foreach(var s in stats.stats)
         {
-            stats_.Get(s.stat).SetValue(s.value).SetStep(s.step);
+            stats_.Get(s.stat).SetStep(s.step).SetValue(s.value);
         }
     }
 }

@@ -72,9 +72,9 @@ public class LoginSceneController : MonoBehaviour
     private void Prepare()
     {
         loginPanel.SetActive(true);
-        nicknamePanel.SetActive(false);
+        //nicknamePanel.SetActive(false);
         fbLogin.interactable = FB.IsInitialized;
-        changeNicknameBtn.interactable = true;
+        //changeNicknameBtn.interactable = true;
     }
 
     private void InitCallback ()
@@ -231,9 +231,9 @@ public class LoginSceneController : MonoBehaviour
         if (info.name == "" || info.name == null)
         {
             //create nickname first
-            nicknamePanel.SetActive(true);
+            //nicknamePanel.SetActive(true);
 
-            nicknameLogin.onClick.AddListener (OnNicknameChange);
+            //nicknameLogin.onClick.AddListener (OnNicknameChange);
         }
         else 
         {
@@ -243,12 +243,14 @@ public class LoginSceneController : MonoBehaviour
 
     void OnNicknameChange()
     {
+        /*
         nicknameLogin.interactable = false;
 
         var req = new proto_profile.ChangeNickname.Request();
         req.name = nickname.text;
         User.Instance.Name = nickname.text;
         GameApp.Instance.Client.Send(req, Commands.CHANGE_NICKNAME);
+        */
     }
 
     void ShowArena()

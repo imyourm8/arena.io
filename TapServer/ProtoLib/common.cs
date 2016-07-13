@@ -161,7 +161,13 @@ namespace proto_common
       CHANGE_NICKNAME = 2012,
             
       [global::ProtoBuf.ProtoEnum(Name=@"FIND_ROOM", Value=2013)]
-      FIND_ROOM = 2013
+      FIND_ROOM = 2013,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"STAT_UPGRADE", Value=2014)]
+      STAT_UPGRADE = 2014,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"GRAB_POWERUP", Value=2015)]
+      GRAB_POWERUP = 2015
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"Events")]
@@ -211,7 +217,13 @@ namespace proto_common
       PLAYER_SCORE = 2014,
             
       [global::ProtoBuf.ProtoEnum(Name=@"GAME_FINISHED", Value=2015)]
-      GAME_FINISHED = 2015
+      GAME_FINISHED = 2015,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"POWER_UP_APPEARED", Value=2016)]
+      POWER_UP_APPEARED = 2016,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"POWER_UP_GRABBED", Value=2017)]
+      POWER_UP_GRABBED = 2017
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"PacketFlags")]

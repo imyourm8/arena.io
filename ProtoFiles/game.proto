@@ -23,6 +23,14 @@ enum Weapons
   Triangle = 9;
 }
 
+enum PowerUpType
+{
+  DoubleDamage = 0;
+  Invisibility = 1;
+  HugeBullets = 2;
+  Regeneration = 3;
+}
+
 enum Stats
 {
   MaxHealth = 1;
@@ -33,6 +41,8 @@ enum Stats
   ReloadSpeed = 6;
   Armor = 7;
   BulletSpeed = 8;
+  
+  SkillCooldown = 9;
 }
 
 message StatValue
@@ -138,7 +148,99 @@ message JoinGame
   }
 }
 
+message StatUpgrade
+{
+  message Request
+  {
+    required Stats stat = 1;
+  
+    extend proto_common.Request 
+    {
+      optional proto_game.StatUpgrade.Request plr_stat_upg_req = 2014;
+    }
+  }
+  
+  message Response 
+  {
+    extend proto_common.Response 
+    {
+      optional proto_game.StatUpgrade.Response plr_stat_upg_res = 2014;
+    }
+  }
+}
+
+message PlayerUpgrade
+{
+  required int32 guid = 1;
+  
+  extend proto_common.Request 
+	{
+	  optional proto_game.PlayerUpgrade plr_upg_req = 2010;
+	}
+  
+  extend proto_common.Event 
+	{
+	  optional proto_game.PlayerUpgrade plr_upg_evt = 2010;
+	}
+}
+
+message ApplyDamage
+{
+  required int32 target = 1;
+  required float damage = 2;
+  required int32 lifetime = 3;
+  
+  extend proto_common.Request
+  {
+    optional proto_game.ApplyDamage dmg_req = 2004; 
+  }
+}
+
+message GrabPowerUp
+{
+  message Request
+  {
+    required int32 powerUp = 1;
+    
+    extend proto_common.Request
+    {
+      optional proto_game.GrabPowerUp.Request grb_pwr_req = 2015; 
+    }
+  }
+  
+  message Response
+  {
+    extend proto_common.Response
+    {
+      optional proto_game.GrabPowerUp.Response grb_pwr_res = 2015; 
+    }
+  }
+}
+
 /*  EVENTS */ 
+
+message PowerUpAppeared
+{
+  required PowerUpType type = 1;
+  required float x = 2;
+  required float y = 3;
+  
+  extend proto_common.Event
+  {
+    optional proto_game.PowerUpAppeared pwrup_app_evt = 2016;
+  }
+}
+
+message PowerUpGrabbed
+{
+  required PowerUpType type = 1;
+  required int32 target = 2;
+  
+  extend proto_common.Event
+  {
+    optional proto_game.PowerUpGrabbed pwrup_grb_evt = 2017;
+  }
+}
 
 message PlayerStats
 {
@@ -196,22 +298,6 @@ message PlayerTurn
   extend proto_common.Request 
 	{
 	  optional proto_game.PlayerTurn turn_req = 2009;
-	}
-}
-
-message PlayerUpgrade
-{
-  required int32 guid = 1;
-  optional int32 weapon = 2;
-  
-  extend proto_common.Request 
-	{
-	  optional proto_game.PlayerUpgrade plr_upg_req = 2010;
-	}
-  
-  extend proto_common.Event 
-	{
-	  optional proto_game.PlayerUpgrade plr_upg_evt = 2010;
 	}
 }
 
@@ -297,17 +383,6 @@ message ScoreChanged
   extend proto_common.Event
   {
     optional proto_game.ScoreChanged plr_score_evt = 2014; 
-  }
-}
-
-message ApplyDamage
-{
-  required int32 target = 1;
-  required float damage = 2;
-  
-  extend proto_common.Request
-  {
-    optional proto_game.ApplyDamage dmg_req = 2004; 
   }
 }
 

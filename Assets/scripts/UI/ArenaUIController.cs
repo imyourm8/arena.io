@@ -21,6 +21,9 @@ namespace ui {
         [SerializeField]
         private StatsPanel upgradePanel = null;
 
+        public StatsPanel StatsPanel
+        { get { return upgradePanel; }}
+
         public void Init(int timerTime, Player player)
         {
             timer.Init(timerTime);

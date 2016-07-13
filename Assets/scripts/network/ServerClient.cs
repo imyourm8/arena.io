@@ -22,6 +22,7 @@ public class ServerClient  : IPhotonPeerListener {
 	private ServerConnection connection_;
 	private string address_;
 	private StatusCode status_;
+    private int reqId_ = 0;
 
 	public ServerClient(string address, ConnectionProtocol protocol = ConnectionProtocol.Tcp) 
     {
@@ -54,15 +55,18 @@ public class ServerClient  : IPhotonPeerListener {
 		return connection_.Connect (address_, "");
 	}
 
-    public void Send(object msg, proto_common.Commands cmd)
+    //returns request id
+    public int Send(object msg, proto_common.Commands cmd)
     {
         proto_common.Request req = new proto_common.Request ();
         req.type = cmd;
-        req.id = 0;
+        req.id = reqId_++;
 
         ProtoBuf.Extensible.AppendValue (req, (int)cmd, msg);
 
         Send(req);
+
+        return req.id;
     }
 
 	public bool Send(proto_common.Request req, bool reliable=true) 

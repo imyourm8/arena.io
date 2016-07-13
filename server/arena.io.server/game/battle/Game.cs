@@ -19,6 +19,7 @@ namespace arena.battle
         private HashSet<Player> joinedPlayers_ = new HashSet<Player>();
         private Dictionary<int, Entity> units_ = new Dictionary<int, Entity>();//use concurrent dictionary
         private List<Player> players_ = new List<Player>();
+        private List<PowerUp> powerUps_ = new List<PowerUp>();
         private PoolFiber fiber_ = new PoolFiber();
         private BlockSpawner spawner_;
         private int id_ = 0;
@@ -249,6 +250,14 @@ namespace arena.battle
                 unit.Value.Update(dt);
             }
 
+            foreach (var pwr in powerUps_)
+            {
+                if (pwr.Holded)
+                {
+                    pwr.Lifetime -= 0;
+                }
+            }
+
             lastUpdateTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
         }
 
@@ -266,6 +275,22 @@ namespace arena.battle
 
                 player.Controller.SendEvent(evtKey, msg);
             }
+        }
+
+        public void SpawnPowerUp(proto_game.PowerUpType type, float x, float y, int lifetime)
+        {
+            PowerUp pwr = new PowerUp();
+            pwr.Type = type;
+            pwr.Lifetime = lifetime;
+
+            var evt = new proto_game.PowerUpAppeared();
+            evt.type = type;
+            evt.x = x;
+            evt.y = y;
+
+            Broadcast(proto_common.Events.POWER_UP_APPEARED, evt);
+
+            powerUps_.Add(pwr);
         }
 
         void player.IActionInvoker.Execute(Action action)

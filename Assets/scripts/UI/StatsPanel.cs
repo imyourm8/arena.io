@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -25,6 +26,9 @@ public class StatsPanel : MonoBehaviour
     private Tweener hideTweener_;
     private int statsPointsLeft_ = 0;
 
+    public Action<proto_game.Stats> OnStatUpgrade
+    { get; set; }
+
 	void Start () 
     {
         foreach(var control in stats)
@@ -45,6 +49,18 @@ public class StatsPanel : MonoBehaviour
         }
     }
 
+    public void DecreaseLevelOf(proto_game.Stats stat)
+    {
+        foreach(var control in stats)
+        {
+            if (control.Stat == stat)
+            {
+                control.StepBack();
+                break;
+            }
+        }
+    }
+
     public void AddPoints(int value)
     {
         statsPointsLeft_ += value;
@@ -55,7 +71,8 @@ public class StatsPanel : MonoBehaviour
     {
         statsPointsLeft_--;
         RefreshState();
-        Player.Stats.Get(stat).IncreaseByStep();
+        if (OnStatUpgrade != null)
+            OnStatUpgrade(stat);
     }
 
     private void SetHidden(bool animated)
