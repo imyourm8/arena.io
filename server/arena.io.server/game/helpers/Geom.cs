@@ -26,5 +26,11 @@ namespace arena.helpers
         {
             return minX <= x && x <= maxX && minY <= y && y <= maxY;
         }
+
+        public void RandomPoint(out float x, out float y)
+        {
+            x = minX + helpers.MathHelper.Range(0, Width);
+            y = minY + helpers.MathHelper.Range(0, Height);
+        }
     }
 }

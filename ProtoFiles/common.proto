@@ -30,6 +30,7 @@ enum Commands
   FIND_ROOM = 2013;
   STAT_UPGRADE = 2014;
   GRAB_POWERUP = 2015;
+  GRAB_COIN  = 2016;
 };
 
 enum Events
@@ -51,6 +52,7 @@ enum Events
   GAME_FINISHED = 2015;
   POWER_UP_APPEARED = 2016;
   POWER_UP_GRABBED = 2017;
+  SPAWN_GOLD_COIN = 2018;
 };
 
 enum PacketFlags

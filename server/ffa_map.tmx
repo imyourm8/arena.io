@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="left-up" width="50" height="50" tilewidth="1" tileheight="1" nextobjectid="22">
+ <objectgroup name="PowerUps">
+  <properties>
+   <property name="DoubleDamage" type="int" value="30"/>
+   <property name="HugeBullets" type="int" value="30"/>
+   <property name="Invisibility" type="int" value="30"/>
+   <property name="Regeneration" type="int" value="30"/>
+   <property name="RespawnDelay" type="int" value="30"/>
+  </properties>
+  <object id="6" x="11" y="10" width="3.27273" height="3.27273">
+   <properties>
+    <property name="DoubleDamage" type="float" value="1"/>
+    <property name="HugeBullets" type="float" value="1"/>
+    <property name="Invisibility" type="float" value="1"/>
+    <property name="Regeneration" type="float" value="1"/>
+   </properties>
+  </object>
+  <object id="10" x="36" y="10" width="3.27273" height="3.27273">
+   <properties>
+    <property name="DoubleDamage" type="float" value="1"/>
+    <property name="HugeBullets" type="float" value="1"/>
+    <property name="Invisibility" type="float" value="1"/>
+    <property name="Regeneration" type="float" value="1"/>
+   </properties>
+  </object>
+  <object id="11" x="11" y="35" width="3.27273" height="3.27273">
+   <properties>
+    <property name="DoubleDamage" type="float" value="1"/>
+    <property name="HugeBullets" type="float" value="1"/>
+    <property name="Invisibility" type="float" value="1"/>
+    <property name="Regeneration" type="float" value="1"/>
+   </properties>
+  </object>
+  <object id="12" x="36" y="35" width="3.27273" height="3.27273">
+   <properties>
+    <property name="DoubleDamage" type="float" value="1"/>
+    <property name="HugeBullets" type="float" value="1"/>
+    <property name="Invisibility" type="float" value="1"/>
+    <property name="Regeneration" type="float" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="Map" visible="0">
+  <object id="1" name="OuterBorder" x="0" y="0" width="50" height="50"/>
+ </objectgroup>
+ <objectgroup name="Exp" visible="0">
+  <properties>
+   <property name="Height" type="int" value="10"/>
+   <property name="MaxBlocks" type="int" value="200"/>
+   <property name="Width" type="int" value="10"/>
+  </properties>
+  <object id="3" name="1" type="Area" x="0" y="0" width="50" height="50">
+   <properties>
+    <property name="Big" type="float" value="0"/>
+    <property name="GoldBlock" type="float" value="1"/>
+    <property name="Huge" type="float" value="0"/>
+    <property name="Medium" type="float" value="5"/>
+    <property name="Small" type="float" value="10"/>
+   </properties>
+  </object>
+  <object id="5" name="2" x="15" y="15" width="20" height="20">
+   <properties>
+    <property name="Big" type="float" value="20"/>
+    <property name="GoldBlock" type="float" value="7"/>
+    <property name="Huge" type="float" value="15"/>
+    <property name="Medium" type="float" value="5"/>
+    <property name="Small" type="float" value="3"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="PlayerSpawns" visible="0">
+  <object id="13" x="2" y="1.45455" width="9.36364" height="9.54545"/>
+  <object id="14" x="37.5455" y="1.36364" width="9.72727" height="9.18182"/>
+  <object id="15" x="39.0909" y="38.6364" width="8.81818" height="9.18182"/>
+  <object id="16" x="2.27273" y="38.9091" width="9.09091" height="9.45455"/>
+  <object id="17" x="19.7273" y="38.6364" width="10" height="9.45455"/>
+  <object id="19" x="19.3636" y="1.27273" width="10" height="9.36364"/>
+  <object id="20" x="2.09091" y="19" width="7.45455" height="10"/>
+  <object id="21" x="39.8182" y="19.0909" width="7.45455" height="10"/>
+ </objectgroup>
+</map>

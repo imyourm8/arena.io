@@ -146,7 +146,6 @@ public class Entity : MonoBehaviour
         set 
         { 
             hpBar_ = value; 
-            UpdateHpBarPosition(); 
         }
     }
 

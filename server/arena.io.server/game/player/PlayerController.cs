@@ -37,6 +37,7 @@ namespace arena.player
             AddOperationHandler(proto_common.Commands.FIND_ROOM, new OperationHandler(HandleFindRoom));
             AddOperationHandler(proto_common.Commands.ADMIN_AUTH, new OperationHandler(HandleAdminAuth));
             AddOperationHandler(proto_common.Commands.STAT_UPGRADE, new OperationHandler(HandleStatUpgrade));
+            AddOperationHandler(proto_common.Commands.GRAB_POWERUP, new OperationHandler(HandleGrabPowerUp));
 
             fiber_.Start();
         }
@@ -313,6 +314,15 @@ namespace arena.player
         {
             var damageRequest = request.Extract<proto_game.ApplyDamage>(proto_common.Commands.DAMAGE);
             player_.Game.UnitDamaged(player_, damageRequest);
+        }
+
+        private void HandleGrabPowerUp(proto_common.Request request)
+        {
+            var grabReq = request.Extract<proto_game.GrabPowerUp.Request>(proto_common.Commands.GRAB_POWERUP);
+            bool grabbed = player_.Game.TryGrabPowerUp(grabReq.powerUp, player_);
+
+            var grabResponse = new proto_game.GrabPowerUp.Response();
+            SendResponse(proto_common.Commands.GRAB_POWERUP, grabResponse, request.id, grabbed ? 0 : -1); 
         }
 
         #endregion

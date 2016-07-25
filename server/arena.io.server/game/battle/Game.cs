@@ -13,21 +13,17 @@ namespace arena.battle
 {
     class Game : player.IActionInvoker, BlockSpawner.IBlockControl
     {
-        private Area wholeArea_ = new Area(-45, 45, -45, 45);
-        private const int MAX_EXP_BLOCKS = 800;
-
         private HashSet<Player> joinedPlayers_ = new HashSet<Player>();
         private Dictionary<int, Entity> units_ = new Dictionary<int, Entity>();//use concurrent dictionary
         private List<Player> players_ = new List<Player>();
         private List<PowerUp> powerUps_ = new List<PowerUp>();
         private PoolFiber fiber_ = new PoolFiber();
-        private BlockSpawner spawner_;
         private int id_ = 0;
         private long lastUpdateTime_;
-        private SpatialHash map_;
         private GameModes.GameMode mode_;
         private long matchFinishAt_;
         private Room room_;
+        private Map map_;
 
         public Game(GameModes.GameMode mode, Room room)
         {
@@ -42,14 +38,15 @@ namespace arena.battle
 
             mode_ = mode;
             mode_.Game = this;
-            map_ = new SpatialHash((int)wholeArea_.Width, (int)wholeArea_.Height);
-            spawner_ = new BlockSpawner(this, 20, 20, MAX_EXP_BLOCKS, wholeArea_);
+
+            var mapLoader = new MapLoader(mode_.GetMapPath(), this);
+            map_ = mapLoader.Load();
 
             fiber_.Start();
         }
 
-        public Area Size
-        { get { return wholeArea_; } }
+        public Map Map
+        { get { return map_; } }
 
         public int GenerateID()
         {
@@ -58,7 +55,7 @@ namespace arena.battle
 
         private void UpdateSpawner()
         {
-            spawner_.Update();
+            map_.Update();
         }
 
         public void Add(Player player)
@@ -187,9 +184,10 @@ namespace arena.battle
                         PlayerDead(target as Player);
                         expGenerated /= 10;
                     }
-                    else
+                    else if (target is ExpBlock)
                     {
-                        spawner_.OnEntityRemoved(target);
+                        map_.OnExpBlockRemoved(target);
+                        SpawnGoldPiles(target as ExpBlock);
                     }
 
                     var expPacket = new proto_game.PlayerExperience();
@@ -200,16 +198,21 @@ namespace arena.battle
             }
         }
 
+        private void SpawnGoldPiles(ExpBlock block)
+        {
+            
+        }
+
         private void Remove(Entity mob)
         {
             units_.Remove(mob.ID);
             map_.Remove(mob);
         }
 
-        private void Add(Entity mob)
+        private void Add(Entity unit)
         {
-            units_.Add(mob.ID, mob);
-            map_.Add(mob);
+            units_.Add(unit.ID, unit);
+            map_.Add(unit);
         }
 
         void BlockSpawner.IBlockControl.AddBlock(ExpBlock block)
@@ -242,28 +245,38 @@ namespace arena.battle
 
         private void Update()
         {
-            float dt = (float)helpers.CurrentTime.Instance.CurrentTimeInMs - (float)lastUpdateTime_;
+            long ldt = helpers.CurrentTime.Instance.CurrentTimeInMs - lastUpdateTime_;
+            float dt = (float)ldt;
             dt /= 1000.0f;
+
 
             foreach (var unit in units_)
             {
                 unit.Value.Update(dt);
             }
 
+            List<PowerUp> toRemove = new List<PowerUp>(4);
             foreach (var pwr in powerUps_)
             {
                 if (pwr.Holded)
                 {
-                    pwr.Lifetime -= 0;
+                    pwr.Lifetime -= (int)ldt;
+                    if (pwr.Lifetime <= 0)
+                    {
+                        //remove power up
+                        toRemove.Add(pwr);
+                    }
                 }
             }
 
-            lastUpdateTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
-        }
+            foreach (var pwr in toRemove)
+            {
+                powerUps_.Remove(pwr);
+            }
 
-        proto_game.ExpBlocks BlockSpawner.IBlockControl.GetBlockTypeByPoint(float x, float y)
-        {
-            return mode_.GetBlockTypeByPoint(x, y);
+            mode_.Update(dt);
+
+            lastUpdateTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
         }
 
         private void Broadcast(proto_common.Events evtKey, object msg, Player exceptThis = null)
@@ -277,9 +290,35 @@ namespace arena.battle
             }
         }
 
+        public void AddPowerUp(PowerUp powerUp)
+        {
+ 
+        }
+
+        public bool TryGrabPowerUp(int powerUpId, Player player)
+        {
+            bool result = false;
+            foreach (var pwr in powerUps_)
+            {
+                if (pwr.ID == powerUpId && !pwr.Holded)
+                {
+                    result = true;
+                    pwr.Holded = true;  
+
+                    var grabEvt = new proto_game.PowerUpGrabbed();
+                    grabEvt.who_grabbed = player.ID;
+                    grabEvt.id = powerUpId;
+                    Broadcast(proto_common.Events.POWER_UP_GRABBED, grabEvt, player);
+                    break;
+                }
+            }
+            return result;
+        }
+
         public void SpawnPowerUp(proto_game.PowerUpType type, float x, float y, int lifetime)
         {
             PowerUp pwr = new PowerUp();
+            pwr.ID = GenerateID();
             pwr.Type = type;
             pwr.Lifetime = lifetime;
 
@@ -291,6 +330,7 @@ namespace arena.battle
             Broadcast(proto_common.Events.POWER_UP_APPEARED, evt);
 
             powerUps_.Add(pwr);
+            Add(pwr);
         }
 
         void player.IActionInvoker.Execute(Action action)

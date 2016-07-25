@@ -163,12 +163,21 @@
       <Link>Database\IWorldDB.cs</Link>
     </Compile>
     <Compile Include="Application.cs" />
-    <Compile Include="battle\BlockSpawner.cs" />
+    <Compile Include="battle\Map\BlockSpawner.cs" />
     <Compile Include="battle\Entity.cs" />
     <Compile Include="battle\ExpBlock.cs" />
     <Compile Include="battle\Game.cs" />
     <Compile Include="battle\GameModes\FFA.cs" />
     <Compile Include="battle\GameModes\GameMode.cs" />
+    <Compile Include="battle\Map\ExpArea.cs" />
+    <Compile Include="battle\Map\ExpLayer.cs" />
+    <Compile Include="battle\Map\Map.cs" />
+    <Compile Include="battle\Map\MapLoader.cs" />
+    <Compile Include="battle\Map\NavigationLayer.cs" />
+    <Compile Include="battle\Map\PlayerSpawnPoint.cs" />
+    <Compile Include="battle\Map\PlayerSpawnsLayer.cs" />
+    <Compile Include="battle\Map\PowerUpLayer.cs" />
+    <Compile Include="battle\Map\PowerUpSpawnPoint.cs" />
     <Compile Include="battle\Mob.cs" />
     <Compile Include="battle\MobAI\BaseAI.cs" />
     <Compile Include="battle\MobAI\ChasingAI.cs" />
@@ -179,12 +188,13 @@
     <Compile Include="battle\PowerUp.cs" />
     <Compile Include="battle\Room.cs" />
     <Compile Include="battle\RoomManager.cs" />
-    <Compile Include="battle\SpatialHash.cs" />
+    <Compile Include="battle\Map\SpatialHash.cs" />
     <Compile Include="Database\Postgres\AuthDB.cs" />
     <Compile Include="Database\Postgres\PlayerDB.cs" />
     <Compile Include="Database\Postgres\PostgresImpl.cs" />
     <Compile Include="Factories\PlayerClassFactory.cs" />
     <Compile Include="helpers\CurrentTime.cs" />
+    <Compile Include="helpers\Extensions.cs" />
     <Compile Include="helpers\Geom.cs" />
     <Compile Include="helpers\MathHelper.cs" />
     <Compile Include="helpers\Parsing.cs" />
@@ -195,7 +205,9 @@
     <Compile Include="player\RequestHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Common\Status\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

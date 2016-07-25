@@ -63,6 +63,8 @@ namespace arena
             log.Info("Initializing Player Controller...");
             PlayerController.Init();*/
             log.Info("Initialization complete succesfully ╭( ･ㅂ･)و");
+
+            //battle.RoomManager.Instance.Debug();
         }
 
         protected override void TearDown()

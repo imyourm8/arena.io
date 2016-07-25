@@ -167,7 +167,10 @@ namespace proto_common
       STAT_UPGRADE = 2014,
             
       [global::ProtoBuf.ProtoEnum(Name=@"GRAB_POWERUP", Value=2015)]
-      GRAB_POWERUP = 2015
+      GRAB_POWERUP = 2015,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"GRAB_COIN", Value=2016)]
+      GRAB_COIN = 2016
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"Events")]
@@ -223,7 +226,10 @@ namespace proto_common
       POWER_UP_APPEARED = 2016,
             
       [global::ProtoBuf.ProtoEnum(Name=@"POWER_UP_GRABBED", Value=2017)]
-      POWER_UP_GRABBED = 2017
+      POWER_UP_GRABBED = 2017,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SPAWN_GOLD_COIN", Value=2018)]
+      SPAWN_GOLD_COIN = 2018
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"PacketFlags")]

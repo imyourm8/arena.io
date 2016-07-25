@@ -11,6 +11,9 @@ namespace arena.battle
         public proto_game.ExpBlocks BlockType
         { get; set; }
 
+        public int Coins
+        { get; set; }
+
         public proto_game.BlockAppeared GetBlockAppearPacket()
         {
             proto_game.BlockAppeared packet = new proto_game.BlockAppeared();

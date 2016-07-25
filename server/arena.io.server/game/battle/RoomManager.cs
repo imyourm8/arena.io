@@ -45,5 +45,10 @@ namespace arena.battle
         {
             return new Room();
         }
+
+        public void Debug()
+        {
+            var room = CreateRoom();
+        }
     }
 }

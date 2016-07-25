@@ -21,10 +21,12 @@ public class Player : Entity, PlayerExperience.IExpProvider
     private PlayerExperience playerExp_;
     private WeaponType weaponUsed_ = WeaponType.Starting;
     private Text nicknameText_ = null;
+    private StatusManager statusManager_;
 
 	public Player()
 	{
         playerExp_ = new PlayerExperience(this);
+        statusManager_ = new StatusManager(this);
 	}
 
     public Text NicknameText
@@ -76,6 +78,8 @@ public class Player : Entity, PlayerExperience.IExpProvider
         {
             nicknameText_.transform.position = transform.localPosition + nicknameOffset;
         }
+
+        statusManager_.Update();
     }
 
     public override void OnRemove()
@@ -83,5 +87,10 @@ public class Player : Entity, PlayerExperience.IExpProvider
         base.OnRemove();
 
         nicknameText_.gameObject.ReturnPooled();
+    }
+
+    public void Add(Status effect)
+    {
+        statusManager_.Add(effect);
     }
 }

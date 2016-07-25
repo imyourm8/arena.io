@@ -117,6 +117,9 @@ namespace Attributes
             return this;
         }
 
+        public float Step
+        { get { return step_; } }
+
         public int Steps
         {
             get { return steps_; }

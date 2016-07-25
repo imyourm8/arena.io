@@ -2,7 +2,8 @@
 using UnityEngine.UI;
 using System.Collections;
 
-namespace ui {
+namespace ui 
+{
     public class ArenaUIController : MonoBehaviour 
     {
         [System.Serializable]

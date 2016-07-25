@@ -40,7 +40,8 @@ public class ClassHolder : MonoBehaviour
 
     void Start()
     {
-        unlockPrice.text = info_.coinsPrice.ToString();
+        if (unlockPrice != null)
+            unlockPrice.text = info_.coinsPrice.ToString();
     }
 
     public void Refresh()

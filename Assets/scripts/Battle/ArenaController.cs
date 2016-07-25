@@ -41,6 +41,9 @@ namespace arena
         private PlayerClassesDict playerClassesPrefabs = null;
 
         [SerializeField]
+        private PowerUpsDict powerUpPrefabs = null;
+
+        [SerializeField]
         private ui.ArenaUIController arenaUI = null;
 
         [SerializeField]
@@ -51,6 +54,8 @@ namespace arena
         private Vector2 prevPos;
         private Timer positionTimer_;
         private Dictionary<int, Entity> entities_ = new Dictionary<int, Entity>();
+        private List<PowerUp> powerUps_ = new List<PowerUp>();
+        private List<Player> players_ = new List<Player>();
 
         private void Start()
         {
@@ -100,7 +105,8 @@ namespace arena
         private Player CreatePlayer(proto_profile.PlayerClasses cl)
         {
             var player = playerClassesPrefabs[cl].GetPooled();
-
+            //turn a bit to left our sprites
+            player.transform.rotation = Quaternion.AngleAxis(90.0f, new Vector3(0,0,1));
             var playerScript = player.GetComponent<Player>();
             playerScript.PlayerExperience.OnLevelUp = HandleLevelUp;
             playerScript.Local = false;
@@ -148,7 +154,11 @@ namespace arena
             }
 
             player_.Force = dir;
-            player_.OnUpdate();
+
+            foreach(var p in players_)
+            {
+                p.OnUpdate();
+            }
 
             if (shootJoystick_.inputDirection != Vector2.zero)
             {
@@ -250,6 +260,14 @@ namespace arena
             {
                 HandleGameFinished(evt);
             }
+            else if (evt.type == proto_common.Events.POWER_UP_APPEARED)
+            {
+                HandlePowerUpAppeared(evt);
+            }
+            else if (evt.type == proto_common.Events.POWER_UP_GRABBED)
+            {
+                HandlePowerUpGrabbed(evt);
+            }
         }
 
         private void HandleResponse(proto_common.Response response)
@@ -262,6 +280,24 @@ namespace arena
         #endregion
 
         #region Network Handlers
+        private void HandlePowerUpAppeared(proto_common.Event evt)
+        {
+            var powerUpEvt = evt.Extract<proto_game.PowerUpAppeared>(proto_common.Events.POWER_UP_APPEARED);
+
+            var powerUpObject = powerUpPrefabs[powerUpEvt.type].GetPooled();
+            var powerUpScript = powerUpObject.GetComponent<PowerUp>();
+
+            powerUps_.Add(powerUpScript);
+            powerUpScript.ID = powerUpEvt.id;
+            powerUpScript.RemoveAfter = (float)powerUpEvt.lifetime;
+            AddEntity(powerUpScript);
+        }
+
+        private void HandlePowerUpGrabbed(proto_common.Event evt)
+        {
+            var powerUpEvt = evt.Extract<proto_game.PowerUpGrabbed>(proto_common.Events.POWER_UP_GRABBED);
+        }
+
         private void HandleGameFinished(proto_common.Event evt)
         {
             var finishedResponse = evt.Extract<proto_game.GameFinished>(proto_common.Events.GAME_FINISHED);
@@ -312,6 +348,8 @@ namespace arena
             entity.Health = unitPacket.hp;
 
             AddEntity(entity);
+
+            entity.OnUpdate();
         }
 
         private void AddEntity(Entity entity)
@@ -372,6 +410,8 @@ namespace arena
             playerToInited.Health = plrPacket.hp;
             playerToInited.ApplyStats(plrPacket.stats);
             AddEntity(playerToInited);
+
+            players_.Add(playerToInited);
 
             if (playerToInited == player_)
             {
@@ -515,6 +555,11 @@ namespace arena
         {
             entity.OnRemove();
             entities_.Remove(entity.ID);
+
+            if (entity is Player)
+            {
+                players_.Remove(entity as Player);
+            }
         }
 
         private void OnDisable() 

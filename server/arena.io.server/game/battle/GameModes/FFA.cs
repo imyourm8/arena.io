@@ -35,34 +35,12 @@ namespace arena.battle.GameModes
         {
             base.SpawnPlayer(player);
 
-            var wholeArea = Game.Size;
-            player.X = MathHelper.Range(wholeArea.minX, wholeArea.maxX);
-            player.Y = MathHelper.Range(wholeArea.minY, wholeArea.maxY);
-        }
-
-        public override proto_game.ExpBlocks GetBlockTypeByPoint(float x, float y)
-        {
-            float blockWeight = centralArea_.IsInside(x, y) ? centerAreaSpawnWeight_ : wholeAreaSpawnWeight_;
-            float blockRoll = MathHelper.Range(0, blockWeight);
-            float totalRoll = 0;
-            proto_game.ExpBlocks type = proto_game.ExpBlocks.Small;
-            foreach (var blockSpawn in expBlockSpawnChances_)
-            {
-                if (blockRoll > totalRoll)
-                {
-                    type = blockSpawn.Key;
-                }
-
-                if (totalRoll > blockRoll) break;
-
-                totalRoll += blockSpawn.Value;
-            }
-            return type;
+            Game.Map.SpawnPlayer(player);
         }
 
         public override int GetMatchDuration()
         {
-            return 150000;
+            return 1500000;
         }
 
         public override int GetExpFor(Player player)
@@ -73,6 +51,11 @@ namespace arena.battle.GameModes
         public override int GetCoinsFor(Player player)
         {
             return player.Highscore > 0 ? 100 : 0;
+        }
+
+        public override string GetMapPath()
+        {
+            return "maps/ffa";
         }
     }
 }
