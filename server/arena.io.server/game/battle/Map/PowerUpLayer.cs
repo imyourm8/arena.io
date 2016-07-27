@@ -34,7 +34,7 @@ namespace arena.battle
                 prevSpawnTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
             }
 
-            if (currentPowerUp_ == null && helpers.CurrentTime.Instance.CurrentTimeInMs - prevSpawnTime_ >= RespawnDelay)
+            if (currentPowerUp_ == null && helpers.CurrentTime.Instance.CurrentTimeInMs - prevSpawnTime_ >= 5000)
             {
                 var point = spawnPoints_[helpers.MathHelper.Range(0, spawnPoints_.Count - 1)];
 
@@ -50,6 +50,7 @@ namespace arena.battle
 
                 Game.AddPowerUp(powerUp);
 
+                currentPowerUp_ = powerUp;
                 prevSpawnTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
             }
         }

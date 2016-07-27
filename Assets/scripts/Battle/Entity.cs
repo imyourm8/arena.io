@@ -27,11 +27,19 @@ public class Entity : MonoBehaviour
     [SerializeField]
     private Vector3 hpBarOffset_ = Vector3.zero;
 
+    [SerializeField]
+    private Rigidbody2D body_;
+
+    [SerializeField]
+    private Transform transform_;
+
     private MovementInterpolator moveInterpolator_;
     private Vector2 previousPosition_;
     protected Weapon weapon_;
     private arena.ArenaController controller_;
     private Tween rotationTweener_;
+    private Vector2 moveImpulse_;
+
 
     #region getter & setters
     private Vector2 force_;
@@ -75,7 +83,7 @@ public class Entity : MonoBehaviour
             if (rotationTweener_ != null)
                 rotationTweener_.Kill(false);
 
-            rotationTweener_ = transform.DORotate(new Vector3(0,0,rotation_), forceRotation_?0.0f:0.1f, RotateMode.Fast);
+            rotationTweener_ = transform_.DORotate(new Vector3(0,0,rotation_), forceRotation_?0.0f:0.1f, RotateMode.Fast);
             forceRotation_ = false;
         }
 
@@ -136,8 +144,8 @@ public class Entity : MonoBehaviour
 
     public Vector2 Position
     {
-        get { return new Vector2(transform.localPosition.x, transform.localPosition.y); }
-        set { transform.localPosition = new Vector3(value.x, value.y, 0); }
+        get { return new Vector2(transform_.localPosition.x, transform_.localPosition.y); }
+        set { transform_.localPosition = new Vector3(value.x, value.y, 0); }
     }
       
     public AnimatedProgress hpBar_;
@@ -158,6 +166,7 @@ public class Entity : MonoBehaviour
 
 	protected Entity() 
     {
+        stats_.Add(new Attributes.Attribute<proto_game.Stats>().Init(proto_game.Stats.BulletSize, 1));
 	}
 
     public virtual void Init(arena.ArenaController controller, Vector2 startPos)
@@ -169,6 +178,18 @@ public class Entity : MonoBehaviour
         if (!local) 
             moveInterpolator_.Reset(Position);
 	}
+
+    public void ApplyRecoil(float recoil)
+    {
+        if (local && body_ != null)
+        {
+            recoil *= -1;
+            var dir = AttackDirection; 
+            dir.x *= recoil;
+            dir.y *= recoil;
+            body_.AddForce(dir, ForceMode2D.Impulse);
+        }
+    }
 
     public void PerformAttack(float direction)
     {
@@ -197,8 +218,8 @@ public class Entity : MonoBehaviour
         PerformAttack(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
 	}
 
-	public virtual void OnUpdate () 
-	{
+    public virtual void OnFixedUpdate()
+    {
         previousPosition_ = Position;
         prevRotation_ = rotation_; 
 
@@ -209,12 +230,14 @@ public class Entity : MonoBehaviour
                 stats_.GetFinValue(proto_game.Stats.MovementSpeed)
             );
             totalImpulse.Scale(force_);
-
+            //totalImpulse_ = totalImpulse;
             currentSpeed_ = totalImpulse.magnitude;
-            totalImpulse.x *= Time.deltaTime;
-            totalImpulse.y *= Time.deltaTime;
-
-            Position = Position + totalImpulse;
+            //totalImpulse.x *= Time.fixedDeltaTime;
+            //totalImpulse.y *= Time.fixedDeltaTime;
+            //totalImpulse.x *= 3.0f;
+            //totalImpulse.y *= 3.0f;
+            body_.AddForce(totalImpulse);
+            //Position = previousPosition_ + totalImpulse;
         }
         else 
         {
@@ -233,11 +256,16 @@ public class Entity : MonoBehaviour
             OnStartMove(this);
             stopped_ = false;
         }
+    }
+
+	public virtual void OnUpdate () 
+	{
+        
 	}
 
     private void UpdateHpBarPosition()
     {
-        hpBar_.transform.position = transform.localPosition + hpBarOffset_;
+        hpBar_.transform.position = transform_.localPosition + hpBarOffset_;
     }
 
     public void DealDamage(Entity target, float damage)

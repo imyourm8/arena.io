@@ -6,6 +6,9 @@ public class PowerUp : Entity
     [SerializeField]
     private proto_game.PowerUpType Type;
 
+    public proto_game.PowerUpType PowerUpType
+    { get { return Type; }}
+
     public float RemoveAfter
     {
         get; set;
@@ -17,8 +20,7 @@ public class PowerUp : Entity
         Player plr = entity as Player;
         if (plr != null)
         {
-            Status statusEffect = new Status(RemoveAfter);
-            plr.Add(statusEffect);
+            plr.OnPowerUpGrabbed(this);
         }
     }
 }

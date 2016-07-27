@@ -51,7 +51,7 @@ namespace arena.battle
                         {
                             durations.Add(
                                     helpers.Parsing.ParseEnum<proto_game.PowerUpType>(prop.Name),
-                                    prop.Value.Value<int>()
+                                    prop.Value.Value<int>() * 1000
                                 );
                         }
                     }

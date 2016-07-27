@@ -43,6 +43,7 @@ enum Stats
   BulletSpeed = 8;
   
   SkillCooldown = 9;
+  BulletSize = 10;
 }
 
 message StatValue
@@ -141,7 +142,7 @@ message JoinGame
   message Response
   {
     required int32 time_left = 1;
-    required string map = 2;
+    repeated float outer_border = 2;
   
     extend proto_common.Response
     {
@@ -374,6 +375,8 @@ message UnitAttack
 {
   required int32 guid = 1;
   required float direction = 2;
+  required float x = 3;
+  required float y = 4;
   
   extend proto_common.Event 
 	{

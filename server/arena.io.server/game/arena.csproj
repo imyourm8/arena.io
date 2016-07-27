@@ -99,6 +99,9 @@
     <Compile Include="..\..\..\Assets\scripts\Common\Attributes\UnitAttributes.cs">
       <Link>Common\Attributes\UnitAttributes.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Battle\MapNavigation.cs">
+      <Link>Common\Battle\MapNavigation.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\Battle\PlayerExperience.cs">
       <Link>Common\Battle\PlayerExperience.cs</Link>
     </Compile>

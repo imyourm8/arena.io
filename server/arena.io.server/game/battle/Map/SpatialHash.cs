@@ -7,12 +7,19 @@ using System.Collections.Concurrent;
 
 namespace arena.battle
 {
-    class SpatialHash
+    public class SpatialHash
     {
+        public interface IEntity
+        {
+            float X { get; set; }
+            float Y { get; set; }
+            int ID { get; }
+        }
+
         private int width_, height_ = 0;
         private NavigationLayer navLayer_;
-        private ConcurrentDictionary<int, ConcurrentDictionary<int, Entity>> hash_ 
-            = new ConcurrentDictionary<int, ConcurrentDictionary<int, Entity>>();
+        private ConcurrentDictionary<int, ConcurrentDictionary<int, IEntity>> hash_
+            = new ConcurrentDictionary<int, ConcurrentDictionary<int, IEntity>>();
 
         public SpatialHash(NavigationLayer navLayer)
         {
@@ -20,18 +27,18 @@ namespace arena.battle
             height_ = navLayer.TileHeight;
         }
 
-        public void Add(Entity entity)
+        public void Add(IEntity entity)
         {
             var bucket = GetBucket(entity.X, entity.Y);
             bucket.TryAdd(entity.ID, entity);
         }
 
-        public void Remove(Entity entity)
+        public void Remove(IEntity entity)
         {
             RemoveFromBucket(entity);
         }
 
-        public void Move(Entity entity, float x, float y)
+        public void Move(IEntity entity, float x, float y)
         {
             var currentTile = GetTileCoord(entity.X, entity.Y);
             var newTile = GetTileCoord(x, y);
@@ -47,7 +54,7 @@ namespace arena.battle
             }
         }
 
-        public IEnumerable<Entity> HitTest(float x, float y, float radius)
+        public IEnumerable<IEntity> HitTest(float x, float y, float radius)
         {
             int xl = (int)(x - radius) / width_;
             int xh = (int)(x + radius) / width_;
@@ -56,22 +63,22 @@ namespace arena.battle
             for (var x_ = xl; x_ <= xh; x++)
                 for (var y_ = yl; y_ <= yh; y++)
                 {
-                    ConcurrentDictionary<int, Entity> bucket;
+                    ConcurrentDictionary<int, IEntity> bucket;
                     if (hash_.TryGetValue(Hash(x_, y_), out bucket))
                         foreach (var i in bucket) yield return i.Value;
                 }
         }
 
-        private void RemoveFromBucket(Entity entity)
+        private void RemoveFromBucket(IEntity entity)
         {
             var bucket = GetBucket(entity.X, entity.Y);
             bucket.TryRemove(entity.ID, out entity);
         }
 
-        private ConcurrentDictionary<int, Entity> GetBucket(float x, float y)
+        private ConcurrentDictionary<int, IEntity> GetBucket(float x, float y)
         {
             int hash = GetTileCoord(x, y);
-            ConcurrentDictionary<int, Entity> bucket = hash_.GetOrAdd(hash, _ => new ConcurrentDictionary<int, Entity>());    
+            ConcurrentDictionary<int, IEntity> bucket = hash_.GetOrAdd(hash, _ => new ConcurrentDictionary<int, IEntity>());    
             return bucket;
         }
 

@@ -94,6 +94,11 @@ namespace arena.battle
     
                 //send join game packet
                 var joinPacket = new proto_game.JoinGame.Response();
+                var outerBorder = map_.GetOuterBorder();
+                foreach (var coord in outerBorder)
+                {
+                    joinPacket.outer_border.Add(coord);
+                }
                 joinPacket.time_left = (int)(matchFinishAt_ - CurrentTime.Instance.CurrentTimeInMs);
                 player.Controller.SendResponse(proto_common.Commands.JOIN_GAME, joinPacket);
 
@@ -292,7 +297,9 @@ namespace arena.battle
 
         public void AddPowerUp(PowerUp powerUp)
         {
- 
+            powerUp.ID = GenerateID();
+            powerUps_.Add(powerUp);
+            Broadcast(proto_common.Events.POWER_UP_APPEARED, powerUp.GetPowerUpPacket());
         }
 
         public bool TryGrabPowerUp(int powerUpId, Player player)

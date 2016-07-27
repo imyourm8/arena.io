@@ -156,6 +156,7 @@ MonoBehaviour:
   bulletSpawnPoints:
   - {fileID: 132720}
   - {fileID: 130424}
+  recoil: 0.25
 --- !u!212 &21270104
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -216,13 +216,13 @@ namespace proto_game
       get { return _time_left; }
       set { _time_left = value; }
     }
-    private string _map;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"map", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string map
+    private readonly global::System.Collections.Generic.List<float> _outer_border = new global::System.Collections.Generic.List<float>();
+    [global::ProtoBuf.ProtoMember(2, Name=@"outer_border", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public global::System.Collections.Generic.List<float> outer_border
     {
-      get { return _map; }
-      set { _map = value; }
+      get { return _outer_border; }
     }
+  
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -726,6 +726,20 @@ namespace proto_game
       get { return _direction; }
       set { _direction = value; }
     }
+    private float _x;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"x", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float x
+    {
+      get { return _x; }
+      set { _x = value; }
+    }
+    private float _y;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"y", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float y
+    {
+      get { return _y; }
+      set { _y = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -960,7 +974,10 @@ namespace proto_game
       BulletSpeed = 8,
             
       [global::ProtoBuf.ProtoEnum(Name=@"SkillCooldown", Value=9)]
-      SkillCooldown = 9
+      SkillCooldown = 9,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BulletSize", Value=10)]
+      BulletSize = 10
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"ExpBlocks")]

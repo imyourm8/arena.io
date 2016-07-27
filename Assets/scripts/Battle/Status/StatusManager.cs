@@ -30,6 +30,7 @@ public class StatusManager
         }
         foreach(var r in toRemove)
         {
+            r.Remove();
             statuses_.Remove(r);
         }
         ListPool<Status>.Release(toRemove);

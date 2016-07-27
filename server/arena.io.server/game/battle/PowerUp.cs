@@ -16,5 +16,17 @@ namespace arena.battle
 
         public bool Holded
         { get; set; }
+
+        public proto_game.PowerUpAppeared GetPowerUpPacket()
+        {
+            var powerUpPacket = new proto_game.PowerUpAppeared();
+            powerUpPacket.id = ID;
+            powerUpPacket.x = X;
+            powerUpPacket.y = Y;
+            powerUpPacket.type = Type;
+            powerUpPacket.lifetime = Lifetime;
+
+            return powerUpPacket;
+        }
     }
 }

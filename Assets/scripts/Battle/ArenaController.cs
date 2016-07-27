@@ -49,6 +49,9 @@ namespace arena
         [SerializeField]
         private CustomizeHeroScreen customizeScreen = null;
 
+        [SerializeField]
+        private GameObject background_ = null;
+
         private Player player_ = null;
         private long prevTime_ = 0;
         private Vector2 prevPos;
@@ -155,16 +158,24 @@ namespace arena
 
             player_.Force = dir;
 
-            foreach(var p in players_)
-            {
-                p.OnUpdate();
-            }
-
             if (shootJoystick_.inputDirection != Vector2.zero)
             {
                 player_.PerformAttack(shootJoystick_.inputDirection);
             }
+
+            foreach(var p in players_)
+            {
+                p.OnUpdate();
+            }
     	}
+
+        private void FixedUpdate()
+        {
+            foreach(var p in players_)
+            {
+                p.OnFixedUpdate();
+            }
+        }
 
         private bool NotifyServerAboutPlayerPosition()
         {
@@ -279,6 +290,22 @@ namespace arena
         }
         #endregion
 
+        public void OnPowerUpGrabbed(Player player, PowerUp powerUp)
+        {
+            var request = new proto_game.GrabPowerUp.Request();
+            request.powerUp = powerUp.ID;
+
+            var reqID = GameApp.Instance.Client.Send(request, proto_common.Commands.GRAB_POWERUP);
+            GameApp.Instance.RequestsManager.AddRequest(reqID, (proto_common.Response response)=>
+            {
+                if (response.error == (int)proto_common.Common.CommonErrors.CE_NO_ERROR)
+                {
+                    player.AddStatus(powerUp.PowerUpType, powerUp.RemoveAfter);
+                    powerUp.gameObject.ReturnPooled();
+                }
+            });
+        }
+
         #region Network Handlers
         private void HandlePowerUpAppeared(proto_common.Event evt)
         {
@@ -289,9 +316,12 @@ namespace arena
 
             powerUps_.Add(powerUpScript);
             powerUpScript.ID = powerUpEvt.id;
-            powerUpScript.RemoveAfter = (float)powerUpEvt.lifetime;
+            powerUpScript.RemoveAfter = (float)powerUpEvt.lifetime / 1000;
+
+            powerUpObject.transform.position = new Vector3(powerUpEvt.x, powerUpEvt.y, 0);
             AddEntity(powerUpScript);
         }
+
 
         private void HandlePowerUpGrabbed(proto_common.Event evt)
         {
@@ -314,6 +344,10 @@ namespace arena
             //onGameJoin will create player script
             OnGameJoin();
             arenaUI.Init(joinResponse.time_left, player_);
+
+            var bottomLeft = new Vector2(joinResponse.outer_border[0], joinResponse.outer_border[1]);
+            var topRight = new Vector2(joinResponse.outer_border[2], joinResponse.outer_border[3]);
+            background_.transform.localScale = new Vector3(topRight.x-bottomLeft.x, topRight.y-bottomLeft.y, 1);
         }
 
         private void HandlePlayerExperience(proto_common.Event evt)
@@ -350,6 +384,7 @@ namespace arena
             AddEntity(entity);
 
             entity.OnUpdate();
+            entity.OnFixedUpdate();
         }
 
         private void AddEntity(Entity entity)

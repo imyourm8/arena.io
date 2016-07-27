@@ -12,7 +12,7 @@ GameObject:
   - 58: {fileID: 5802464}
   - 114: {fileID: 11485706}
   - 50: {fileID: 5069472}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: WeaponBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,10 +39,10 @@ Rigidbody2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 147724}
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.01
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_IsKinematic: 1
   m_Interpolate: 0
   m_SleepingMode: 1

@@ -6,6 +6,9 @@ public class Weapon : MonoBehaviour
     [SerializeField]
     private GameObject[] bulletSpawnPoints = null;
 
+    [SerializeField]
+    private float recoil;
+
     private Entity owner_;
 
 	public void Init(Entity owner)
@@ -27,6 +30,8 @@ public class Weapon : MonoBehaviour
             owner_.Stats.GetFinValue(proto_game.Stats.BulletSpeed), 
             p.transform.position, 
             owner_.Stats.GetFinValue(proto_game.Stats.BulletDamage));
+
+            owner_.ApplyRecoil(recoil);
         }
     }
 }

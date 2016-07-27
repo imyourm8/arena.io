@@ -70,6 +70,11 @@ public class Player : Entity, PlayerExperience.IExpProvider
         
     }
 
+    public void OnPowerUpGrabbed(PowerUp powerUp)
+    {
+        Controller.OnPowerUpGrabbed(this, powerUp);
+    }
+
     public override void OnUpdate()
     {
         base.OnUpdate();
@@ -89,8 +94,9 @@ public class Player : Entity, PlayerExperience.IExpProvider
         nicknameText_.gameObject.ReturnPooled();
     }
 
-    public void Add(Status effect)
+    public void AddStatus(proto_game.PowerUpType effectType, float duration)
     {
-        statusManager_.Add(effect);
+        Status statusEffect = new Status(effectType, duration);
+        statusManager_.Add(statusEffect);
     }
 }

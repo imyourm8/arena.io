@@ -10,6 +10,7 @@ GameObject:
   - 4: {fileID: 427124}
   - 212: {fileID: 21217468}
   - 114: {fileID: 11449952}
+  - 58: {fileID: 5899444}
   m_Layer: 0
   m_Name: QuadDamage
   m_TagString: Untagged
@@ -29,6 +30,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!58 &5899444
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 101662}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.65
 --- !u!114 &11449952
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -40,6 +55,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f494b083452144394abf9b86f0bff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  local: 0
+  hpBarOffset_: {x: 0, y: 0, z: 0}
+  body_: {fileID: 0}
+  transform_: {fileID: 427124, guid: be5af83159696eb43add5950c664201c, type: 2}
+  hpBar_: {fileID: 0}
   Type: 0
 --- !u!212 &21217468
 SpriteRenderer:

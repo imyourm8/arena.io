@@ -13,6 +13,7 @@ namespace arena.battle
         private SpatialHash entityHash_;
         private BlockSpawner expSpawner_;
         private PlayerSpawnsLayer playerSpawns_;
+        private NavigationLayer navLayer_;
 
         public Map(
             Game game, 
@@ -22,6 +23,7 @@ namespace arena.battle
             PlayerSpawnsLayer playerSpawns)
         {
             powerUps_ = powerUps;
+            navLayer_ = navLayer;
             expLayer_ = expLayer;
             playerSpawns_ = playerSpawns;
             entityHash_ = new SpatialHash(navLayer);
@@ -34,6 +36,17 @@ namespace arena.battle
             var spawnPoint = playerSpawns_.GetSpawnPoint();
             player.X = spawnPoint.Item1;
             player.Y = spawnPoint.Item2;
+        }
+
+        public List<float> GetOuterBorder()
+        {
+            List<float> points = new List<float>();
+            var area = navLayer_.OuterBorder;
+            points.Add(area.minX);
+            points.Add(area.minY);
+            points.Add(area.maxX);
+            points.Add(area.maxY);
+            return points;
         }
 
         public void Update()

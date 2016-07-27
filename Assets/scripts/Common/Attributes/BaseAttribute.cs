@@ -25,12 +25,14 @@ namespace Attributes
         public BaseAttribute<T> SetMultiplier(float m)
         {
             multiplier_ = m;
+            CalculateValue();
             return this;
         }
 
         public BaseAttribute<T> SetPercentValue(float v)
         {
             percentValue_ = v;
+            CalculateValue();
             return this;
         }
 

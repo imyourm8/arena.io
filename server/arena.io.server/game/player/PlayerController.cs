@@ -300,7 +300,6 @@ namespace arena.player
         private void HandlePlayerAttack(proto_common.Request request)
         {
             var attackRequest = request.Extract<proto_game.UnitAttack>(proto_common.Commands.ATTACK);
-
             player_.Game.PlayerAttacked(player_, attackRequest);
         }
 

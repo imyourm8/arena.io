@@ -12,14 +12,21 @@ public class Bullet : MonoBehaviour
     private Vector3 direction_;
     private int collsionCount_ = 0;
     private float damage_ = 0;
-
+    private Transform transform_;
     private const float timeAlive = 1.4f;
     private Tweener moveTween_;
+    private Vector3 oldSize_;
 
     public void Init(Entity owner, Vector3 direction, float speed, Vector3 spawnPoint, float damage)
     {
         owner_ = owner;
-        transform.localPosition = spawnPoint;
+        transform_ = transform;
+        oldSize_ = transform.localScale;
+        var newSize = oldSize_;
+        var scale = owner_.Stats.GetFinValue(proto_game.Stats.BulletSize);
+        newSize.Scale(new Vector3(scale,scale,scale));
+        transform.localScale = newSize;
+        transform_.localPosition = spawnPoint;
         direction_ = direction;
         direction_.Normalize();
 
@@ -32,7 +39,7 @@ public class Bullet : MonoBehaviour
         move.x *= MaxDistanceToTravel;
         move.y *= MaxDistanceToTravel;
 
-        moveTween_ = transform.DOLocalMove(move+transform.localPosition, timeAlive);
+        moveTween_ = transform_.DOLocalMove(move+spawnPoint, timeAlive);
         moveTween_.SetEase(Ease.InSine);
         moveTween_.OnComplete(()=>
         {
@@ -61,6 +68,7 @@ public class Bullet : MonoBehaviour
     void HandleDestroyBullet()
     {
         owner_.Controller.ReturnBullet(this);
+        transform_.localScale = oldSize_;
         moveTween_.Kill(false);
         moveTween_ = null;
     }

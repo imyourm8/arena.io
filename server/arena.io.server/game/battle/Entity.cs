@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace arena.battle
 {
-    class Entity
+    class Entity : SpatialHash.IEntity
     {
         private Attributes.UnitAttributes stats_ = new Attributes.UnitAttributes();
         public Attributes.UnitAttributes Stats
