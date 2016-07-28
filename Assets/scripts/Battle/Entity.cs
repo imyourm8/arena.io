@@ -144,8 +144,15 @@ public class Entity : MonoBehaviour
 
     public Vector2 Position
     {
-        get { return new Vector2(transform_.localPosition.x, transform_.localPosition.y); }
-        set { transform_.localPosition = new Vector3(value.x, value.y, 0); }
+        get 
+        { 
+            return new Vector2(transform_.localPosition.x, transform_.localPosition.y); 
+        }
+
+        set 
+        { 
+            transform_.localPosition = new Vector3(value.x, value.y, 0);
+        }
     }
       
     public AnimatedProgress hpBar_;
@@ -172,7 +179,8 @@ public class Entity : MonoBehaviour
     public virtual void Init(arena.ArenaController controller, Vector2 startPos)
 	{
         controller_ = controller;
-        moveInterpolator_ = new MovementInterpolator(this);
+        if (moveInterpolator_ == null)
+            moveInterpolator_ = new MovementInterpolator(this);
         Position = startPos;
 
         if (!local) 

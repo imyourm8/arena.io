@@ -58,7 +58,7 @@ MonoBehaviour:
   local: 0
   hpBarOffset_: {x: 0, y: -0.6, z: 0}
   body_: {fileID: 0}
-  transform_: {fileID: 492814, guid: 51538fa0d007f9d4d8a30d2fbab00d37, type: 2}
+  transform_: {fileID: 424370}
   hpBar_: {fileID: 0}
 --- !u!212 &21221442
 SpriteRenderer:

@@ -378,6 +378,11 @@ namespace arena
 
             CreateHpBar(entity);
 
+            if (unitPacket.type != proto_game.ExpBlocks.Small)
+            {
+                int h = 0;
+            }
+
             entity.Stats.SetValue(proto_game.Stats.MaxHealth, unitPacket.max_hp);
             entity.Health = unitPacket.hp;
 
