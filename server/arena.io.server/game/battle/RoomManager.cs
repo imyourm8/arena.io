@@ -28,6 +28,7 @@ namespace arena.battle
             if (room == null)
             {
                 room = CreateRoom();
+                rooms_.Add(room);
             }
 
             room.Add(player);
@@ -44,11 +45,6 @@ namespace arena.battle
         private Room CreateRoom()
         {
             return new Room();
-        }
-
-        public void Debug()
-        {
-            var room = CreateRoom();
         }
     }
 }
