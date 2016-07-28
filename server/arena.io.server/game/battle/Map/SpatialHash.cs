@@ -7,7 +7,7 @@ using System.Collections.Concurrent;
 
 namespace arena.battle
 {
-    public class SpatialHash
+    class SpatialHash
     {
         public interface IEntity
         {
