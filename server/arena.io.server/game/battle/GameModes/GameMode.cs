@@ -12,15 +12,18 @@ namespace arena.battle.GameModes
         public Game Game
         { get; set; }
 
-        public virtual void SpawnPlayer(Player player)
-        { }
+        public virtual void SpawnPlayer(Player player) { }
 
         public virtual int GetMatchDuration() { return 0; }
 
         public virtual void HandleEntityKill(Player killer, Entity victim) { }
+
         public virtual int GetExpFor(Player player) { return 0; }
+
         public virtual int GetCoinsFor(Player player) { return 0; }
+
         public virtual void Update(float dt) { }
+
         public virtual string GetMapPath() { return ""; }
     }
 }

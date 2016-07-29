@@ -67,6 +67,9 @@ public class Entity : MonoBehaviour
         get { return exp_; }
     }
 
+    public Vector2 AttackPosition
+    { get; set; }
+
     public bool Local
     { 
         get 
@@ -205,6 +208,7 @@ public class Entity : MonoBehaviour
         set 
         { 
             transform_.localPosition = new Vector3(value.x, value.y, 0);
+            AttackPosition = value;
         }
     }
       
@@ -333,7 +337,7 @@ public class Entity : MonoBehaviour
 
 	public virtual void OnUpdate () 
 	{
-        
+        AttackPosition = Position;
 	}
 
     private void UpdateHpBarPosition()

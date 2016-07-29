@@ -447,3 +447,8 @@ message DamageDone
     optional proto_game.DamageDone dmg_done_evt = 2008; 
   }
 }
+
+message CastSkill
+{
+  required int32 guid = 1;
+}

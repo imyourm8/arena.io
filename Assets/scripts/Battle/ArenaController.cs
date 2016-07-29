@@ -501,6 +501,10 @@ namespace arena
             attackRequest.guid = entity.ID;
             attackRequest.direction = entity.transform.rotation.eulerAngles.z;
 
+            var pos = entity.Position;
+            attackRequest.x = pos.x;
+            attackRequest.y = pos.y;
+
             GameApp.Instance.Client.Send(attackRequest, proto_common.Commands.ATTACK);
         }
 
@@ -521,6 +525,7 @@ namespace arena
             Entity unit = GetEntity(attPacket.guid);
             if (unit != null)
             {
+                unit.AttackPosition = new Vector2(attPacket.x, attPacket.y);
                 unit.PerformAttack(attPacket.direction);
             }
         }

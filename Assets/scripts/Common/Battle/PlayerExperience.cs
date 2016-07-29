@@ -21,7 +21,12 @@
         460,
         500,
         540,
-        580 //20
+        580, //20
+        700,
+        850,
+        1000,
+        1150,
+        1300 //25
     };
 
     public PlayerExperience(IExpProvider provider)

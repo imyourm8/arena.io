@@ -29,7 +29,7 @@ namespace arena.battle
         public int Level
         { get; set; }
 
-        public int Highscore
+        public PlayerBattleStats BattleStats
         { get; set; }
 
         public Room Room

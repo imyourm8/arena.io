@@ -64,6 +64,8 @@ namespace arena.battle
             {
                 player.Game = this;
 
+                player.BattleStats.Reset();
+
                 //now gather all online players now and send to new player
                 foreach (var p in players_)
                 {
@@ -183,11 +185,17 @@ namespace arena.battle
                     Broadcast(proto_common.Events.UNIT_DIE, target.GetDiePacket());
 
                     int expGenerated = target.Exp;
+                    int score = 0;
 
                     if (target is Player)
                     {
-                        PlayerDead(target as Player);
-                        expGenerated /= 10;
+                        var targetPlayer = target as Player;
+                        PlayerDead(targetPlayer);
+
+                        var lvlDiff = Math.Max(1, targetPlayer.Level - player.Level);
+                        expGenerated = 10 * targetPlayer.Level * lvlDiff;
+                        score = targetPlayer.BattleStats.Score / 10;
+                        player.BattleStats.Kills++;
                     }
                     else if (target is ExpBlock)
                     {
