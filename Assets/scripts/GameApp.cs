@@ -28,18 +28,19 @@ public class GameApp : SingletonMonobehaviour<GameApp>
 
 	void Start () 
     {
-        //string ip = "192.168.1.1:4530";
-        //string ip = "127.0.0.1:4530";
-        string ip = "46.188.22.12:4530";
+        //string ip = "192.168.1.2:4530";
+        string ip = "127.0.0.1:4530";
+        //string ip = "46.188.22.12:4530";
 		client_ = new ServerClient (ip, ExitGames.Client.Photon.ConnectionProtocol.Tcp);
 		client_.OnStatusChange += HandleOnStatusChange;
 		timeSync_ = new ServerTimeSync ();
 
         nextBytesReceivedUpdate_ = ClientTimeMs() + 1000;
-        DOTween.SetTweensCapacity(1500, 10);
+        DOTween.SetTweensCapacity(3000, 1000);
 
         client_.OnServerResponse += (proto_common.Response response) => requestsManager_.Update(response);
-        client_.Connect();
+
+        SceneManager.Instance.SetActive(SceneManager.Scenes.Login);
 	}
 
 	void HandleOnStatusChange (ExitGames.Client.Photon.StatusCode status)
@@ -48,7 +49,6 @@ public class GameApp : SingletonMonobehaviour<GameApp>
 		{
 			timeSync_.Start();
             Events.GlobalNotifier.Instance.Trigger(ConnectToServerSuccess);
-            loginUI.ShowUI();
 		}
 	}
 

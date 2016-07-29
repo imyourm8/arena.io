@@ -118,6 +118,11 @@ public class AnimatedProgress : MonoBehaviour
         }
     }
 
+    public void Hide()
+    {
+        alphaGroup_.alpha = 0.0f;
+    }
+
     public void SetProgreessNotAnimated(float progress)
     {
         Fill(progress, false);
@@ -125,6 +130,7 @@ public class AnimatedProgress : MonoBehaviour
 
     public AnimatedProgress ShowSmooth()
     {
+        if (!Hidden) return this;
         hidden_ = false;
         if (alphaGroup_.alpha > 0.99f) return this;
         if (hideTweener_ != null)
@@ -137,6 +143,7 @@ public class AnimatedProgress : MonoBehaviour
 
     public AnimatedProgress HideSmooth()
     {
+        if (Hidden) return this;
         hidden_ = true;
         if (alphaGroup_.alpha < 0.001f) return this;
         if (hideTweener_ != null)

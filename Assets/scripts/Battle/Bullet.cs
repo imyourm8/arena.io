@@ -7,6 +7,9 @@ using DG.Tweening;
 
 public class Bullet : MonoBehaviour 
 {
+    [SerializeField]
+    private Collider2D collider;
+
     private Entity owner_;
     private float speed_;
     private Vector3 direction_;
@@ -16,6 +19,9 @@ public class Bullet : MonoBehaviour
     private const float timeAlive = 1.4f;
     private Tweener moveTween_;
     private Vector3 oldSize_;
+
+    public Collider2D Collider
+    { get { return collider; } }
 
     public void Init(Entity owner, Vector3 direction, float speed, Vector3 spawnPoint, float damage)
     {
@@ -55,7 +61,8 @@ public class Bullet : MonoBehaviour
 
         if (entity != null)
         {
-            owner_.DealDamage(entity, damage_);
+            if (owner_.Local)
+                owner_.DealDamage(entity, damage_);
             collsionCount_++;
 
             //if (owner_.MaxPenetration == collsionCount_)

@@ -32,6 +32,7 @@ public class Weapon : MonoBehaviour
             owner_.Stats.GetFinValue(proto_game.Stats.BulletDamage));
 
             owner_.ApplyRecoil(recoil);
+            Physics2D.IgnoreCollision(bullet.Collider, owner_.Collider);
         }
     }
 }

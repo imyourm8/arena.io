@@ -62,12 +62,6 @@ public class Player : Entity, PlayerExperience.IExpProvider
         weaponScript.Init(this);
         gameObject.AddChild(weapon);
         weapon_ = weaponScript;
-        UpdateWeapons();
-    }
-
-    private void UpdateWeapons()
-    {
-        
     }
 
     public void OnPowerUpGrabbed(PowerUp powerUp)

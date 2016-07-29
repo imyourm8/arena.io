@@ -8,13 +8,19 @@ using System.Collections.Generic;
 public class StatControl : MonoBehaviour 
 {
     [SerializeField]
-    private List<GameObject> statPoints = null;
+    private List<StatPoint> statPoints = null;
 
     [SerializeField]
     private Button addBtn = null;
 
     [SerializeField]
     private proto_game.Stats stat = default(proto_game.Stats);
+
+    [SerializeField]
+    private Color upgradedStatColor;
+
+    [SerializeField]
+    private Color nonUpgradedStatColor;
 
     private int statsCountUpgraded_;
 
@@ -30,14 +36,14 @@ public class StatControl : MonoBehaviour
 
     public void StepBack()
     {
-        statPoints[--statsCountUpgraded_].GetComponent<Image>().color = Color.grey;
+        statPoints[--statsCountUpgraded_].SwitchColor(nonUpgradedStatColor);
     }
 
     public void Reset()
     {
         foreach(var obj in statPoints)
         {
-            obj.GetComponent<Image>().color = Color.grey;
+            obj.SwitchColor(nonUpgradedStatColor);
         }
     }
 
@@ -57,7 +63,7 @@ public class StatControl : MonoBehaviour
     {
         if (statsCountUpgraded_ >= statPoints.Count) return;
 
-        statPoints[statsCountUpgraded_++].GetComponent<Image>().color = Color.white;
+        statPoints[statsCountUpgraded_++].SwitchColor(upgradedStatColor);
 
         if (OnStatUpgrade != null)
             OnStatUpgrade(stat);

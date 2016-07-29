@@ -7,7 +7,7 @@ using System.Timers;
 
 namespace arena
 {
-    public class ArenaController : MonoBehaviour 
+    public class ArenaController : Scene 
     {
         [Header("Arena Set-Up")]
         [SerializeField]
@@ -32,9 +32,6 @@ namespace arena
         private SmoothFollow followCamera = null;
 
         [SerializeField]
-        private LoginSceneController loginScene = null;
-
-        [SerializeField]
         private ExpBlocksDict blockPrefabs = null;
 
         [SerializeField]
@@ -47,9 +44,6 @@ namespace arena
         private ui.ArenaUIController arenaUI = null;
 
         [SerializeField]
-        private CustomizeHeroScreen customizeScreen = null;
-
-        [SerializeField]
         private GameObject background_ = null;
 
         private Player player_ = null;
@@ -60,14 +54,34 @@ namespace arena
         private List<PowerUp> powerUps_ = new List<PowerUp>();
         private List<Player> players_ = new List<Player>();
 
-        private void Start()
+        public override void OnBeforeShow()
         {
             GameApp.Instance.Client.OnServerEvent += HandleEvent;
             GameApp.Instance.Client.OnServerResponse += HandleResponse;
 
-            ResetState();
+            Ready = false;
 
             arenaUI.StatsPanel.OnStatUpgrade = HandleUpgradeStat;
+
+            var findRequest = new proto_game.FindRoom.Request();
+            var id = GameApp.Instance.Client.Send(findRequest, proto_common.Commands.FIND_ROOM);
+
+            GameApp.Instance.RequestsManager.AddRequest(id, 
+            (proto_common.Response response)=>
+            {
+                if (response.error == (int)proto_common.Common.CommonErrors.CE_NO_ERROR)
+                {
+                    OnJoinGame();
+                }
+            });
+        }
+
+        public override void OnBeforeHide()
+        {
+            ResetState();
+
+            GameApp.Instance.Client.OnServerEvent -= HandleEvent;
+            GameApp.Instance.Client.OnServerResponse -= HandleResponse;
         }
 
         private void ResetState()
@@ -77,10 +91,12 @@ namespace arena
                 DestroyEntity(entity.Value, false);
             }
 
+            if (player_ != null)
+                player_.OnAttack -= HandlePlayerAttack;
+
             player_ = null;
             entities_.Clear();
-            customizeScreen.Show();
-            arenaUI.Hide();
+            players_.Clear();
 
             if (positionTimer_ != null)
             {
@@ -101,8 +117,7 @@ namespace arena
 
             player_ = CreatePlayer(User.Instance.ClassSelected);
 
-            arenaUI.Show();
-            customizeScreen.Hide();
+            Ready = true;
         }
 
         private Player CreatePlayer(proto_profile.PlayerClasses cl)
@@ -333,8 +348,12 @@ namespace arena
             var finishedResponse = evt.Extract<proto_game.GameFinished>(proto_common.Events.GAME_FINISHED);
             User.Instance.Coins += finishedResponse.coins;
             User.Instance.ProfileExperience.AddExperience(finishedResponse.exp);
+            ShowHeroSelection();
+        }
 
-            ResetState();
+        private void ShowHeroSelection()
+        {
+            SceneManager.Instance.SetActive(SceneManager.Scenes.SelectHero);
         }
 
         private void HandleJoinGame(proto_common.Response response)
@@ -377,11 +396,6 @@ namespace arena
             entity.ID = unitPacket.guid;
 
             CreateHpBar(entity);
-
-            if (unitPacket.type != proto_game.ExpBlocks.Small)
-            {
-                int h = 0;
-            }
 
             entity.Stats.SetValue(proto_game.Stats.MaxHealth, unitPacket.max_hp);
             entity.Health = unitPacket.hp;
@@ -447,8 +461,9 @@ namespace arena
 
             CreateHpBar(playerToInited);
 
-            playerToInited.Health = plrPacket.hp;
             playerToInited.ApplyStats(plrPacket.stats);
+            playerToInited.Health = plrPacket.hp;
+
             AddEntity(playerToInited);
 
             players_.Add(playerToInited);
@@ -462,8 +477,9 @@ namespace arena
         private void CreateHpBar(Entity entity)
         {
             var hpBar = hpBarsPrefab.GetPooled().GetComponent<AnimatedProgress>();
+            hpBar.SetProgreessNotAnimated(1.0f);
+            hpBar.Hide();
             entity.HpBar = hpBar;
-            hpBar.HideSmooth();
             worldUIContainer.gameObject.AddChild(hpBar.gameObject);
         }
 
@@ -539,7 +555,7 @@ namespace arena
             {
                 if (entity == player_)
                 {
-                    customizeScreen.Show();
+                    ShowHeroSelection();
                 }
                 DestroyEntity(entity);
             }
@@ -583,7 +599,8 @@ namespace arena
 
         private void DestroyEntity(Entity entity, bool rm = true)
         {
-            entity.gameObject.ReturnPooled();
+            entity.Remove(rm);
+            entity.OnRemove();
 
             if (rm)
             {
@@ -593,25 +610,12 @@ namespace arena
 
         private void RemoveEntity(Entity entity)
         {
-            entity.OnRemove();
             entities_.Remove(entity.ID);
 
             if (entity is Player)
             {
                 players_.Remove(entity as Player);
             }
-        }
-
-        private void OnDisable() 
-        {
-            GameApp.Instance.Client.OnServerEvent -= HandleEvent;
-            GameApp.Instance.Client.OnServerResponse -= HandleResponse;
-
-            if (positionTimer_ != null)
-                positionTimer_.Stop();
-
-            if (player_ != null)
-                player_.OnAttack -= HandlePlayerAttack;
         }
 
         public void OnJoinGame()

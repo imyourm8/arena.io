@@ -206,3 +206,6 @@ using proto_game;
 
     [Serializable]
     public class PlayerClassesDict : SerializableDictionaryBase<proto_profile.PlayerClasses, GameObject> { }
+
+    [Serializable]
+    public class ScenesDict : SerializableDictionaryBase<SceneManager.Scenes, Scene> {}

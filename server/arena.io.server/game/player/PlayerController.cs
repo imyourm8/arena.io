@@ -262,7 +262,7 @@ namespace arena.player
         private void HandleFindRoom(proto_common.Request request)
         {
             var response = new proto_game.FindRoom.Response();
-            SendResponse(proto_common.Commands.FIND_ROOM, response);
+            SendResponse(proto_common.Commands.FIND_ROOM, response, request.id);
 
             battle.RoomManager.Instance.AssignPlayerToRandomRoom(player_);
 

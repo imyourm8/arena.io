@@ -17,6 +17,7 @@ namespace arena.battle
         }
 
         private int width_, height_ = 0;
+        private float tileWidth_, tileHeight_ = 1;
         private NavigationLayer navLayer_;
         private ConcurrentDictionary<int, ConcurrentDictionary<int, IEntity>> hash_
             = new ConcurrentDictionary<int, ConcurrentDictionary<int, IEntity>>();
@@ -46,12 +47,13 @@ namespace arena.battle
             if (newTile != currentTile)
             {
                 RemoveFromBucket(entity);
-                entity.X = x;
-                entity.Y = y;
 
                 var bucket = GetBucket(entity.X, entity.Y);
                 bucket.TryAdd(entity.ID, entity);
             }
+
+            entity.X = x;
+            entity.Y = y;
         }
 
         public IEnumerable<IEntity> HitTest(float x, float y, float radius)
@@ -84,9 +86,9 @@ namespace arena.battle
 
         private int GetTileCoord(float x, float y)
         {
-            int tx = (int)Math.Floor(x / (float)width_);
+            int tx = (int)Math.Floor(x / tileWidth_);
             tx = tx >= width_ ? width_ : tx;
-            int ty = (int)Math.Floor(y / (float)height_);
+            int ty = (int)Math.Floor(y / tileHeight_);
             ty = ty >= height_ ? height_ : tx;
             return Hash(tx, ty);
         }

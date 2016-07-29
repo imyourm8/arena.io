@@ -33,26 +33,29 @@ public class ServerClient  : IPhotonPeerListener {
     public long TotalBytesReceived
     { get; set; }
 
-	public void Service() {
-		if (connection_ != null) {
+	public void Service() 
+    {
+		if (connection_ != null) 
+        {
 			connection_.Service();
 		}
 
-		while (OnServerResponse != null && responseQueue.Count > 0) {
+		while (OnServerResponse != null && responseQueue.Count > 0) 
+        {
 			var response = (proto_common.Response)responseQueue.Dequeue();
 			OnServerResponse(response);
 		}
 
-		while (OnServerEvent != null && eventQueue.Count > 0) {
+		while (OnServerEvent != null && eventQueue.Count > 0) 
+        {
 			var evt = (proto_common.Event)eventQueue.Dequeue();
-			//if (Math.Abs(ClickerApp.Instance.TimeMs() - evt.timestamp) > 4000) continue;
-
 			OnServerEvent(evt);
 		}
 	}
 
-	public bool Connect() {
-		return connection_.Connect (address_, "");
+	public bool Connect() 
+    {
+		return connection_.Connect (address_, "arena.io.client");
 	}
 
     //returns request id

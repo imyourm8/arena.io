@@ -35,8 +35,7 @@ public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointer
     #region IPointerUpHandler implementation
     void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
     {
-        joystick_.rectTransform.anchoredPosition = Vector3.zero;
-        inputDirection = Vector2.zero;
+        Reset();
     }
     #endregion
 
@@ -65,5 +64,16 @@ public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointer
                 inputDirection.x * (rect_.sizeDelta.x / 3), inputDirection.y * (rect_.sizeDelta.y / 3), 0
             );
         }
+    }
+
+    private void Reset()
+    {
+        joystick_.rectTransform.anchoredPosition = Vector3.zero;
+        inputDirection = Vector2.zero;
+    }
+
+    private void OnDisable()
+    {
+        Reset();
     }
 }

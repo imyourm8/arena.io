@@ -9,13 +9,13 @@ using DG.Tweening;
 public class Entity : MonoBehaviour
 { 
 	public delegate void OnDeathCallback (Entity entity);
-	public event OnDeathCallback OnDie;
+    public event OnDeathCallback OnDie = null;
 
 	public delegate void OnAttackCallback (Entity entity);
-	public event OnAttackCallback OnAttack;
+    public event OnAttackCallback OnAttack = null;
 
     public delegate void OnDamageCallback (Entity entity, float damage);
-    public event OnDamageCallback OnDamage;
+    public event OnDamageCallback OnDamage = null;
 
     public delegate void OnStopCallback (Entity entity);
     public event OnStopCallback OnStop;
@@ -28,18 +28,26 @@ public class Entity : MonoBehaviour
     private Vector3 hpBarOffset_ = Vector3.zero;
 
     [SerializeField]
-    private Rigidbody2D body_;
+    private Rigidbody2D body_ = null;
 
     [SerializeField]
-    private Transform transform_;
+    private Transform transform_ = null;
 
+    [SerializeField]
+    private Collider2D collider = null;
+
+    [SerializeField]
+    private SpriteRenderer sprite;
+
+    private bool firstInit_ = true;
+    private Color initialColor_;
+    private Vector3 initialScale_;
     private MovementInterpolator moveInterpolator_;
     private Vector2 previousPosition_;
     protected Weapon weapon_;
     private arena.ArenaController controller_;
     private Tween rotationTweener_;
     private Vector2 moveImpulse_;
-
 
     #region getter & setters
     private Vector2 force_;
@@ -49,6 +57,9 @@ public class Entity : MonoBehaviour
         get { return force_; }
     }
 
+    public Collider2D Collider
+    { get { return collider; } }
+
     private int exp_;
     public int Exp
     {
@@ -57,11 +68,52 @@ public class Entity : MonoBehaviour
     }
 
     public bool Local
-    { get { return local; } set { local = value; }}
+    { 
+        get 
+        { 
+            return local; 
+        } 
+        set 
+        { 
+            local = value; 
+            if (!local)
+            { 
+                gameObject.layer = LayerMask.NameToLayer("Enemy"); 
+            }
+            else 
+            {
+                gameObject.layer = LayerMask.NameToLayer("Default"); 
+            }
+        }
+    }
 
     public Vector2 AttackDirection
     {
         get; private set;
+    }
+
+    public void Remove(bool animated)
+    {   
+        if (animated)
+        {
+            Sequence tweenSeq = DOTween.Sequence();
+
+            var scale = transform_.localScale;
+            scale.x *= 1.4f;
+            scale.y *= 1.4f;
+
+            tweenSeq.Append(sprite.DOFade(0.0f, 0.2f));
+            tweenSeq.Join(transform_.DOScale(scale, 0.2f));
+
+            tweenSeq.OnComplete(()=>
+            {   
+                gameObject.ReturnPooled();
+            });
+        } 
+        else
+        {
+            gameObject.ReturnPooled();
+        }
     }
 
     public void SetAttackDirection(float angle)
@@ -127,13 +179,14 @@ public class Entity : MonoBehaviour
         get { return health_; }  
         set 
         {
-            if (!Mathf.Approximately(health_, value) && hpBar_.Hidden)
+            if (!Mathf.Approximately(health_, value))
             {
                 hpBar_.ShowSmooth();
             }
 
             health_ = value;
-            if (Mathf.Approximately(Health, stats_.GetFinValue(proto_game.Stats.MaxHealth)) && !hpBar_.Hidden)
+
+            if (Mathf.Approximately(Health, stats_.GetFinValue(proto_game.Stats.MaxHealth)))
             {
                 hpBar_.HideSmooth();
             }
@@ -178,6 +231,18 @@ public class Entity : MonoBehaviour
 
     public virtual void Init(arena.ArenaController controller, Vector2 startPos)
 	{
+        if (firstInit_)
+        {
+            firstInit_ = false;
+            initialScale_ = transform_.localScale;
+            initialColor_ = sprite.color;
+        }
+        else 
+        {
+            transform_.localScale = initialScale_;
+            sprite.color = initialColor_;
+        }
+
         controller_ = controller;
         if (moveInterpolator_ == null)
             moveInterpolator_ = new MovementInterpolator(this);
@@ -253,7 +318,7 @@ public class Entity : MonoBehaviour
         }
 
         UpdateHpBarPosition();
-
+        
         if (!Moved && !stopped_ && local)
         {
             OnStop(this);
