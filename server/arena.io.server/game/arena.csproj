@@ -188,10 +188,12 @@
     <Compile Include="battle\PlayerClass.cs" />
     <Compile Include="battle\PlayerClassEntry.cs" />
     <Compile Include="battle\PlayerClasses.cs" />
+    <Compile Include="battle\PlayerBattleStats.cs" />
     <Compile Include="battle\PowerUp.cs" />
     <Compile Include="battle\Room.cs" />
     <Compile Include="battle\RoomManager.cs" />
     <Compile Include="battle\Map\SpatialHash.cs" />
+    <Compile Include="battle\Skills\Skill.cs" />
     <Compile Include="Database\Postgres\AuthDB.cs" />
     <Compile Include="Database\Postgres\PlayerDB.cs" />
     <Compile Include="Database\Postgres\PostgresImpl.cs" />

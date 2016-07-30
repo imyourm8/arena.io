@@ -25,28 +25,28 @@ namespace arena.battle
         private Room room_;
         private Map map_;
 
-        public Game(GameModes.GameMode mode, Room room)
+        public Game(GameModes.GameMode mode, Room room)    
         {
             room_ = room;
             fiber_.ScheduleOnInterval(Update, 200, 200);
             fiber_.ScheduleOnInterval(SendPlayerStatuses, 500, 500);
-            fiber_.ScheduleOnInterval(UpdateSpawner, 0, 10000);
+            fiber_.ScheduleOnInterval(UpdateSpawner, 0, 15000);
             fiber_.Schedule(FinishGame, mode.GetMatchDuration());
             matchFinishAt_ = CurrentTime.Instance.CurrentTimeInMs + mode.GetMatchDuration();
 
             lastUpdateTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
 
             mode_ = mode;
-            mode_.Game = this;
+            mode_.Game = this; 
 
-            var mapLoader = new MapLoader(mode_.GetMapPath(), this);
-            map_ = mapLoader.Load();
+            var mapLoader = new MapLoader(mode_.GetMapPath(), this);    
+            map_ = mapLoader.Load(); 
 
             fiber_.Start();
         }
 
         public Map Map
-        { get { return map_; } }
+        { get { return map_; } }  
 
         public int GenerateID()
         {
@@ -65,20 +65,6 @@ namespace arena.battle
                 player.Game = this;
 
                 player.BattleStats.Reset();
-
-                //now gather all online players now and send to new player
-                foreach (var p in players_)
-                {
-                    player.Controller.SendEvent(proto_common.Events.PLAYER_APPEARED, p.GetAppearedPacket());
-                }
-
-                //send blocks
-                foreach (var e in units_)
-                {
-                    var block = e.Value as ExpBlock;
-                    if (block == null) continue;
-                    player.Controller.SendEvent(proto_common.Events.BLOCK_APPEARED, block.GetBlockAppearPacket());
-                }
 
                 //add to players pool
                 players_.Add(player);
@@ -99,18 +85,32 @@ namespace arena.battle
                 var outerBorder = map_.GetOuterBorder();
                 foreach (var coord in outerBorder)
                 {
-                    joinPacket.outer_border.Add(coord);
+                    joinPacket.outer_border.Add(coord); 
                 }
                 joinPacket.time_left = (int)(matchFinishAt_ - CurrentTime.Instance.CurrentTimeInMs);
-                player.Controller.SendResponse(proto_common.Commands.JOIN_GAME, joinPacket);
+                player.Controller.SendResponse(proto_common.Commands.JOIN_GAME, joinPacket); 
 
                 //broadcast new player across other players
-                var appearedPacket = player.GetAppearedPacket();
-                Broadcast(proto_common.Events.PLAYER_APPEARED, appearedPacket, player);
+                var appearedPacket = player.GetAppearedPacket(); 
+                Broadcast(proto_common.Events.PLAYER_APPEARED, appearedPacket); 
 
                 //send packet to connected player aswell
                 appearedPacket.local = true;
                 player.Controller.SendEvent(proto_common.Events.PLAYER_APPEARED, appearedPacket);
+
+                //now gather all online players now and send to new player
+                foreach (var p in joinedPlayers_)
+                {
+                    player.Controller.SendEvent(proto_common.Events.PLAYER_APPEARED, p.GetAppearedPacket());
+                }
+
+                //send blocks
+                foreach (var e in units_)
+                {
+                    var block = e.Value as ExpBlock;
+                    if (block == null) continue;
+                    player.Controller.SendEvent(proto_common.Events.BLOCK_APPEARED, block.GetBlockAppearPacket());
+                }
 
                 Add((Entity)player);
                 joinedPlayers_.Add(player);
@@ -121,6 +121,26 @@ namespace arena.battle
         {
             fiber_.Enqueue(() =>
             {
+                foreach (var powerUp in powerUps_)
+                {
+                    if (powerUp.Holder == player)
+                    {
+                        //drop powerUp
+                        powerUp.Holder = null;
+                        Broadcast(proto_common.Events.POWER_UP_APPEARED, powerUp.GetPowerUpPacket());
+                    }
+                }
+
+                if (player.Level > 10)
+                {
+                    var levelCut = player.Level / 3;
+                    player.Level -= levelCut;
+                }
+                else
+                {
+                    player.Level = 1;
+                }
+                player.Exp = 0;
                 joinedPlayers_.Remove(player);
                 Remove((Entity)player);
             });
@@ -149,9 +169,17 @@ namespace arena.battle
             req.guid = player.ID;
             req.stop = movePacket.stop;
 
+            var oldX = player.X;
+            var oldY = player.Y;
+
             map_.Move(player, req.x, req.y);
             req.x = player.X;
             req.y = player.Y;
+
+            var dx = player.X - oldX;
+            var dy = player.Y - oldY;
+            player.BattleStats.DistanceTraveled +=
+                (int)(dx*dx + dy*dy);
 
             Broadcast(proto_common.Events.UNIT_MOVE, req, player);
         }
@@ -186,6 +214,7 @@ namespace arena.battle
 
                     int expGenerated = target.Exp;
                     int score = 0;
+                    int gold = 0;
 
                     if (target is Player)
                     {
@@ -196,12 +225,16 @@ namespace arena.battle
                         expGenerated = 10 * targetPlayer.Level * lvlDiff;
                         score = targetPlayer.BattleStats.Score / 10;
                         player.BattleStats.Kills++;
+                        gold += targetPlayer.Level / 10;
                     }
                     else if (target is ExpBlock)
                     {
                         map_.OnExpBlockRemoved(target);
                         SpawnGoldPiles(target as ExpBlock);
                     }
+
+                    player.BattleStats.Score += score;
+                    player.BattleStats.Gold += gold;
 
                     var expPacket = new proto_game.PlayerExperience();
                     expPacket.exp = expGenerated;
@@ -271,7 +304,7 @@ namespace arena.battle
             List<PowerUp> toRemove = new List<PowerUp>(4);
             foreach (var pwr in powerUps_)
             {
-                if (pwr.Holded)
+                if (pwr.Holder != null)
                 {
                     pwr.Lifetime -= (int)ldt;
                     if (pwr.Lifetime <= 0)
@@ -294,7 +327,7 @@ namespace arena.battle
 
         private void Broadcast(proto_common.Events evtKey, object msg, Player exceptThis = null)
         {
-            foreach (var player in players_)
+            foreach (var player in joinedPlayers_)
             {
                 if (exceptThis == player) 
                     continue;
@@ -315,10 +348,10 @@ namespace arena.battle
             bool result = false;
             foreach (var pwr in powerUps_)
             {
-                if (pwr.ID == powerUpId && !pwr.Holded)
+                if (pwr.ID == powerUpId && pwr.Holder == null)
                 {
                     result = true;
-                    pwr.Holded = true;  
+                    pwr.Holder = player;  
 
                     var grabEvt = new proto_game.PowerUpGrabbed();
                     grabEvt.who_grabbed = player.ID;
@@ -364,6 +397,7 @@ namespace arena.battle
                 //apply new data to player's profile 
                 player.Profile.AddExperience(finishPacket.exp);
                 player.Profile.AddCoins(finishPacket.coins);
+                //add battle stats for all-time statistics
                 player.Controller.SaveToDB();
                 //send data
                 player.Controller.SendEvent(proto_common.Events.GAME_FINISHED, finishPacket);

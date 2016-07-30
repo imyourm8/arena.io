@@ -8,7 +8,10 @@ using DG.Tweening;
 public class Bullet : MonoBehaviour 
 {
     [SerializeField]
-    private Collider2D collider;
+    private new Collider2D collider = null;
+
+    [SerializeField]
+    private SpriteRenderer sprite = null;
 
     private Entity owner_;
     private float speed_;
@@ -19,12 +22,14 @@ public class Bullet : MonoBehaviour
     private const float timeAlive = 1.4f;
     private Tweener moveTween_;
     private Vector3 oldSize_;
+    private bool destroyed_ = false;
 
     public Collider2D Collider
     { get { return collider; } }
 
     public void Init(Entity owner, Vector3 direction, float speed, Vector3 spawnPoint, float damage)
     {
+        destroyed_ = false;
         owner_ = owner;
         transform_ = transform;
         oldSize_ = transform.localScale;
@@ -51,10 +56,15 @@ public class Bullet : MonoBehaviour
         {
             HandleDestroyBullet();
         });
+
+        var color = sprite.color;
+        color.a = 1.0f;
+        sprite.color = color;
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        if (destroyed_) return;
         if (other.gameObject == owner_.gameObject) return;
 
         Entity entity = other.gameObject.GetComponent<Entity>();
@@ -74,9 +84,13 @@ public class Bullet : MonoBehaviour
 
     void HandleDestroyBullet()
     {
-        owner_.Controller.ReturnBullet(this);
+        destroyed_ = true;
+        sprite.DOFade(0.0f, 0.1f).OnComplete(()=>
+        {
+            gameObject.ReturnPooled();
+            moveTween_.Kill(false);
+            moveTween_ = null;
+        });
         transform_.localScale = oldSize_;
-        moveTween_.Kill(false);
-        moveTween_ = null;
     }
 }

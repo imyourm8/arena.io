@@ -11,6 +11,7 @@ GameObject:
   - 212: {fileID: 21221442}
   - 58: {fileID: 5816236}
   - 114: {fileID: 11496362}
+  - 50: {fileID: 50000010004839814}
   m_Layer: 8
   m_Name: Block5
   m_TagString: Untagged
@@ -62,7 +63,6 @@ MonoBehaviour:
   transform_: {fileID: 424370}
   collider: {fileID: 5816236}
   sprite: {fileID: 21221442}
-  initialScale: {x: 2.5, y: 2.5, z: 1}
   hpBar_: {fileID: 0}
 --- !u!212 &21221442
 SpriteRenderer:
@@ -108,3 +108,20 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 168036}
   m_IsPrefabParent: 1
+--- !u!50 &50000010004839814
+Rigidbody2D:
+  serializedVersion: 2
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 168036}
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0

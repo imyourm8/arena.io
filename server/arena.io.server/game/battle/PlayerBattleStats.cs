@@ -11,7 +11,7 @@ namespace arena.battle
         public int Score
         { get; set; }
 
-        public float Gold
+        public int Gold
         { get; set; }
 
         public int Kills

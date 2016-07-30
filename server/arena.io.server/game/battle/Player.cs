@@ -18,6 +18,7 @@ namespace arena.battle
             Level = 1;
             Profile = profile;
             exp_ = new PlayerExperience(this);
+            BattleStats = new PlayerBattleStats();
         }
 
         public player.Profile Profile
@@ -64,6 +65,7 @@ namespace arena.battle
             appearData.name = Profile.Name;
             appearData.guid = ID;
             appearData.hp = HP;
+            appearData.level = Level;
             appearData.stats = GetStatsPacket();
             appearData.position = new proto_game.Vector();
             appearData.position.x = X;

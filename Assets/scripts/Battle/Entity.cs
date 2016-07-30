@@ -352,7 +352,10 @@ public class Entity : MonoBehaviour
 
     public virtual void OnRemove()
     {
-        Controller.ReturnHpBar(hpBar_.gameObject);        
+        if (hpBar_ != null)
+        {
+            hpBar_.gameObject.ReturnPooled();      
+        }
     }
 
 	public void SetNextPosition(long time, Vector2 pos, bool stop)

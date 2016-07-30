@@ -14,7 +14,7 @@ namespace arena.battle
         public int Lifetime
         { get; set; }
 
-        public bool Holded
+        public Player Holder
         { get; set; }
 
         public proto_game.PowerUpAppeared GetPowerUpPacket()

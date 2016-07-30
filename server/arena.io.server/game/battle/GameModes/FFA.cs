@@ -45,12 +45,16 @@ namespace arena.battle.GameModes
 
         public override int GetExpFor(Player player)
         {
-            return player.Highscore > 0 ? 100 : 0;
+            int exp = player.BattleStats.Kills * 40;
+            exp += 20;
+            return exp;
         }
 
         public override int GetCoinsFor(Player player)
         {
-            return player.Highscore > 0 ? 100 : 0;
+            int gold = player.BattleStats.Gold;
+            gold += player.BattleStats.Kills * 10;
+            return gold;
         }
 
         public override string GetMapPath()

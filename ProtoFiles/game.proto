@@ -398,6 +398,7 @@ message PlayerAppeared
   required float hp = 5;
   required bool local = 6;
   required proto_profile.PlayerClasses class = 7;
+  required int32 level = 8;
 
 	extend proto_common.Event 
 	{

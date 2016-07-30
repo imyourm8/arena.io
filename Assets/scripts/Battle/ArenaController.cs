@@ -78,6 +78,7 @@ namespace arena
 
         public override void OnBeforeHide()
         {
+            DG.Tweening.DOTween.KillAll();
             ResetState();
 
             GameApp.Instance.Client.OnServerEvent -= HandleEvent;
@@ -409,7 +410,15 @@ namespace arena
         private void AddEntity(Entity entity)
         {
             gameObject.AddChild(entity.gameObject);
-            entities_.Add(entity.ID, entity);
+
+            if (entities_.ContainsKey(entity.ID))
+            {
+                Debug.LogFormat("{0} {1}", entity.ID, entity.GetType().ToString());
+            }
+            else
+            {
+                entities_.Add(entity.ID, entity);
+            }
         }
 
         private void HandleUnitMove(proto_common.Event evt)
@@ -448,11 +457,17 @@ namespace arena
             else 
             {
                 playerToInited = player_;
+                player_.Level = plrPacket.level;
                 player_.OnAttack += HandlePlayerAttack;
                 player_.OnStop += HandlePlayerStop;
                 player_.OnStartMove += HandlePlayerStartMove;
                 followCamera.SetTarget(playerToInited.gameObject);
                 followCamera.SnapNextTick();
+
+                if (player_.Level > 1)
+                {
+                    arenaUI.ShowUpgradePanel(player_.Level - 1);
+                }
             }
 
             playerToInited.ID = plrPacket.guid;

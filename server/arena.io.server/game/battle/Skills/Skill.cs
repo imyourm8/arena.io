@@ -10,6 +10,6 @@ namespace arena.battle.Skills
     {
         private long lastCastTime_ = 0;
         public int Cooldown
-        { }
+        { get; set; }
     }
 }

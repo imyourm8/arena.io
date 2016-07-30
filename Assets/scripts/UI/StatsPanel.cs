@@ -43,6 +43,7 @@ public class StatsPanel : MonoBehaviour
 
     public void Reset()
     {
+        statsPointsLeft_ = 0;
         foreach(var control in stats)
         {
             control.Reset();

@@ -11,7 +11,6 @@ GameObject:
   - 212: {fileID: 21228428}
   - 58: {fileID: 5802464}
   - 114: {fileID: 11485706}
-  - 50: {fileID: 50000013820975206}
   m_Layer: 1
   m_Name: WeaponBullet
   m_TagString: Untagged
@@ -58,6 +57,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   collider: {fileID: 5802464}
+  sprite: {fileID: 21228428}
 --- !u!212 &21228428
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -102,20 +102,3 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 147724}
   m_IsPrefabParent: 1
---- !u!50 &50000013820975206
-Rigidbody2D:
-  serializedVersion: 2
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 147724}
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
