@@ -8,6 +8,6 @@ namespace arena.Database
 {
     interface IWorldDB
     {
-        void GetGroupEvents(Database.QueryCallback cb);
+        void GetExpBlocks(Database.QueryCallback cb);
     }
 }

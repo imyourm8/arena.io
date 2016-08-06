@@ -22,7 +22,7 @@ public class StatControl : MonoBehaviour
     [SerializeField]
     private Color nonUpgradedStatColor;
 
-    private int statsCountUpgraded_;
+    private int statsCountUpgraded_ = 0;
 
     public Action<proto_game.Stats> OnStatUpgrade;
 
@@ -41,6 +41,7 @@ public class StatControl : MonoBehaviour
 
     public void Reset()
     {
+        statsCountUpgraded_ = 0;
         foreach(var obj in statPoints)
         {
             obj.SwitchColor(nonUpgradedStatColor);

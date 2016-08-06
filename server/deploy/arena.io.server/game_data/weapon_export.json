@@ -1,0 +1,3 @@
+
+[{"spawnPoints":
+    [ {"x":"0.42", "y":"0", "rot":"0", "bullet":"Common"} ], "sp":[ {"x":"0.42", "y":"0", "rot":"0", "bullet":"Common"} ], "type":"MachineGun"}, {"spawnPoints":[ {"x":"0.43", "y":"0.44", "rot":"0", "bullet":"Common"}, {"x":"0.47", "y":"-0.46", "rot":"0", "bullet":"Common"} ], "sp":[ {"x":"0.43", "y":"0.44", "rot":"0", "bullet":"Common"}, {"x":"0.47", "y":"-0.46", "rot":"0", "bullet":"Common"} ], "type":"DualMachineGun"} ]

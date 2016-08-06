@@ -33,4 +33,58 @@ namespace arena.helpers
             y = minY + helpers.MathHelper.Range(0, Height);
         }
     }
+
+    struct Vector2
+    {
+        public static readonly Vector2 zero = new Vector2(0, 0);
+
+        public float x, y;
+
+        public Vector2(float x, float y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+
+        public void Normilize()
+        {
+            float length = (float)Math.Sqrt(x * x + y * y);
+            if (length > 1.0f)
+            {
+                x /= length;
+                y /= length;
+            }
+        }
+
+        public void Scale(float s)
+        {
+            x *= s;
+            y *= s;
+        }
+
+        public static Vector2 operator *(Vector2 other, float scale)
+        {
+            return new Vector2(other.x*scale, other.y*scale);
+        }
+
+        public static Vector2 operator+(Vector2 other, Vector2 other2)
+        {
+            return new Vector2(other.x+other2.x, other.y+other2.y);
+        }
+
+        public static Vector2 operator -(Vector2 other, Vector2 other2)
+        {
+            return new Vector2(other.x - other2.x, other.y - other2.y);
+        }
+
+        public static implicit operator Box2DX.Common.Vec2(Vector2 toConvert)
+        {
+            return new Box2DX.Common.Vec2(toConvert.x, toConvert.y);
+        }
+
+        public static implicit operator Vector2(Box2DX.Common.Vec2 toConvert)
+        {
+            return new Vector2(toConvert.X, toConvert.Y);
+        }
+    }
 }

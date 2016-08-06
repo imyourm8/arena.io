@@ -9,18 +9,19 @@ package proto_game;
 
 enum Weapons
 {
-  None = 0;
-  Starting = 1;
-  
-  Canon = 2;
-  Sniper = 3;
-  MachineGun = 4;
-  Flank = 5;
-  
-  Triple = 6;
-  TwinFlank = 7;
-  Quad = 8;
-  Triangle = 9;
+  MachineGun = 1;
+  DualMachineGun = 2;
+  Canon = 3;
+}
+
+enum Bullets
+{
+  Common = 1;
+}
+
+enum MobType
+{
+  Basic = 1;
 }
 
 enum PowerUpType
@@ -44,6 +45,11 @@ enum Stats
   
   SkillCooldown = 9;
   BulletSize = 10;
+}
+
+enum Skills
+{
+  BigCannon = 1;
 }
 
 message StatValue
@@ -93,17 +99,35 @@ message Ping
   }
 }
 
-message PlayerMove 
+message PlayerInput
 {
-  message Request 
-	{
-    required Vector position = 1;
-    required int64 timestamp = 2;
-    required bool stop = 3;
-  
+  message Request
+  {
+    required float force_x = 1;
+    required float force_y = 2;
+    required float rotation = 3;
+    required int32 tick = 4;
+    optional Shoot shoot = 5;
+   
     extend proto_common.Request 
+    {
+      optional proto_game.PlayerInput.Request plr_input_req = 2019;
+    }
+  }
+  
+  message Response
+  {
+    required float x = 1;
+    required float y = 2;
+    required float force_x = 3;
+    required float force_y = 4;
+    required int32 tick = 5;
+    optional Shoot shoot = 6;
+    required int64 time = 7;
+    
+    extend proto_common.Response 
 		{
-			optional proto_game.PlayerMove.Request plr_move_req = 2005;
+			optional proto_game.PlayerInput.Response plr_input_res = 2019;
 		}
   }
 }
@@ -143,6 +167,7 @@ message JoinGame
   {
     required int32 time_left = 1;
     repeated float outer_border = 2;
+    required int32 tick = 3;
   
     extend proto_common.Response
     {
@@ -187,18 +212,6 @@ message PlayerUpgrade
 	}
 }
 
-message ApplyDamage
-{
-  required int32 target = 1;
-  required float damage = 2;
-  required int32 lifetime = 3;
-  
-  extend proto_common.Request
-  {
-    optional proto_game.ApplyDamage dmg_req = 2004; 
-  }
-}
-
 message GrabPowerUp
 {
   message Request
@@ -241,7 +254,62 @@ message GrabGoldCoin
   }
 }
 
+
+message CastSkill
+{
+  message Request
+  {
+    required float direction = 1;
+    required float x = 2;
+    required float y = 3;
+    
+    extend proto_common.Request
+    {
+      optional proto_game.CastSkill.Request cast_req = 2017; 
+    }
+  }
+  
+  message Response
+  {
+    extend proto_common.Response
+    {
+      optional proto_game.CastSkill.Response cast_res = 2017; 
+    }
+  }
+}
+
+message Shoot
+{
+  required float direction = 1;
+}
+
 /*  EVENTS */ 
+
+message BulletAppeared
+{
+  required int32 tick = 1;
+  required float x = 2;
+  required float y = 3;
+  required float speed = 4;
+  required float direction = 5;
+}
+
+message MobAppeared
+{
+  required MobType type = 1;
+  required float x = 2;
+  required float y = 3;
+  required int32 id = 4;
+  required float hp = 5;
+  required float max_hp = 6;
+  required float attack_range = 7;
+  required Weapons weapon_used = 8;
+  
+  extend proto_common.Event
+  {
+    optional proto_game.MobAppeared mob_apd_evt = 2020;
+  }
+}
 
 message PowerUpAppeared
 {
@@ -315,7 +383,7 @@ message UnitMove
   required float x = 2;
   required float y = 3;
   required int64 timestamp = 4;
-  required bool stop = 5;
+  required int32 tick = 5;
   
   extend proto_common.Event 
 	{
@@ -382,11 +450,6 @@ message UnitAttack
 	{
 	  optional proto_game.UnitAttack unit_att_evt = 2006;
 	}
-  
-  extend proto_common.Request 
-	{
-	  optional proto_game.UnitAttack unit_att_req = 2006;
-	}
 }
 
 message PlayerAppeared
@@ -399,6 +462,7 @@ message PlayerAppeared
   required bool local = 6;
   required proto_profile.PlayerClasses class = 7;
   required int32 level = 8;
+  required Skills skill = 9;
 
 	extend proto_common.Event 
 	{
@@ -449,7 +513,25 @@ message DamageDone
   }
 }
 
-message CastSkill
+message SyncTick
+{
+  required int32 tick = 1;
+  
+  extend proto_common.Event
+  {
+    optional proto_game.SyncTick sync_tick_evt = 2021;
+  }
+}
+
+message SkillCasted
 {
   required int32 guid = 1;
+  required float direction = 2;
+  required float x = 3;
+  required float y = 4;
+  
+  extend proto_common.Event
+  {
+    optional proto_game.SkillCasted skill_cast_evt = 2019; 
+  }
 }

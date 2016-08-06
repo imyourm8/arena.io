@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace arena.Database
 {
-    public interface ICreatureDB
+    interface ICreatureDB
     {
+        void GetAll(Database.QueryCallback cb); 
     }
 }

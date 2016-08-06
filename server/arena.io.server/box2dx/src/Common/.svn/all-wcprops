@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 33
+/svn/!svn/ver/71/trunk/src/Common
+END
+XForm.cs
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/71/trunk/src/Common/XForm.cs
+END
+Vec2.cs
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/!svn/ver/71/trunk/src/Common/Vec2.cs
+END
+Settings.cs
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/71/trunk/src/Common/Settings.cs
+END
+Vec3.cs
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/!svn/ver/40/trunk/src/Common/Vec3.cs
+END
+Sweep.cs
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/71/trunk/src/Common/Sweep.cs
+END
+Mat22.cs
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/71/trunk/src/Common/Mat22.cs
+END
+Mat33.cs
+K 25
+svn:wc:ra_dav:version-url
+V 42
+/svn/!svn/ver/41/trunk/src/Common/Mat33.cs
+END
+Math.cs
+K 25
+svn:wc:ra_dav:version-url
+V 41
+/svn/!svn/ver/71/trunk/src/Common/Math.cs
+END

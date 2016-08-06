@@ -10,6 +10,8 @@ namespace arena.Database.Postgres
     {
         private AuthDB authDB_ = new AuthDB();
         private PlayerDB playerDB_ = new PlayerDB();
+        private CreatureDB creatureDB_ = new CreatureDB();
+        private WorldDB worldDB_ = new WorldDB();
 
         IAuthDB IDatabaseImpl.AuthDB
         {
@@ -28,12 +30,12 @@ namespace arena.Database.Postgres
 
         ICreatureDB IDatabaseImpl.CreatureDB
         {
-            get { throw new NotImplementedException(); }
+            get { return creatureDB_; }
         }
 
         IWorldDB IDatabaseImpl.WorldDB
         {
-            get { throw new NotImplementedException(); }
+            get { return worldDB_; }
         }
 
         ISpellDB IDatabaseImpl.SpellDB

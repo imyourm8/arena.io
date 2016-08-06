@@ -14,6 +14,7 @@ namespace Attributes
             Add(new Attribute<proto_game.Stats>().Init(proto_game.Stats.ReloadSpeed));
             Add(new Attribute<proto_game.Stats>().Init(proto_game.Stats.SkillDamage));
             Add(new Attribute<proto_game.Stats>().Init(proto_game.Stats.Armor));
+            Add(new Attribute<proto_game.Stats>().Init(proto_game.Stats.SkillCooldown));
         }
     }
 }

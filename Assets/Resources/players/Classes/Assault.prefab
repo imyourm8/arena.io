@@ -70,8 +70,8 @@ Rigidbody2D:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 101980}
   m_UseAutoMass: 0
-  m_Mass: 0.2
-  m_LinearDrag: 5
+  m_Mass: 1
+  m_LinearDrag: 1
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_IsKinematic: 0
@@ -110,13 +110,10 @@ MonoBehaviour:
   transform_: {fileID: 424912}
   collider: {fileID: 5860480}
   sprite: {fileID: 21229216}
-  initialScale: {x: 1, y: 1, z: 1}
   hpBar_: {fileID: 0}
-  weaponsPrefabs:
-    _keys: 00000000
-    _values:
-    - {fileID: 131060, guid: ce8b791c4911f3c4abb6360b00931287, type: 2}
   nicknameOffset: {x: 0, y: 0.6, z: 0}
+  weaponUsed: 1
+  plrClass: 1
 --- !u!212 &21229216
 SpriteRenderer:
   m_ObjectHideFlags: 1

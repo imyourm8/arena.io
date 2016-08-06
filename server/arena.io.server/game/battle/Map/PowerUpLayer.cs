@@ -34,7 +34,7 @@ namespace arena.battle
                 prevSpawnTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
             }
 
-            if (currentPowerUp_ == null && helpers.CurrentTime.Instance.CurrentTimeInMs - prevSpawnTime_ >= 5000)
+            if (currentPowerUp_ == null && helpers.CurrentTime.Instance.CurrentTimeInMs - prevSpawnTime_ >= RespawnDelay)
             {
                 var point = spawnPoints_[helpers.MathHelper.Range(0, spawnPoints_.Count - 1)];
 
@@ -43,8 +43,7 @@ namespace arena.battle
                 float x, y;
                 point.Area.RandomPoint(out x, out y);
 
-                powerUp.X = x;
-                powerUp.Y = y;
+                powerUp.SetPosition(x, y);
                 powerUp.Type = helpers.Extensions.PickRandom<proto_game.PowerUpType>(point.Probabilities, point.TotalWeight);
                 powerUp.Lifetime = point.Durations[powerUp.Type];
 

@@ -38,17 +38,15 @@ namespace TapCommon
         public static readonly Dictionary<int, OperationCondition> conditionList = new Dictionary<int, OperationCondition>
 		{
 			{(int)proto_common.Commands.AUTH, new OperationCondition(ClientState.Unlogged, 1, ExecutionMethod.Queued)},
-            {(int)proto_common.Commands.PLAYER_MOVE, new OperationCondition(ClientState.Logged|ClientState.InBattle, 1, ExecutionMethod.Queued)},
             {(int)proto_common.Commands.TURN, new OperationCondition(ClientState.Logged|ClientState.InBattle, 1, ExecutionMethod.Queued)},
-            {(int)proto_common.Commands.ATTACK, new OperationCondition(ClientState.Logged|ClientState.InBattle, 1, ExecutionMethod.Queued)},
             {(int)proto_common.Commands.PING, new OperationCondition(ClientState.Logged, 1, ExecutionMethod.AlwaysExecute)},
-            {(int)proto_common.Commands.DAMAGE, new OperationCondition(ClientState.Logged|ClientState.InBattle, 1, ExecutionMethod.Queued)},
             {(int)proto_common.Commands.JOIN_GAME, new OperationCondition(ClientState.Logged|ClientState.SwitchGameServer, 1, ExecutionMethod.Queued)},
             {(int)proto_common.Commands.CHANGE_NICKNAME, new OperationCondition(ClientState.Logged, 1, ExecutionMethod.AlwaysExecute)},
             {(int)proto_common.Commands.FIND_ROOM, new OperationCondition(ClientState.Logged, 1, ExecutionMethod.AlwaysExecute)},
             {(int)proto_common.Commands.ADMIN_AUTH, new OperationCondition(ClientState.Unlogged, 1, ExecutionMethod.AlwaysExecute)},
             {(int)proto_common.Commands.STAT_UPGRADE, new OperationCondition(ClientState.InBattle, 1, ExecutionMethod.Queued)},
-            {(int)proto_common.Commands.GRAB_POWERUP, new OperationCondition(ClientState.InBattle, 1, ExecutionMethod.Queued)}
+            {(int)proto_common.Commands.GRAB_POWERUP, new OperationCondition(ClientState.InBattle, 1, ExecutionMethod.Queued)},
+            {(int)proto_common.Commands.PLAYER_INPUT, new OperationCondition(ClientState.InBattle, 1, ExecutionMethod.Queued)}
 		};
 	};
 }

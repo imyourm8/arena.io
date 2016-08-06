@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using arena.helpers;
+using Box2DX.Dynamics;
 
 namespace arena.battle
 {
@@ -10,22 +12,101 @@ namespace arena.battle
     {
         private Attributes.UnitAttributes stats_ = new Attributes.UnitAttributes();
         public Attributes.UnitAttributes Stats
-        { get { return stats_; }}
+        { get { return stats_; } }
 
         public int ID
         { get; set; }
 
-        public float X
+        public float Radius
         { get; set; }
 
-        public float Y
+        public PhysicsDefs.Category Category
         { get; set; }
+
+        private Vector2 position_ = Vector2.zero;
+        public void SetPosition(float x, float y)
+        {
+            PrevPosition = position_;
+            position_.x = x;
+            position_.y = y;
+            if (Body != null)
+            {
+                Body.SetPosition(position_);
+            }
+        }
+
+        public Vector2 PrevPosition
+        { get; private set; }
+
+        public Vector2 Position
+        {
+            get 
+            {
+                if (Body != null)
+                {
+                    position_ = Body.GetPosition();
+                }
+                return position_;
+            }
+            set 
+            {
+                SetPosition(value.x, value.y);
+            }
+        }
+
+        private Vector2 velocity_ = Vector2.zero;
+        public Vector2 Velocity
+        {
+            get { return velocity_; }
+            set
+            {
+                velocity_ = value;
+
+                if (Body != null)
+                {
+                    Body.SetLinearVelocity(velocity_);
+                }
+            }
+        }
+
+        private float rotation_;
+        public float Rotation
+        {
+            get { return rotation_; }
+            set 
+            {
+                rotation_ = value;
+                RotationVec = new Vector2((float)Math.Cos(rotation_), (float)Math.Sin(rotation_));
+            }
+        }
+
+        public Vector2 RotationVec
+        { get; set; }
+
+        public bool Moved
+        {
+            get
+            {
+                return !MathHelper.Approx(PrevPosition, Position);
+            }
+        }
 
         public float HP
         { get; set; }
 
         public int Exp
         { get; set; }
+
+        public Game Game
+        { get; set; }
+
+        public Body Body
+        { get; set; }
+
+        public bool IsAlive
+        {
+            get { return !MathHelper.Approx(HP, 0.0f); }
+        }
 
         public proto_game.UnitDie GetDiePacket()
         {
@@ -50,7 +131,64 @@ namespace arena.battle
             return stats;
         }
 
+        public virtual void OnRemove()
+        {
+        }
+
         public virtual void Update(float dt)
-        { }
+        {
+        }
+
+        public void ApplyDamage(Entity attacker, float damage)
+        {
+            if (!IsAlive) 
+                return; 
+
+            HP -= Math.Max(damage - Stats.GetFinValue(proto_game.Stats.Armor), 1);
+             
+            var dmgDonePacket = new proto_game.DamageDone();
+            dmgDonePacket.hp_left = HP;
+            dmgDonePacket.target = ID;
+
+            Game.Broadcast(proto_common.Events.DAMAGE_DONE, dmgDonePacket);
+
+            if (!IsAlive)
+            {
+                Game.RegisterAsDead(attacker, this);
+            }
+        }
+
+        public void MoveInDirection(Vector2 dir)
+        {
+            dir.Normilize();
+            dir.Scale(Stats.GetFinValue(proto_game.Stats.MovementSpeed));
+            Velocity = dir;
+        }
+
+        public virtual void InitPhysics(bool dynamicBody = true)
+        {
+            if (Body != null)
+                return;
+
+            BodyDef def = new BodyDef();
+
+            Body body = Game.CreateBody(def);
+            body.SetFixedRotation(true);
+
+            CircleDef shape = new CircleDef();
+            shape.Radius = Radius;
+            shape.Density = dynamicBody?1.0f:0.0f;//dynamic body
+            shape.Filter.CategoryBits = (ushort)Category;
+
+            ushort mask = (ushort)PhysicsDefs.Category.BULLET | (ushort)PhysicsDefs.Category.WALLS;
+            shape.Filter.MaskBits = mask;
+            body.CreateFixture(shape);
+            body.SetMassFromShapes();
+            body.SetUserData(this);
+            //refresh body's position just in case
+            var pos = Position;
+            Body = body;
+            Position = pos;
+        }
     }
 }

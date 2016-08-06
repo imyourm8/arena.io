@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class Weapon : MonoBehaviour 
 {
     [SerializeField]
-    private GameObject[] bulletSpawnPoints = null;
+    private BulletSpawnPoint[] bulletSpawnPoints = null;
 
     [SerializeField]
     private float recoil;
+
+    [SerializeField]
+    private proto_game.Weapons weaponType;
 
     private Entity owner_;
 
@@ -15,6 +18,18 @@ public class Weapon : MonoBehaviour
     {
         owner_ = owner;
     }
+
+    #if UNITY_EDITOR
+    public List<BulletSpawnPoint> GetSpawnPoints()
+    {
+        return new List<BulletSpawnPoint>(bulletSpawnPoints);
+    }
+
+    public proto_game.Weapons GetWeaponType()
+    {
+        return weaponType;
+    }
+    #endif
 
     public void SpawnBullets()
     {
@@ -48,6 +63,7 @@ public class Weapon : MonoBehaviour
             );
 
             owner_.ApplyRecoil(recoil);
+            owner_.Controller.AddBullet(bullet);
             //dont allow collide with owned bullets
             Physics2D.IgnoreCollision(bullet.Collider, owner_.Collider);
         }

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using arena.helpers;
+
 namespace arena.battle
 {
     class Map
@@ -14,28 +16,32 @@ namespace arena.battle
         private BlockSpawner expSpawner_;
         private PlayerSpawnsLayer playerSpawns_;
         private NavigationLayer navLayer_;
+        private MobLayer mobLayer_;
 
         public Map(
             Game game, 
             PowerUpLayer powerUps, 
             ExpLayer expLayer, 
             NavigationLayer navLayer, 
-            PlayerSpawnsLayer playerSpawns)
+            PlayerSpawnsLayer playerSpawns,
+            MobLayer mobLayer)
         {
+            mobLayer_ = mobLayer;
             powerUps_ = powerUps;
             navLayer_ = navLayer;
             expLayer_ = expLayer;
             playerSpawns_ = playerSpawns;
             entityHash_ = new SpatialHash(navLayer);
             expSpawner_ = new BlockSpawner(expLayer, game);
-            powerUps.Game = game;
+
+            powerUps_.Game = game;
+            mobLayer_.Game = game;
         }
 
         public void SpawnPlayer(Player player)
         {
             var spawnPoint = playerSpawns_.GetSpawnPoint();
-            player.X = spawnPoint.Item1;
-            player.Y = spawnPoint.Item2;
+            player.SetPosition(spawnPoint.Item1, spawnPoint.Item2);
         }
 
         public List<float> GetOuterBorder()
@@ -53,6 +59,7 @@ namespace arena.battle
         {
             expSpawner_.Update();
             powerUps_.Update();
+            mobLayer_.Update();
         }
 
         public void Add(Entity entity)
@@ -70,14 +77,24 @@ namespace arena.battle
             entityHash_.Clear();
         }
 
-        public void Move(Entity entity, float x, float y)
+        public void Move(Entity entity, Vector2 pos)
         {
-            entityHash_.Move(entity, x, y);
+            entityHash_.Move(entity, pos);
+        }
+
+        public IEnumerable<SpatialHash.IEntity> HitTest(Vector2 pos, float radius)
+        {
+            return entityHash_.HitTest(pos, radius);
         }
 
         public void OnExpBlockRemoved(Entity entity)
         {
             expSpawner_.OnExpBlockRemoved(entity);
+        }
+
+        public void OnMobDead(Mob mob)
+        {
+            mobLayer_.OnMobDead(mob);
         }
     }
 }

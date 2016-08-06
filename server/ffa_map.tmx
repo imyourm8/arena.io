@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="left-up" width="50" height="50" tilewidth="1" tileheight="1" nextobjectid="22">
- <objectgroup name="PowerUps">
+<map version="1.0" orientation="orthogonal" renderorder="left-up" width="50" height="50" tilewidth="1" tileheight="1" nextobjectid="46">
+ <objectgroup name="PowerUps" visible="0">
   <properties>
    <property name="DoubleDamage" type="int" value="30"/>
    <property name="HugeBullets" type="int" value="30"/>
@@ -41,31 +41,35 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup name="Map" visible="0">
+ <objectgroup name="Map">
+  <properties>
+   <property name="HashHeight" type="int" value="10"/>
+   <property name="HashWidth" type="int" value="10"/>
+  </properties>
   <object id="1" name="OuterBorder" x="0" y="0" width="50" height="50"/>
  </objectgroup>
  <objectgroup name="Exp" visible="0">
   <properties>
-   <property name="Height" type="int" value="10"/>
-   <property name="MaxBlocks" type="int" value="200"/>
-   <property name="Width" type="int" value="10"/>
+   <property name="Height" type="int" value="5"/>
+   <property name="MaxBlocks" type="int" value="50"/>
+   <property name="Width" type="int" value="5"/>
   </properties>
   <object id="3" name="1" type="Area" x="0" y="0" width="50" height="50">
    <properties>
     <property name="Big" type="float" value="0"/>
     <property name="GoldBlock" type="float" value="1"/>
     <property name="Huge" type="float" value="0"/>
-    <property name="Medium" type="float" value="5"/>
-    <property name="Small" type="float" value="10"/>
+    <property name="Medium" type="float" value="0"/>
+    <property name="Small" type="float" value="0"/>
    </properties>
   </object>
   <object id="5" name="2" x="15" y="15" width="20" height="20">
    <properties>
-    <property name="Big" type="float" value="20"/>
+    <property name="Big" type="float" value="0"/>
     <property name="GoldBlock" type="float" value="7"/>
-    <property name="Huge" type="float" value="15"/>
-    <property name="Medium" type="float" value="5"/>
-    <property name="Small" type="float" value="3"/>
+    <property name="Huge" type="float" value="0"/>
+    <property name="Medium" type="float" value="0"/>
+    <property name="Small" type="float" value="0"/>
    </properties>
   </object>
  </objectgroup>
@@ -78,5 +82,130 @@
   <object id="19" x="19.3636" y="1.27273" width="10" height="9.36364"/>
   <object id="20" x="2.09091" y="19" width="7.45455" height="10"/>
   <object id="21" x="39.8182" y="19.0909" width="7.45455" height="10"/>
+ </objectgroup>
+ <objectgroup name="Mobs" visible="0">
+  <properties>
+   <property name="RespawnDelay" type="int" value="30000"/>
+  </properties>
+  <object id="24" x="4" y="2" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="25" x="16" y="2" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="26" x="28" y="2" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="27" x="40" y="2" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="30" x="39.9091" y="40.6364" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="31" x="3.90909" y="40.6364" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="32" x="27.9091" y="40.6364" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="33" x="15.9091" y="40.6364" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="34" x="3.90909" y="21.2727" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="35" x="3.81818" y="11.3636" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="36" x="4" y="31.2727" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="37" x="39.8182" y="11.4545" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="38" x="39.9091" y="21.3636" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="39" x="40" y="31.3636" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="40" x="27.7273" y="11.6364" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="41" x="27.8182" y="21.5455" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="42" x="27.9091" y="31.5455" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="43" x="15.7273" y="11.6364" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="44" x="15.8182" y="21.5455" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="45" x="15.9091" y="31.5455" width="6" height="6">
+   <properties>
+    <property name="Basic" value="1.0"/>
+    <property name="MaxCount" type="int" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

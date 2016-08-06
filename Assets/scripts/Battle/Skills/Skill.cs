@@ -8,13 +8,22 @@ public class Skill : MonoBehaviour
     public long Cooldown
     { get; set; }
 
-    public bool Cast()
+    public Entity Owner
+    { get; set; }
+
+    public void Cast()
     {
-        if (GameApp.Instance.TimeMs() - lastCastTime_ < Cooldown)
+        OnCast();
+        lastCastTime_ = GameApp.Instance.TimeMs();
+    }
+
+    public bool CanCast()
+    {
+        var time = GameApp.Instance.TimeMs();
+        if (time - lastCastTime_ < Cooldown)
         {
             return false;
         }
-
         return true;
     }
 

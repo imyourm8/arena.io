@@ -27,7 +27,7 @@ namespace arena.battle
 
             if (room == null)
             {
-                room = CreateRoom();
+                room = CreateRoom(); 
                 rooms_.Add(room);
             }
 

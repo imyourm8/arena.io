@@ -27,12 +27,13 @@ namespace arena.battle
             List<ExpArea> expAreas = new List<ExpArea>();
             ExpLayer expLayer = new ExpLayer(expAreas);
 
+            List<MobSpawnPoint> mobSpawnPoints = new List<MobSpawnPoint>();
+            MobLayer mobLayer = new MobLayer(mobSpawnPoints);
+
             List<PlayerSpawnPoint> playerSpawnPoints = new List<PlayerSpawnPoint>();
             PlayerSpawnsLayer playerSpawnsLayer = new PlayerSpawnsLayer(playerSpawnPoints);
 
             NavigationLayer navLayer = new NavigationLayer();
-            navLayer.TileWidth = jsonMap.SelectToken("width").Value<int>();
-            navLayer.TileHeight = jsonMap.SelectToken("height").Value<int>();
 
             foreach (var layer in layers)
             {
@@ -111,11 +112,15 @@ namespace arena.battle
                 }
                 else if (layerName == "Map")
                 {
+                    var properties = layer.SelectToken("properties");
+                    navLayer.TileHeight = properties.SelectToken("HashHeight").Value<int>();
+                    navLayer.TileWidth = properties.SelectToken("HashWidth").Value<int>();
+
                     foreach (var obj in layer.SelectToken("objects"))
                     {
                         if (obj.SelectToken("name").Value<string>() == "OuterBorder")
                         {
-                            navLayer.OuterBorder = ParseArea(obj);
+                            navLayer.OuterBorder = ParseArea(obj); 
                         }
                     }
                 }
@@ -129,9 +134,40 @@ namespace arena.battle
                         playerSpawnPoints.Add(spawnPoint);
                     }
                 }
+                else if (layerName == "Mobs")
+                {
+                    var properties = layer.SelectToken("properties");
+                    mobLayer.RespawnDelay = properties.SelectToken("RespawnDelay").Value<int>();
+
+                    foreach (var obj in layer.SelectToken("objects"))
+                    {
+                        var spawnPoint = new MobSpawnPoint();
+                        spawnPoint.Area = ParseArea(obj);
+
+                        mobSpawnPoints.Add(spawnPoint);
+
+                        properties = obj.SelectToken("properties");
+                        var probabilities = new Dictionary<proto_game.MobType, float>();
+                        foreach (JProperty prop in properties)
+                        {
+                            if (prop.Name == "MaxCount")
+                            {
+                                spawnPoint.MaxCount = prop.Value.Value<int>();
+                            }
+                            else
+                            {
+                                probabilities.Add(
+                                    helpers.Parsing.ParseEnum<proto_game.MobType>(prop.Name),
+                                    prop.Value.Value<float>()
+                                );
+                            }
+                        }
+                        spawnPoint.Probabilities = probabilities;
+                    }
+                }
             }
 
-            map_ = new Map(game, powerUpLayer, expLayer, navLayer, playerSpawnsLayer);
+            map_ = new Map(game, powerUpLayer, expLayer, navLayer, playerSpawnsLayer, mobLayer);
         }
 
         private helpers.Area ParseArea(JToken node)

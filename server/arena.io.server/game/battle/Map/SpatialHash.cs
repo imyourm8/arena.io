@@ -5,19 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 
+using arena.helpers;
+
 namespace arena.battle
 {
     class SpatialHash
     {
         public interface IEntity
         {
-            float X { get; set; }
-            float Y { get; set; }
+            Vector2 Position { get; }
+            void SetPosition(float x, float y);
             int ID { get; }
         }
 
         private int width_, height_ = 0;
-        private float tileWidth_, tileHeight_ = 1;
         private NavigationLayer navLayer_;
         private ConcurrentDictionary<int, ConcurrentDictionary<int, IEntity>> hash_
             = new ConcurrentDictionary<int, ConcurrentDictionary<int, IEntity>>();
@@ -30,7 +31,7 @@ namespace arena.battle
 
         public void Add(IEntity entity)
         {
-            var bucket = GetBucket(entity.X, entity.Y);
+            var bucket = GetBucket(entity.Position);
             bucket.TryAdd(entity.ID, entity);
         }
 
@@ -39,31 +40,31 @@ namespace arena.battle
             RemoveFromBucket(entity);
         }
 
-        public void Move(IEntity entity, float x, float y)
+        public void Move(IEntity entity, Vector2 pos)
         {
-            var currentTile = GetTileCoord(entity.X, entity.Y);
-            var newTile = GetTileCoord(x, y);
+            var entityPos = entity.Position;
+            var currentTile = GetTileCoord(entityPos);
+            var newTile = GetTileCoord(pos);
 
             if (newTile != currentTile)
             {
                 RemoveFromBucket(entity);
 
-                var bucket = GetBucket(entity.X, entity.Y);
+                var bucket = GetBucket(entityPos);
                 bucket.TryAdd(entity.ID, entity);
             }
 
-            entity.X = x;
-            entity.Y = y;
+            entity.SetPosition(pos.x, pos.y);
         }
 
-        public IEnumerable<IEntity> HitTest(float x, float y, float radius)
+        public IEnumerable<IEntity> HitTest(Vector2 pos, float radius)
         {
-            int xl = (int)(x - radius) / width_;
-            int xh = (int)(x + radius) / width_;
-            int yl = (int)(y - radius) / height_;
-            int yh = (int)(y + radius) / height_;
-            for (var x_ = xl; x_ <= xh; x++)
-                for (var y_ = yl; y_ <= yh; y++)
+            int xl = (int)(pos.x - radius) / width_;
+            int xh = (int)(pos.x + radius) / width_;
+            int yl = (int)(pos.y - radius) / height_;
+            int yh = (int)(pos.y + radius) / height_;
+            for (var x_ = xl; x_ <= xh; x_++)
+                for (var y_ = yl; y_ <= yh; y_++)
                 {
                     ConcurrentDictionary<int, IEntity> bucket;
                     if (hash_.TryGetValue(Hash(x_, y_), out bucket))
@@ -73,23 +74,23 @@ namespace arena.battle
 
         private void RemoveFromBucket(IEntity entity)
         {
-            var bucket = GetBucket(entity.X, entity.Y);
+            var bucket = GetBucket(entity.Position);
             bucket.TryRemove(entity.ID, out entity);
         }
 
-        private ConcurrentDictionary<int, IEntity> GetBucket(float x, float y)
+        private ConcurrentDictionary<int, IEntity> GetBucket(Vector2 pos)
         {
-            int hash = GetTileCoord(x, y);
+            int hash = GetTileCoord(pos);
             ConcurrentDictionary<int, IEntity> bucket = hash_.GetOrAdd(hash, _ => new ConcurrentDictionary<int, IEntity>());    
             return bucket;
         }
 
-        private int GetTileCoord(float x, float y)
+        private int GetTileCoord(Vector2 pos)
         {
-            int tx = (int)Math.Floor(x / tileWidth_);
+            int tx = (int)Math.Floor(pos.x / (float)width_);
             tx = tx >= width_ ? width_ : tx;
-            int ty = (int)Math.Floor(y / tileHeight_);
-            ty = ty >= height_ ? height_ : tx;
+            int ty = (int)Math.Floor(pos.y / (float)height_);
+            ty = ty >= height_ ? height_ : ty;
             return Hash(tx, ty);
         }
 

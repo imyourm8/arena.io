@@ -90,7 +90,15 @@ public class LoginSceneController : Scene
     public void LoginWithNickname()
     {
         authType_ = AuthType.Nickname;
-        GameApp.Instance.Client.Connect();
+
+        if (GameApp.Instance.Client.Status == ExitGames.Client.Photon.StatusCode.Connect)
+        {
+            HandleConnectedClient();
+        }
+        else 
+        {
+            GameApp.Instance.Client.Connect();
+        }
     }
 
     public void LoginWithFB()
@@ -138,22 +146,27 @@ public class LoginSceneController : Scene
 		}
 	}
 
+    void HandleConnectedClient()
+    {
+        switch(authType_)
+        {
+            case AuthType.Nickname:
+                TryLoginWithNickname();
+                break;
+            case AuthType.FB:
+                FB.LogInWithReadPermissions (
+                    new List<string>() {"public_profile", "email", "user_friends"},
+                    AuthCallback
+                );
+                break;
+        }
+    }
+
 	void HandleOnStatusChange (ExitGames.Client.Photon.StatusCode status)
 	{
 		if (status == ExitGames.Client.Photon.StatusCode.Connect) 
         {
-			switch(authType_)
-            {
-                case AuthType.Nickname:
-                    TryLoginWithNickname();
-                    break;
-                case AuthType.FB:
-                    FB.LogInWithReadPermissions (
-                        new List<string>() {"public_profile", "email", "user_friends"},
-                        AuthCallback
-                    );
-                    break;
-            }
+            HandleConnectedClient();
 		}
         else if (status == ExitGames.Client.Photon.StatusCode.Disconnect)
         {

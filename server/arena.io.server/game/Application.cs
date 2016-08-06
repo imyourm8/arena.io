@@ -25,7 +25,7 @@ namespace arena
 {
     public class Application : Photon.SocketServer.ApplicationBase
     {
-        private static ILogger log = LogManager.GetCurrentClassLogger();
+        private static ILogger log = LogManager.GetCurrentClassLogger(); 
         protected override PeerBase CreatePeer(InitRequest initRequest)
         {
             PlayerConnection connection = new PlayerConnection(initRequest.Protocol, initRequest.PhotonPeer);
@@ -46,25 +46,10 @@ namespace arena
             Database.Database.Instance.SetDatabaseImplementation(new Database.Postgres.PostgresImpl());
 
             Factories.PlayerClassFactory.Instance.Init();
-            /*
-            log.Info("Initializing Factories...");
-            Factory.FactoryBattleState.Instance.Init();
-            Factory.FactorySpell.Instance.Init();
-            Factory.FactoryAI.Instance.Init();
-            Factory.FactorySpellEffect.Instance.Init();
-            
-            Factory.FactoryStatusEffect.Instance.Init();
-            Factory.FactoryGroupEvent.Instance.Init();
-
-            log.Info("Initializing Status Effects...");
-            StatusEffects.Effect.Init();
-            log.Info("Initializing Spells...");
-            Spells.Spell.Init();
-            log.Info("Initializing Player Controller...");
-            PlayerController.Init();*/
-            log.Info("Initialization complete succesfully ╭( ･ㅂ･)و");
-
-            //battle.RoomManager.Instance.Debug();
+            Factories.MobsFactory.Instance.Init();
+            Factories.WeaponFactory.Instance.Init();
+            Factories.BulletFactory.Instance.Init();
+            Factories.ExpBlockFactory.Instance.Init();
         }
 
         protected override void TearDown()

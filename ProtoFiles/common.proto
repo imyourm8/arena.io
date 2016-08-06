@@ -19,10 +19,6 @@ enum Commands
   ADMIN_AUTH = 13;
   ENTER_AREA = 2001;
   
-  DAMAGE = 2004;
-  PLAYER_MOVE = 2005;
-  ATTACK = 2006;
-  
   TURN = 2009;
   PLAYER_UPGRADE = 2010;
   JOIN_GAME = 2011;
@@ -31,6 +27,8 @@ enum Commands
   STAT_UPGRADE = 2014;
   GRAB_POWERUP = 2015;
   GRAB_COIN  = 2016;
+  CAST_SKILL = 2017;
+  PLAYER_INPUT = 2018;
 };
 
 enum Events
@@ -53,6 +51,9 @@ enum Events
   POWER_UP_APPEARED = 2016;
   POWER_UP_GRABBED = 2017;
   SPAWN_GOLD_COIN = 2018;
+  SKILL_CASTED = 2019;
+  MOB_APPEARED = 2020;
+  SYNC_TICK = 2021;
 };
 
 enum PacketFlags

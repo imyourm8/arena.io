@@ -80,13 +80,10 @@ MonoBehaviour:
   transform_: {fileID: 424912}
   collider: {fileID: 5860480}
   sprite: {fileID: 21229216}
-  initialScale: {x: 1, y: 1, z: 1}
   hpBar_: {fileID: 0}
-  weaponsPrefabs:
-    _keys: 00000000
-    _values:
-    - {fileID: 131060, guid: 5608029b476a6854bac4c629d478ac43, type: 2}
   nicknameOffset: {x: 0, y: 0.6, z: 0}
+  weaponUsed: 2
+  plrClass: 2
 --- !u!212 &21229216
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -120,8 +120,13 @@ public class ServerClient  : IPhotonPeerListener {
 
 	public void OnStatusChanged (StatusCode statusCode) {
 		status_ = statusCode;
-		if (OnStatusChange != null) {
-			OnStatusChange(statusCode);
+		if (OnStatusChange != null) 
+        {
+			Worker.Instance.Add(()=>
+            {
+                OnStatusChange(statusCode);
+                return true;
+            });
 		}
 	}
 

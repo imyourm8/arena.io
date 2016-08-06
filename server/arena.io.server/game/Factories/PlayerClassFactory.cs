@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Data;
 
 using arena.battle;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace arena.Factories
 {
@@ -25,10 +28,22 @@ namespace arena.Factories
                 return;
             }
 
+            var jsonPlayers = JArray.Parse(File.ReadAllText("game_data/players_export.json"));
+            var dict = new Dictionary<proto_profile.PlayerClasses, JToken>();
+            foreach (JToken plr in jsonPlayers)
+            {
+                var @class = helpers.Parsing.ParseEnum<proto_profile.PlayerClasses>(plr.SelectToken("class").Value<string>());
+                dict.Add(@class, plr);
+            }
+
             while(data.Read())
             {
                 var entry = new PlayerClassEntry(data);
                 classes_.Add(entry.@Class, entry);
+
+                var plr = dict[entry.@Class];
+                entry.CollisionRadius = plr.SelectToken("radius").Value<float>();
+                entry.Weapon = helpers.Parsing.ParseEnum<proto_game.Weapons>(plr.SelectToken("weapon").Value<string>());
             };
         }
 

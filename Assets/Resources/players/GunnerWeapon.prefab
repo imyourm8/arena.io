@@ -24,6 +24,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 434396}
+  - 114: {fileID: 114000011147902090}
   m_Layer: 0
   m_Name: BulletSpawnPoint (1)
   m_TagString: Untagged
@@ -55,6 +56,7 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 439982}
+  - 114: {fileID: 114000013297824732}
   m_Layer: 0
   m_Name: BulletSpawnPoint
   m_TagString: Untagged
@@ -159,9 +161,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bulletSpawnPoints:
-  - {fileID: 132720}
-  - {fileID: 130424}
+  - {fileID: 114000013297824732}
+  - {fileID: 114000011147902090}
   recoil: 0.1
+  weaponType: 2
+  bulletType: 0
 --- !u!212 &21270104
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -239,3 +243,27 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 131060}
   m_IsPrefabParent: 1
+--- !u!114 &114000011147902090
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 130424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 724281ad3f7ee274d9ac68c7910ddc38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bullet: 1
+--- !u!114 &114000013297824732
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 132720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 724281ad3f7ee274d9ac68c7910ddc38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bullet: 1

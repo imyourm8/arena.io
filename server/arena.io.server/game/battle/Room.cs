@@ -8,13 +8,13 @@ namespace arena.battle
 {
     class Room
     {
-        private List<Player> players_ = new List<Player>();
+        private List<Player> players_ = new List<Player>(); 
         private Game game_;
-        private bool closed_ = false;
+        private bool closed_ = false; 
 
-        public Room()
+        public Room() 
         {
-            game_ = new Game(new GameModes.FFA(), this);
+            game_ = new Game(new GameModes.FFA(), this);  
         }
 
         public bool Closed { get { return closed_; } }

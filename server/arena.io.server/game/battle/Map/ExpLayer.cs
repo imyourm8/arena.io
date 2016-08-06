@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using arena.helpers;
+
 namespace arena.battle
 {
     class ExpLayer
@@ -27,14 +29,14 @@ namespace arena.battle
         public helpers.Area Area
         { get; set; }
 
-        public proto_game.ExpBlocks GetBlockTypeByPoint(float x, float y)
+        public proto_game.ExpBlocks GetBlockTypeByPoint(Vector2 pos)
         {
             proto_game.ExpBlocks blockType = proto_game.ExpBlocks.Small;
             ExpArea lastArea = null;
             foreach (var area in areas_) 
             {
                 if ((lastArea == null || lastArea.Priority < area.Priority) 
-                    && area.Area.IsInside(x, y))
+                    && area.Area.IsInside(pos.x, pos.y))
                 {
                     lastArea = area;
                 }

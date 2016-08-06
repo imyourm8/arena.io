@@ -8,19 +8,26 @@ namespace arena.battle
 {
     class ExpBlock : Entity
     {
+        public ExpBlock()
+        {
+            Category = PhysicsDefs.Category.EXP_BLOCK;
+        }
+
         public proto_game.ExpBlocks BlockType
         { get; set; }
 
         public int Coins
         { get; set; }
 
-        public proto_game.BlockAppeared GetBlockAppearPacket()
+        public proto_game.BlockAppeared GetAppearedPacket()
         {
             proto_game.BlockAppeared packet = new proto_game.BlockAppeared();
             packet.guid = ID;
             packet.position = new proto_game.Vector();
-            packet.position.x = X;
-            packet.position.y = Y;
+
+            var pos = Position;
+            packet.position.x = pos.x;
+            packet.position.y = pos.y;
             packet.hp = HP;
             packet.max_hp = Stats.GetFinValue(proto_game.Stats.MaxHealth);
             packet.type = BlockType;

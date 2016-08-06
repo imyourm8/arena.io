@@ -131,8 +131,8 @@ public class GameApp : SingletonMonobehaviour<GameApp>
         get { return movementInterpolationTime_; } 
     }
 
-    public int MovementUpdateFrequency
+    public float MovementUpdateDT
     {
-        get { return movementUpdateFrequency; } 
+        get { return 1.0f / (float)movementUpdateFrequency; } 
     }
 }

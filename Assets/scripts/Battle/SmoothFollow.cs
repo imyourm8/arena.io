@@ -25,7 +25,7 @@ public class SmoothFollow : MonoBehaviour
         targetTransform = target.transform;
     }
 
-	void FixedUpdate () 
+	void LateUpdate () 
     {
         if (target == null) return;
         if (snapNextTime_)

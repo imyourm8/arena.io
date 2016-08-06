@@ -199,7 +199,7 @@ using proto_game;
     }
 
     [Serializable]
-    public class WeaponDict : SerializableDictionaryBase<Player.WeaponType, GameObject> { }
+    public class WeaponDict : SerializableDictionaryBase<proto_game.Weapons, GameObject> { }
 
     [Serializable]
     public class ExpBlocksDict : SerializableDictionaryBase<proto_game.ExpBlocks, GameObject> { }
@@ -209,3 +209,6 @@ using proto_game;
 
     [Serializable]
     public class ScenesDict : SerializableDictionaryBase<SceneManager.Scenes, Scene> {}
+
+    [Serializable]
+    public class SkillsDict : SerializableDictionaryBase<proto_game.Skills, GameObject> {}

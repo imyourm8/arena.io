@@ -139,15 +139,6 @@ namespace proto_common
       [global::ProtoBuf.ProtoEnum(Name=@"ENTER_AREA", Value=2001)]
       ENTER_AREA = 2001,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"DAMAGE", Value=2004)]
-      DAMAGE = 2004,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"PLAYER_MOVE", Value=2005)]
-      PLAYER_MOVE = 2005,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"ATTACK", Value=2006)]
-      ATTACK = 2006,
-            
       [global::ProtoBuf.ProtoEnum(Name=@"TURN", Value=2009)]
       TURN = 2009,
             
@@ -170,7 +161,13 @@ namespace proto_common
       GRAB_POWERUP = 2015,
             
       [global::ProtoBuf.ProtoEnum(Name=@"GRAB_COIN", Value=2016)]
-      GRAB_COIN = 2016
+      GRAB_COIN = 2016,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CAST_SKILL", Value=2017)]
+      CAST_SKILL = 2017,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"PLAYER_INPUT", Value=2018)]
+      PLAYER_INPUT = 2018
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"Events")]
@@ -229,7 +226,16 @@ namespace proto_common
       POWER_UP_GRABBED = 2017,
             
       [global::ProtoBuf.ProtoEnum(Name=@"SPAWN_GOLD_COIN", Value=2018)]
-      SPAWN_GOLD_COIN = 2018
+      SPAWN_GOLD_COIN = 2018,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SKILL_CASTED", Value=2019)]
+      SKILL_CASTED = 2019,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"MOB_APPEARED", Value=2020)]
+      MOB_APPEARED = 2020,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYNC_TICK", Value=2021)]
+      SYNC_TICK = 2021
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"PacketFlags")]

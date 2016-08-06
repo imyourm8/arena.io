@@ -34,10 +34,10 @@ public class Entity : MonoBehaviour
     private Transform transform_ = null;
 
     [SerializeField]
-    private Collider2D collider = null;
+    private new Collider2D collider = null;
 
     [SerializeField]
-    private SpriteRenderer sprite;
+    private SpriteRenderer sprite = null;
 
     private bool firstInit_ = true;
     private Color initialColor_;
@@ -48,12 +48,27 @@ public class Entity : MonoBehaviour
     private arena.ArenaController controller_;
     private Tween rotationTweener_;
     private Vector2 moveImpulse_;
+    private Skill skill_;
 
     #region getter & setters
+    public Rigidbody2D Body
+    {
+        get { return body_; }
+    }
+
     private Vector2 force_;
     public Vector2 Force
     {
-        set { force_ = value; }
+        set 
+        {   
+            force_ = value; 
+            Vector2 totalImpulse = new Vector2(
+                Stats.GetFinValue(proto_game.Stats.MovementSpeed), 
+                Stats.GetFinValue(proto_game.Stats.MovementSpeed)
+            );
+            totalImpulse.Scale(force_);
+            Velocity = totalImpulse;
+        }
         get { return force_; }
     }
 
@@ -66,6 +81,9 @@ public class Entity : MonoBehaviour
         set { exp_ = value; }
         get { return exp_; }
     }
+
+    public float AttackRange
+    { get; set; }
 
     public Vector2 AttackPosition
     { get; set; }
@@ -95,6 +113,14 @@ public class Entity : MonoBehaviour
         get; private set;
     }
 
+    public virtual PhysicalState GetState()
+    {
+        PhysicalState state = new PhysicalState();
+        state.Position = Position;
+        state.Velocity = Velocity;
+        return state;
+    }
+
     public void Remove(bool animated)
     {   
         if (animated)
@@ -110,12 +136,12 @@ public class Entity : MonoBehaviour
 
             tweenSeq.OnComplete(()=>
             {   
-                gameObject.ReturnPooled();
+                OnRemove();
             });
         } 
         else
         {
-            gameObject.ReturnPooled();
+            OnRemove();
         }
     }
 
@@ -140,6 +166,7 @@ public class Entity : MonoBehaviour
 
             rotationTweener_ = transform_.DORotate(new Vector3(0,0,rotation_), forceRotation_?0.0f:0.1f, RotateMode.Fast);
             forceRotation_ = false;
+            SetAttackDirection(rotation_);
         }
 
         get { return rotation_; }
@@ -150,11 +177,31 @@ public class Entity : MonoBehaviour
         forceRotation_ = true;
     }
 
+    public void SetSkill(proto_game.Skills skillId)
+    {
+        skill_ = SkillsPrefabs.Instance.GetSkill(skillId);
+        skill_.Owner = this;
+
+        var cd = stats_.GetFinValue(proto_game.Stats.SkillCooldown);
+        skill_.Cooldown = (long)cd;
+    }
+
+    public bool CanCast()
+    {
+        return skill_.CanCast();
+    }
+
+    public void CastSkill()
+    {
+        skill_.Cast();
+    }
+
     public bool Rotated 
     {
         get { return !Mathf.Approximately(rotation_, prevRotation_); }
     }
 
+    [SerializeField]
     private float currentSpeed_ = 0;
     public float CurrentSpeed
     {
@@ -176,13 +223,13 @@ public class Entity : MonoBehaviour
         get { return stats_.GetFinValue(proto_game.Stats.ReloadSpeed); }
     }
 
-    private float health_ = 0.0f;
+    private float health_ = -1.0f;
     public float Health
     { 
         get { return health_; }  
         set 
         {
-            if (!Mathf.Approximately(health_, value))
+            if (health_ > -1.0f && !Mathf.Approximately(health_, value))
             {
                 hpBar_.ShowSmooth();
             }
@@ -207,10 +254,18 @@ public class Entity : MonoBehaviour
 
         set 
         { 
+            var prev = Position;
             transform_.localPosition = new Vector3(value.x, value.y, 0);
+
+            var diff = Position - prev;
+            currentSpeed_ = diff.magnitude;
+
             AttackPosition = value;
         }
     }
+
+    public Vector2 Velocity
+    { get; set; }
       
     public AnimatedProgress hpBar_;
     public AnimatedProgress HpBar
@@ -235,6 +290,9 @@ public class Entity : MonoBehaviour
 
     public virtual void Init(arena.ArenaController controller, Vector2 startPos)
 	{
+        //critical for hp bar logic
+        health_ = -1.0f;
+
         if (firstInit_)
         {
             firstInit_ = false;
@@ -247,6 +305,7 @@ public class Entity : MonoBehaviour
             sprite.color = initialColor_;
         }
 
+        AttackRange = 0.0f;
         controller_ = controller;
         if (moveInterpolator_ == null)
             moveInterpolator_ = new MovementInterpolator(this);
@@ -268,14 +327,13 @@ public class Entity : MonoBehaviour
         }
     }
 
-    public void PerformAttack(float direction)
+    public bool PerformAttack(float direction, bool i = false)
     {
         Rotation = direction;
-        SetAttackDirection(direction);
 
-        if (Time.time < nextAttack_)
+        if (Time.time < nextAttack_ && !i)
         {
-            return;
+            return false;
         }
 
         if (local)
@@ -284,83 +342,68 @@ public class Entity : MonoBehaviour
         if (weapon_ != null)
         {
             weapon_.SpawnBullets();
-
-            if (local)
-                OnAttack(this);
         }
+
+        return true;
     }
 
-	public void PerformAttack(Vector2 direction)
+	public bool PerformAttack(Vector2 direction)
 	{
-        PerformAttack(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+        return PerformAttack(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
 	}
 
-    public virtual void OnFixedUpdate()
+    public virtual void OnFixedUpdate(float dt)
     {
         previousPosition_ = Position;
         prevRotation_ = rotation_; 
 
-        if (local)
-        {
-            Vector2 totalImpulse = new Vector2(
-                stats_.GetFinValue(proto_game.Stats.MovementSpeed), 
-                stats_.GetFinValue(proto_game.Stats.MovementSpeed)
-            );
-            totalImpulse.Scale(force_);
-            //totalImpulse_ = totalImpulse;
-            currentSpeed_ = totalImpulse.magnitude;
-            //totalImpulse.x *= Time.fixedDeltaTime;
-            //totalImpulse.y *= Time.fixedDeltaTime;
-            //totalImpulse.x *= 3.0f;
-            //totalImpulse.y *= 3.0f;
-            body_.AddForce(totalImpulse);
-            //Position = previousPosition_ + totalImpulse;
-        }
-        else 
+        if (!local)
         {
             Position = moveInterpolator_.GetPosition();
+            UpdateHpBarPosition();
         }
 
-        UpdateHpBarPosition();
-        
         if (!Moved && !stopped_ && local)
         {
-            OnStop(this);
+            //OnStop(this);
             stopped_ = true;
         }
         else if (Moved && stopped_ && local)
         {
-            OnStartMove(this);
+            //OnStartMove(this);
             stopped_ = false;
         }
     }
 
 	public virtual void OnUpdate () 
 	{
-        AttackPosition = Position;
 	}
 
-    private void UpdateHpBarPosition()
+    protected void UpdateHpBarPosition()
     {
         hpBar_.transform.position = transform_.localPosition + hpBarOffset_;
-    }
-
-    public void DealDamage(Entity target, float damage)
-    {
-        Controller.SendDamageDone(target, damage);
     }
 
     public virtual void OnRemove()
     {
         if (hpBar_ != null)
         {
-            hpBar_.gameObject.ReturnPooled();      
+            hpBar_.gameObject.ReturnPooled();
+            hpBar_ = null;      
         }
+
+        if (skill_ != null)
+        {
+            skill_.gameObject.ReturnPooled();
+            skill_ = null;
+        }
+
+        gameObject.ReturnPooled();
     }
 
-	public void SetNextPosition(long time, Vector2 pos, bool stop)
+	public void SetNextPosition(long time, Vector2 pos)
 	{
-        moveInterpolator_.PushNextMovement(time, pos, stop);
+        moveInterpolator_.PushNextMovement(time, pos);
 	}
 
     public void ApplyStats(proto_game.PlayerStats stats)
@@ -368,6 +411,7 @@ public class Entity : MonoBehaviour
         foreach(var s in stats.stats)
         {
             stats_.Get(s.stat).SetStep(s.step).SetValue(s.value);
+            stats_.Get(s.stat).RawValue = 0;
         }
     }
 }

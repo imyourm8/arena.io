@@ -28,16 +28,15 @@ namespace arena.player
         {
             AddOperationHandler(proto_common.Commands.AUTH, new OperationHandler(HandleAuth));
             AddOperationHandler(proto_common.Commands.PING, new OperationHandler(HandlePing));
-            AddOperationHandler(proto_common.Commands.PLAYER_MOVE, new OperationHandler(HandlePlayerMove));
-            AddOperationHandler(proto_common.Commands.ATTACK, new OperationHandler(HandlePlayerAttack));
             AddOperationHandler(proto_common.Commands.TURN, new OperationHandler(HandlePlayerTurn));
-            AddOperationHandler(proto_common.Commands.DAMAGE, new OperationHandler(HandlePlayerDamage));
             AddOperationHandler(proto_common.Commands.CHANGE_NICKNAME, new OperationHandler(HandleChangeNickname));
             AddOperationHandler(proto_common.Commands.JOIN_GAME, new OperationHandler(HandleJoinGame));
             AddOperationHandler(proto_common.Commands.FIND_ROOM, new OperationHandler(HandleFindRoom));
             AddOperationHandler(proto_common.Commands.ADMIN_AUTH, new OperationHandler(HandleAdminAuth));
             AddOperationHandler(proto_common.Commands.STAT_UPGRADE, new OperationHandler(HandleStatUpgrade));
             AddOperationHandler(proto_common.Commands.GRAB_POWERUP, new OperationHandler(HandleGrabPowerUp));
+            AddOperationHandler(proto_common.Commands.CAST_SKILL, new OperationHandler(HandleCastSkill));
+            AddOperationHandler(proto_common.Commands.PLAYER_INPUT, new OperationHandler(HandleUserInput));
 
             fiber_.Start();
         }
@@ -291,28 +290,10 @@ namespace arena.player
             SendResponse(proto_common.Commands.PING, pong, request.id);
         }
 
-        private void HandlePlayerMove(proto_common.Request request)
-        {
-            var moveRequest = request.Extract<proto_game.PlayerMove.Request>(proto_common.Commands.PLAYER_MOVE);
-            player_.Game.PlayerMoved(player_, moveRequest);
-        }
-
-        private void HandlePlayerAttack(proto_common.Request request)
-        {
-            var attackRequest = request.Extract<proto_game.UnitAttack>(proto_common.Commands.ATTACK);
-            player_.Game.PlayerAttacked(player_, attackRequest);
-        }
-
         private void HandlePlayerTurn(proto_common.Request request)
         {
             var turnRequest = request.Extract<proto_game.PlayerTurn>(proto_common.Commands.TURN);
             player_.Game.PlayerTurned(player_, turnRequest);
-        }
-
-        private void HandlePlayerDamage(proto_common.Request request)
-        {
-            var damageRequest = request.Extract<proto_game.ApplyDamage>(proto_common.Commands.DAMAGE);
-            player_.Game.UnitDamaged(player_, damageRequest);
         }
 
         private void HandleGrabPowerUp(proto_common.Request request)
@@ -322,6 +303,19 @@ namespace arena.player
 
             var grabResponse = new proto_game.GrabPowerUp.Response();
             SendResponse(proto_common.Commands.GRAB_POWERUP, grabResponse, request.id, grabbed ? 0 : -1); 
+        }
+
+        private void HandleCastSkill(proto_common.Request request)
+        {
+            var req = request.Extract<proto_game.CastSkill.Request>(proto_common.Commands.CAST_SKILL);
+            player_.Game.PlayerCast(player_, req);
+            SendResponse(proto_common.Commands.CAST_SKILL, new proto_game.CastSkill.Response(), request.id);
+        }
+
+        private void HandleUserInput(proto_common.Request request)
+        {
+            var req = request.Extract<proto_game.PlayerInput.Request>(proto_common.Commands.PLAYER_INPUT);
+            player_.AddInput(req);
         }
 
         #endregion

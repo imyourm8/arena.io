@@ -12,13 +12,11 @@ public class MovementInterpolator
     {
         public long time;
         public Vector2 pos;
-        public bool stop;
 
-        public MoveData(long t, Vector2 p, bool s)
+        public MoveData(long t, Vector2 p)
         {
             time = t;
             pos = p;
-            stop = s;
         }
     }
 
@@ -40,7 +38,7 @@ public class MovementInterpolator
         positions_ = new Deque<MoveData>(MaxMovements);
     }
 
-    public void PushNextMovement(long time, Vector2 position, bool stop)
+    public void PushNextMovement(long time, Vector2 position)
     {
         if (time <= lastPacketTime_) 
             return;
@@ -48,11 +46,12 @@ public class MovementInterpolator
         if (positions_.Count == MaxMovements)
             positions_.RemoveFromFront();
 
-        positions_.AddToBack(new MoveData(time, position, stop));
+        positions_.AddToBack(new MoveData(time, position));
 
         lastPacketTime_ = time;
 
-        SnapToNextPosition();
+        if (moveTweener_ == null)
+            SnapToNextPosition();
     }
 
     public void Reset(Vector2 position)
@@ -102,6 +101,10 @@ public class MovementInterpolator
             position_ = startPos;
             moveTweener_ = DOTween.To(()=>position_, x=>position_=x,snapPos_,(float)snapDuration/1000.0f);
             moveTweener_.OnComplete(SnapToNextPosition);
+        }
+        else 
+        {
+            moveTweener_ = null;
         }
     }
 

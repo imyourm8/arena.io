@@ -110,22 +110,23 @@ public class AnimatedProgress : MonoBehaviour
     {
         if (startHidden)
         {
-            HideSmooth();
+            Hide();
         }
         else 
         {
-            ShowSmooth();
+            Show();
         }
-    }
-
-    public void Hide()
-    {
-        alphaGroup_.alpha = 0.0f;
     }
 
     public void SetProgreessNotAnimated(float progress)
     {
         Fill(progress, false);
+    }
+
+    public void Show()
+    {
+        hidden_ = false;
+        alphaGroup_.alpha = 1.0f;
     }
 
     public AnimatedProgress ShowSmooth()
@@ -139,6 +140,12 @@ public class AnimatedProgress : MonoBehaviour
         hideTweener_ = alphaGroup_.DOFade(1.0f, showSmoothDuration_);
 
         return this;
+    }
+
+    public void Hide()
+    {
+        hidden_ = true;
+        alphaGroup_.alpha = 0.0f;
     }
 
     public AnimatedProgress HideSmooth()

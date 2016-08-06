@@ -13,7 +13,16 @@ public class Bullet : MonoBehaviour
     [SerializeField]
     private SpriteRenderer sprite = null;
 
-    private Entity owner_;
+    [SerializeField]
+    private proto_game.Bullets bulletType = proto_game.Bullets.Common;
+
+    [SerializeField]
+    private float maxDistance = 0.0f;
+
+    [SerializeField]
+    private float moveSpeed = -1.0f;
+
+    protected Entity owner_;
     private float speed_;
     private Vector3 direction_;
     private int collsionCount_ = 0;
@@ -21,11 +30,35 @@ public class Bullet : MonoBehaviour
     private Transform transform_;
     private const float timeAlive = 1.4f;
     private Tweener moveTween_;
+    private Tweener fadeTweener_;
     private Vector3 oldSize_;
     private bool destroyed_ = false;
 
     public Collider2D Collider
     { get { return collider; } }
+
+    public float Radius
+    {
+        get { return (collider as CircleCollider2D).radius; }
+    }
+    #if UNITY_EDITOR
+    public float MoveSpeed
+    {
+        get { return moveSpeed; }
+    }
+
+    public proto_game.Bullets Type
+    {
+        get { return bulletType; }
+    }
+    #endif
+    public float MaxDistance
+    {
+        get { return maxDistance; } 
+    }
+
+    public bool Penetrate
+    { get; set; }
 
     public void Init(Entity owner, Vector3 direction, float speed, Vector3 spawnPoint, float damage)
     {
@@ -45,21 +78,36 @@ public class Bullet : MonoBehaviour
         collsionCount_ = 0;
         damage_ = damage;
 
-        var MaxDistanceToTravel = timeAlive * speed_;
+        var maxDistanceToTravel = maxDistance > 0.0f ? maxDistance : timeAlive * speed_;
+        maxDistanceToTravel = owner_.AttackRange > 0.0f ? owner_.AttackRange : maxDistanceToTravel;
         var move = direction_;
-        move.x *= MaxDistanceToTravel;
-        move.y *= MaxDistanceToTravel;
+        move.x *= maxDistanceToTravel;
+        move.y *= maxDistanceToTravel;
 
         moveTween_ = transform_.DOLocalMove(move+spawnPoint, timeAlive);
         moveTween_.SetEase(Ease.InSine);
         moveTween_.OnComplete(()=>
         {
+            moveTween_ = null;
             HandleDestroyBullet();
         });
 
         var color = sprite.color;
         color.a = 1.0f;
         sprite.color = color;
+
+        OnInit();
+    }
+
+    protected virtual void OnInit()
+    {
+        Penetrate = false;
+    }
+
+    protected virtual void HandleCollision(Entity entity)
+    {
+        if (!Penetrate)
+            HandleDestroyBullet();
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -71,25 +119,40 @@ public class Bullet : MonoBehaviour
 
         if (entity != null)
         {
-            if (owner_.Local)
-                owner_.DealDamage(entity, damage_);
             collsionCount_++;
 
-            //if (owner_.MaxPenetration == collsionCount_)
-            {
-                HandleDestroyBullet();
-            }
+            HandleCollision(entity);
         }
+    }
+
+    public void RemoveFromBattle(bool rm = true)
+    {
+        destroyed_ = true;
+        if (moveTween_ != null)
+        {
+            moveTween_.Kill(false);
+            moveTween_ = null;
+        }
+        if (fadeTweener_ == null)
+        {
+            fadeTweener_.Kill(false);
+            fadeTweener_ = null;
+        }
+        //safe to use owner here
+        if (rm)
+            owner_.Controller.ReturnBullet(this);
+
+        gameObject.ReturnPooled();
     }
 
     void HandleDestroyBullet()
     {
+        if (destroyed_) return;
         destroyed_ = true;
-        sprite.DOFade(0.0f, 0.1f).OnComplete(()=>
-        {
-            gameObject.ReturnPooled();
-            moveTween_.Kill(false);
-            moveTween_ = null;
+        fadeTweener_ = sprite.DOFade(0.0f, 0.1f).OnComplete(()=>
+        {   
+            fadeTweener_ = null;
+            RemoveFromBattle();
         });
         transform_.localScale = oldSize_;
     }

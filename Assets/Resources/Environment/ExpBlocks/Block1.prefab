@@ -10,8 +10,8 @@ GameObject:
   - 4: {fileID: 492814}
   - 212: {fileID: 21270134}
   - 58: {fileID: 5812340}
-  - 114: {fileID: 11486232}
   - 50: {fileID: 50000012153363456}
+  - 114: {fileID: 114000011103438932}
   m_Layer: 8
   m_Name: Block1
   m_TagString: Untagged
@@ -46,24 +46,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0.07}
   serializedVersion: 2
   m_Radius: 0.25
---- !u!114 &11486232
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 173062}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a0de06feea34d74594f5b5cf1390c7d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  local: 0
-  hpBarOffset_: {x: 0, y: -0.6, z: 0}
-  body_: {fileID: 0}
-  transform_: {fileID: 492814}
-  collider: {fileID: 5812340}
-  sprite: {fileID: 21270134}
-  hpBar_: {fileID: 0}
 --- !u!212 &21270134
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -125,3 +107,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &114000011103438932
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 173062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e44f617e0eee0b4da236c98ee9a0c09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  local: 0
+  hpBarOffset_: {x: 0, y: -0.6, z: 0}
+  body_: {fileID: 0}
+  transform_: {fileID: 492814}
+  collider: {fileID: 5812340}
+  sprite: {fileID: 21270134}
+  hpBar_: {fileID: 0}
+  blockType: 0

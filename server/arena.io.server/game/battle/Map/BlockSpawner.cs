@@ -54,7 +54,8 @@ namespace arena.battle
             {
                 control_.RemoveBlock(entity as ExpBlock);
 
-                var tile = GetTileCoord(entity.X - spawnArea_.minX, entity.Y - spawnArea_.minY);
+                var pos = entity.Position;
+                var tile = GetTileCoord(pos.x - spawnArea_.minX, pos.y - spawnArea_.minY);
 
                 ConcurrentDictionary<int, int> bucket;
                 buckets_.TryGetValue(tile.Key, out bucket);
@@ -100,50 +101,20 @@ namespace arena.battle
         private void SpawnBlock(float minX, float maxX, float minY, float maxY)
         {
             var block = new ExpBlock();
-            block.X = MathHelper.Range(minX, maxX);
-            block.Y = MathHelper.Range(minY, maxY);
+            block.SetPosition(MathHelper.Range(minX, maxX), MathHelper.Range(minY, maxY));
 
-            var type = layer_.GetBlockTypeByPoint(block.X, block.Y);
-            int exp = 0;
-            int coins = 0;
-            float hp = 0;
-
-            switch (type)
-            {
-                case proto_game.ExpBlocks.Small:
-                    exp = 10;
-                    hp = 25;
-                    break;
-
-                case proto_game.ExpBlocks.Medium:
-                    exp = 80;
-                    hp = 55;
-                    break;
-
-                case proto_game.ExpBlocks.Big:
-                    exp = 200;
-                    hp = 220;
-                    break;
-
-                case proto_game.ExpBlocks.Huge:
-                    exp = 500;
-                    hp = 560;
-                    break;
-
-                case proto_game.ExpBlocks.GoldBlock:
-                    exp = 10;
-                    hp = 60;
-                    coins = helpers.MathHelper.Range(1, 10);
-                    break;
-            }
-
+            var type = layer_.GetBlockTypeByPoint(block.Position);
+            var entry = Factories.ExpBlockFactory.Instance.GetEntry(type);
             block.BlockType = type;
-            block.Exp = exp;
-            block.HP = hp;
-            block.Coins = coins;
-            block.Stats.SetValue(proto_game.Stats.MaxHealth, hp);
+            block.Exp = entry.Exp;
+            block.HP = entry.Health;
+            block.Radius = entry.CollisionRadius;
+            block.Coins = entry.Gold; 
+            block.Stats.SetValue(proto_game.Stats.MaxHealth, entry.Health); 
 
             control_.AddBlock(block);
+
+            block.InitPhysics();
         }
     }
 }

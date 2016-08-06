@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 using System.Collections;
 using System.Collections.Generic;
-using System.Timers;
 
 namespace arena
 {
@@ -49,10 +48,22 @@ namespace arena
         private Player player_ = null;
         private long prevTime_ = 0;
         private Vector2 prevPos;
-        private Timer positionTimer_;
         private Dictionary<int, Entity> entities_ = new Dictionary<int, Entity>();
         private List<PowerUp> powerUps_ = new List<PowerUp>();
         private List<Player> players_ = new List<Player>();
+        private Dictionary<Bullet, Bullet> bullets_ = new Dictionary<Bullet, Bullet>();
+        private InputHistory inputHistory_ = new InputHistory();
+        private float accumulator_ = 0.0f;
+        private List<proto_game.PlayerInput.Response> syncInputsQueue_ = new List<proto_game.PlayerInput.Response>();
+
+        public int Tick
+        { get; private set; }
+
+        public int FixedTick
+        { get; private set; }
+
+        public proto_game.PlayerInput.Request PlayerInput
+        { get; set; }
 
         public override void OnBeforeShow()
         {
@@ -92,41 +103,30 @@ namespace arena
                 DestroyEntity(entity.Value, false);
             }
 
-            if (player_ != null)
-                player_.OnAttack -= HandlePlayerAttack;
-
+            foreach(var bullet in bullets_)
+            {
+                bullet.Value.RemoveFromBattle(false);
+            }
+           
             player_ = null;
+            bullets_.Clear();
             entities_.Clear();
             players_.Clear();
-
-            if (positionTimer_ != null)
-            {
-                positionTimer_.Stop();
-                positionTimer_.Dispose();
-                positionTimer_ = null;
-            }
         }
 
         private void OnGameJoin()
         {
-            positionTimer_ = new Timer(1000 / GameApp.Instance.MovementUpdateFrequency);
-            positionTimer_.Elapsed += (object sender, ElapsedEventArgs e) => 
-            {
-                Worker.Instance.Add(NotifyServerAboutPlayerPosition);
-            };
-            positionTimer_.Start();
-
-            player_ = CreatePlayer(User.Instance.ClassSelected);
-
-            Ready = true;
+            FixedTick = 0;
+            accumulator_ = 0;
+            inputHistory_.Reset();
         }
 
         private Player CreatePlayer(proto_profile.PlayerClasses cl)
         {
             var player = playerClassesPrefabs[cl].GetPooled();
             //turn a bit to left our sprites
-            player.transform.rotation = Quaternion.AngleAxis(90.0f, new Vector3(0,0,1));
             var playerScript = player.GetComponent<Player>();
+            playerScript.Rotation = 90;
             playerScript.PlayerExperience.OnLevelUp = HandleLevelUp;
             playerScript.Local = false;
 
@@ -138,17 +138,22 @@ namespace arena
             return playerScript;
         }
 
+        public void AddBullet(Bullet bullet)
+        {
+            gameObject.AddChild(bullet.gameObject);
+            bullets_.Add(bullet, bullet);
+        }
+
         public Bullet CreateBullet()
         {
             GameObject bullet = bulletPrefab.GetPooled();
             if (bullet == null) return null;
-            gameObject.AddChild(bullet);
             return bullet.GetComponent<Bullet>();
         }
 
         public void ReturnBullet(Bullet bullet)
         {
-            bullet.gameObject.ReturnPooled();
+            bullets_.Remove(bullet);
         }
 
         public void ReturnHpBar(GameObject bar)
@@ -158,9 +163,46 @@ namespace arena
 
     	private void Update () 
         {
-            if (player_ == null || !player_.Local) return;
+            foreach(var p in players_)
+            {
+                p.OnUpdate();
+            }
 
-    	    Vector3 dir = Vector3.zero;
+            accumulator_ += Time.deltaTime;
+            float inputDt = GameApp.Instance.MovementUpdateDT;
+
+            if (accumulator_ >= inputDt)
+            {
+                accumulator_ -= inputDt;
+                SendLocalPlayerInput();
+            }
+    	}
+
+        private void FixedUpdate()
+        {
+            if (player_ == null) return;
+
+            foreach(var p in players_)
+            {
+                if (!p.Local)
+                    p.OnFixedUpdate(Time.fixedDeltaTime);
+            }
+
+            FixedTick++;
+        }
+
+        private void LateUpdate()
+        {
+            foreach(var sync in syncInputsQueue_)
+            {
+                inputHistory_.Correction(sync, player_);
+            }
+            syncInputsQueue_.Clear();
+        }
+
+        public void SendLocalPlayerInput()
+        {
+            Vector3 dir = Vector3.zero;
 
             dir.x = Input.GetAxis("Horizontal");
             dir.y = Input.GetAxis("Vertical");
@@ -174,70 +216,35 @@ namespace arena
 
             player_.Force = dir;
 
+            var input = player_.Input;
+
             if (shootJoystick_.inputDirection != Vector2.zero)
             {
-                player_.PerformAttack(shootJoystick_.inputDirection);
-            }
-
-            foreach(var p in players_)
-            {
-                p.OnUpdate();
-            }
-    	}
-
-        private void FixedUpdate()
-        {
-            foreach(var p in players_)
-            {
-                p.OnFixedUpdate();
-            }
-        }
-
-        private bool NotifyServerAboutPlayerPosition()
-        {
-            if (player_ != null)
-            {
-                if (player_.Moved) 
+                if (player_.PerformAttack(shootJoystick_.inputDirection))
                 {
-                    SendLocalPlayerMoved();
-                }
-
-                if (player_.Rotated)
-                {
-                    proto_game.PlayerTurn turnReq = new proto_game.PlayerTurn();
-                    turnReq.angle = player_.Rotation;
-                    turnReq.guid = player_.ID;
-
-                    GameApp.Instance.Client.Send (turnReq, proto_common.Commands.TURN);
+                    input.shoot = player_.Shoot;
+                    input.shoot.direction = player_.Rotation * Mathf.Deg2Rad;
                 }
             }
-            return true;
+
+            input.tick = Tick;
+            GetLocalPlayerMoves(input);
+
+            input.rotation = player_.Rotation;
+            inputHistory_.Add(input, player_.GetState());
+
+            GameApp.Instance.Client.Send(input, proto_common.Commands.PLAYER_INPUT);
+            Tick++;
+
+            player_.OnFixedUpdate(GameApp.Instance.MovementUpdateDT);
+
+            input.shoot = null;
         }
 
-        private void SendLocalPlayerMoved(bool stop = false)
+        private void GetLocalPlayerMoves(proto_game.PlayerInput.Request moveReq)
         {
-            proto_game.PlayerMove.Request moveReq = new proto_game.PlayerMove.Request();
-
-            Vector2 plrPosition = player_.Position;
-            moveReq.position = new proto_game.Vector();
-            moveReq.position.x = plrPosition.x;
-            moveReq.position.y = plrPosition.y;
-            moveReq.timestamp = GameApp.Instance.TimeMs();
-            moveReq.stop = stop;
-
-            prevPos = plrPosition;
-            prevTime_ = moveReq.timestamp;
-
-            GameApp.Instance.Client.Send (moveReq, proto_common.Commands.PLAYER_MOVE);
-        }
-
-        public void SendDamageDone(Entity target, float damage)
-        {
-            var request = new proto_game.ApplyDamage();
-            request.damage = damage;
-            request.target = target.ID;
-
-            GameApp.Instance.Client.Send(request, proto_common.Commands.DAMAGE);
+            moveReq.force_x = player_.Force.x;
+            moveReq.force_y = player_.Force.y;
         }
 
         #region Entry network point
@@ -295,6 +302,14 @@ namespace arena
             {
                 HandlePowerUpGrabbed(evt);
             }
+            else if (evt.type == proto_common.Events.SKILL_CASTED)
+            {
+                HandleSkillCasted(evt);
+            }
+            else if (evt.type == proto_common.Events.MOB_APPEARED)
+            {
+                HandleMobAppeared(evt);
+            }
         }
 
         private void HandleResponse(proto_common.Response response)
@@ -302,6 +317,10 @@ namespace arena
             if (response.type == proto_common.Commands.JOIN_GAME)
             {
                 HandleJoinGame(response);
+            }
+            else if (response.type == proto_common.Commands.PLAYER_INPUT)
+            {
+                HandleLocalPlayerInputCorrection(response);
             }
         }
         #endregion
@@ -323,6 +342,40 @@ namespace arena
         }
 
         #region Network Handlers
+        private void HandleLocalPlayerInputCorrection(proto_common.Response response)
+        {
+            var syncResponse = response.Extract<proto_game.PlayerInput.Response>(proto_common.Commands.PLAYER_INPUT);
+            syncInputsQueue_.Add(syncResponse);
+        }
+
+        private void HandleMobAppeared(proto_common.Event evt)
+        {
+            var mobEvt = evt.Extract<proto_game.MobAppeared>(proto_common.Events.MOB_APPEARED);
+
+            var mobObj = MobPrefabs.Instance.Get(mobEvt.type);
+            var entityScript = mobObj.GetComponent<Entity>();
+            entityScript.Init(this, new Vector2(mobEvt.x, mobEvt.y));
+            entityScript.ID = mobEvt.id;
+            entityScript.Rotation = 90;
+            entityScript.AttackRange = mobEvt.attack_range;
+            entityScript.Stats.SetValue(proto_game.Stats.MaxHealth, mobEvt.max_hp);
+
+            CreateHpBar(entityScript);
+            entityScript.Health = mobEvt.hp;
+
+            AddEntity(entityScript);
+        }
+
+        private void HandleSkillCasted(proto_common.Event evt)
+        {
+            var skillCastedEvt = evt.Extract<proto_game.SkillCasted>(proto_common.Events.SKILL_CASTED);
+            var player = GetEntity(skillCastedEvt.guid) as Player;
+
+            player.Rotation = skillCastedEvt.direction;
+            player.AttackPosition = new Vector2(skillCastedEvt.x, skillCastedEvt.y);
+            player.CastSkill();
+        }
+
         private void HandlePowerUpAppeared(proto_common.Event evt)
         {
             var powerUpEvt = evt.Extract<proto_game.PowerUpAppeared>(proto_common.Events.POWER_UP_APPEARED);
@@ -368,6 +421,7 @@ namespace arena
             var bottomLeft = new Vector2(joinResponse.outer_border[0], joinResponse.outer_border[1]);
             var topRight = new Vector2(joinResponse.outer_border[2], joinResponse.outer_border[3]);
             background_.transform.localScale = new Vector3(topRight.x-bottomLeft.x, topRight.y-bottomLeft.y, 1);
+            Tick = joinResponse.tick;
         }
 
         private void HandlePlayerExperience(proto_common.Event evt)
@@ -404,7 +458,7 @@ namespace arena
             AddEntity(entity);
 
             entity.OnUpdate();
-            entity.OnFixedUpdate();
+            entity.OnFixedUpdate(Time.fixedDeltaTime);
         }
 
         private void AddEntity(Entity entity)
@@ -430,7 +484,8 @@ namespace arena
 
             if (unit != null)
             {
-                unit.SetNextPosition(movePacket.timestamp, new Vector2(movePacket.x, movePacket.y), movePacket.stop);
+                //unit.SetNextPosition(movePacket.timestamp, new Vector2(movePacket.x, movePacket.y));
+                unit.Position = new Vector2(movePacket.x, movePacket.y);
             }
         }
 
@@ -456,11 +511,9 @@ namespace arena
             }
             else 
             {
+                player_ = CreatePlayer(plrPacket.@class);
                 playerToInited = player_;
                 player_.Level = plrPacket.level;
-                player_.OnAttack += HandlePlayerAttack;
-                player_.OnStop += HandlePlayerStop;
-                player_.OnStartMove += HandlePlayerStartMove;
                 followCamera.SetTarget(playerToInited.gameObject);
                 followCamera.SnapNextTick();
 
@@ -468,15 +521,19 @@ namespace arena
                 {
                     arenaUI.ShowUpgradePanel(player_.Level - 1);
                 }
+                //local player sent, start game
+                Ready = true;
             }
 
             playerToInited.ID = plrPacket.guid;
+            //first apply stats, some methods use them inside
+            playerToInited.ApplyStats(plrPacket.stats);
             playerToInited.Init(this, new Vector2(plrPacket.position.x, plrPacket.position.y));
+            playerToInited.SetSkill(plrPacket.skill);
             playerToInited.Nickname = plrPacket.name;
 
             CreateHpBar(playerToInited);
 
-            playerToInited.ApplyStats(plrPacket.stats);
             playerToInited.Health = plrPacket.hp;
 
             AddEntity(playerToInited);
@@ -498,31 +555,6 @@ namespace arena
             worldUIContainer.gameObject.AddChild(hpBar.gameObject);
         }
 
-        private void HandlePlayerStartMove(Entity entity)
-        {
-            if (entity == player_)
-                SendLocalPlayerMoved(false);
-        }
-
-        private void HandlePlayerStop(Entity entity)
-        {
-            if (entity == player_)
-                SendLocalPlayerMoved(true);
-        }
-
-        private void HandlePlayerAttack(Entity entity)
-        {
-            var attackRequest = new proto_game.UnitAttack();
-            attackRequest.guid = entity.ID;
-            attackRequest.direction = entity.transform.rotation.eulerAngles.z;
-
-            var pos = entity.Position;
-            attackRequest.x = pos.x;
-            attackRequest.y = pos.y;
-
-            GameApp.Instance.Client.Send(attackRequest, proto_common.Commands.ATTACK);
-        }
-
         private void HandlePlayerTurned(proto_common.Event evt)
         {
             proto_game.PlayerTurn turnPacket = evt.Extract<proto_game.PlayerTurn>(proto_common.Events.PLAYER_TURN);
@@ -540,8 +572,8 @@ namespace arena
             Entity unit = GetEntity(attPacket.guid);
             if (unit != null)
             {
-                unit.AttackPosition = new Vector2(attPacket.x, attPacket.y);
-                unit.PerformAttack(attPacket.direction);
+                player_.AttackPosition = new Vector2(attPacket.x, attPacket.y);
+                player_.PerformAttack(attPacket.direction*Mathf.Rad2Deg, true);
             }
         }
 
@@ -583,6 +615,27 @@ namespace arena
 
         #endregion
 
+        public void HandleCastSkill()
+        {
+            if (player_ != null)
+            {
+                if (player_.CanCast())
+                {
+                    var req = new proto_game.CastSkill.Request();
+                    req.direction = player_.Rotation;
+                    req.x = player_.Position.x;
+                    req.y = player_.Position.y;
+
+                    var id = GameApp.Instance.Client.Send(req, proto_common.Commands.CAST_SKILL);
+                    GameApp.Instance.RequestsManager.AddRequest(id,
+                    (proto_common.Response response)=>
+                    {
+                        player_.CastSkill();
+                    });
+                }
+            }
+        }
+
         private void HandleUpgradeStat(proto_game.Stats stat)
         {
             proto_game.StatUpgrade.Request statReq = new proto_game.StatUpgrade.Request();
@@ -591,12 +644,7 @@ namespace arena
             int id = GameApp.Instance.Client.Send(statReq, proto_common.Commands.STAT_UPGRADE);
             GameApp.Instance.RequestsManager.AddRequest(id, (proto_common.Response response)=>
             {
-                if (response.error != 0)
-                {
-                    //cancel 1 step
-                    arenaUI.StatsPanel.DecreaseLevelOf(stat);
-                }
-                else
+                if (response.error == 0)
                 {
                     player_.Stats.Get(stat).IncreaseByStep();
                 }
@@ -620,7 +668,6 @@ namespace arena
         private void DestroyEntity(Entity entity, bool rm = true)
         {
             entity.Remove(rm);
-            entity.OnRemove();
 
             if (rm)
             {

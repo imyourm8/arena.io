@@ -20,16 +20,57 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\deploy\arena.io.server\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\deploy\arena.io.server\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\..\deploy\arena.io.server\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Box2DX, Version=2.0.1.42700, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Box2DX.dll</HintPath>
+    </Reference>
     <Reference Include="ExitGames.Logging.Log4Net">
       <HintPath>..\..\lib\ExitGames.Logging.Log4Net.dll</HintPath>
     </Reference>
@@ -111,8 +152,20 @@
     <Compile Include="..\..\..\Assets\scripts\Common\CooldownManager.cs">
       <Link>Common\CooldownManager.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Deque.cs">
+      <Link>Common\Deque.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\Experience.cs">
       <Link>Common\Experience.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\ListPool.cs">
+      <Link>Common\ListPool.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\ObjectPool\IObjectPool.cs">
+      <Link>Common\ObjectPool\IObjectPool.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\ObjectPool\ObjectPoolGeneric.cs">
+      <Link>Common\ObjectPool\ObjectPoolGeneric.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\OperationConditions.cs">
       <Link>Common\OperationConditions.cs</Link>
@@ -166,6 +219,12 @@
       <Link>Database\IWorldDB.cs</Link>
     </Compile>
     <Compile Include="Application.cs" />
+    <Compile Include="battle\AttackData.cs" />
+    <Compile Include="battle\Bullet.cs" />
+    <Compile Include="battle\BulletContactListener.cs" />
+    <Compile Include="battle\BulletEntry.cs" />
+    <Compile Include="battle\ExpBlockEntry.cs" />
+    <Compile Include="battle\GlobalDefs.cs" />
     <Compile Include="battle\Map\BlockSpawner.cs" />
     <Compile Include="battle\Entity.cs" />
     <Compile Include="battle\ExpBlock.cs" />
@@ -176,6 +235,8 @@
     <Compile Include="battle\Map\ExpLayer.cs" />
     <Compile Include="battle\Map\Map.cs" />
     <Compile Include="battle\Map\MapLoader.cs" />
+    <Compile Include="battle\Map\MobLayer.cs" />
+    <Compile Include="battle\Map\MobSpawnPoint.cs" />
     <Compile Include="battle\Map\NavigationLayer.cs" />
     <Compile Include="battle\Map\PlayerSpawnPoint.cs" />
     <Compile Include="battle\Map\PlayerSpawnsLayer.cs" />
@@ -184,20 +245,30 @@
     <Compile Include="battle\Mob.cs" />
     <Compile Include="battle\MobAI\BaseAI.cs" />
     <Compile Include="battle\MobAI\ChasingAI.cs" />
+    <Compile Include="battle\MobAI\TypesOfAI.cs" />
+    <Compile Include="battle\MobEntry.cs" />
+    <Compile Include="battle\PhysicsDefs.cs" />
     <Compile Include="battle\Player.cs" />
-    <Compile Include="battle\PlayerClass.cs" />
     <Compile Include="battle\PlayerClassEntry.cs" />
-    <Compile Include="battle\PlayerClasses.cs" />
     <Compile Include="battle\PlayerBattleStats.cs" />
+    <Compile Include="battle\PlayerInput.cs" />
     <Compile Include="battle\PowerUp.cs" />
     <Compile Include="battle\Room.cs" />
     <Compile Include="battle\RoomManager.cs" />
     <Compile Include="battle\Map\SpatialHash.cs" />
     <Compile Include="battle\Skills\Skill.cs" />
+    <Compile Include="battle\Unit.cs" />
+    <Compile Include="battle\WeaponEntry.cs" />
     <Compile Include="Database\Postgres\AuthDB.cs" />
+    <Compile Include="Database\Postgres\CreatureDB.cs" />
     <Compile Include="Database\Postgres\PlayerDB.cs" />
     <Compile Include="Database\Postgres\PostgresImpl.cs" />
+    <Compile Include="Database\Postgres\WorldDB.cs" />
+    <Compile Include="Factories\ExpBlockFactory.cs" />
+    <Compile Include="Factories\MobsFactory.cs" />
     <Compile Include="Factories\PlayerClassFactory.cs" />
+    <Compile Include="Factories\WeaponFactory.cs" />
+    <Compile Include="Factories\BulletFactory.cs" />
     <Compile Include="helpers\CurrentTime.cs" />
     <Compile Include="helpers\Extensions.cs" />
     <Compile Include="helpers\Geom.cs" />
