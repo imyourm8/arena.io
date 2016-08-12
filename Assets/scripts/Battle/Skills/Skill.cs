@@ -30,12 +30,12 @@ public class Skill : MonoBehaviour
     public void Cast()
     {
         OnCast();
-        lastCastTime_ = GameApp.Instance.TimeMs();
+        lastCastTime_ = GameApp.Instance.ServerTimeMs();
     }
 
     public bool CanCast()
     {
-        var time = GameApp.Instance.TimeMs();
+        var time = GameApp.Instance.ServerTimeMs();
         if (time - lastCastTime_ < Cooldown)
         {
             return false;

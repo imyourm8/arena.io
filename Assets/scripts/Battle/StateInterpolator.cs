@@ -59,7 +59,7 @@ public class StateInterpolator
 
     private long GetRenderTime()
     {
-        return GameApp.Instance.ClientTimeMs() - GameApp.Instance.MovementInterpolationTime;
+        return GameApp.Instance.ServerTimeMs() - GameApp.Instance.MovementInterpolationTime;
     }
 
     public void Reset()
@@ -69,7 +69,7 @@ public class StateInterpolator
 
     public void Update()
     {
-        if (updateCount_ < 2)
+        if (fromState_.state == null || toState_.state == null)
         {
             return;
         }

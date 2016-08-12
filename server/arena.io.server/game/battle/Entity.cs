@@ -207,7 +207,7 @@ namespace arena.battle
 
             ushort mask = (ushort)PhysicsDefs.Category.WALLS;
             shape.Filter.MaskBits = mask;
-            body.CreateFixture(shape);
+            body.CreateFixture(shape); 
             body.SetMassFromShapes();
             body.SetUserData(this);
             //refresh body's position just in case

@@ -16,14 +16,14 @@ namespace ui {
 
         public void Init(int timeLeft) 
         {
-            endTime = GameApp.Instance.ClientTimeMs() + timeLeft;
+            endTime = GameApp.Instance.ServerTimeMs() + timeLeft;
 
             Update();
         }
 
         public void Update() 
         {
-            float time = Mathf.Clamp(endTime - GameApp.Instance.ClientTimeMs(), 0, endTime);
+            float time = Mathf.Clamp(endTime - GameApp.Instance.ServerTimeMs(), 0, endTime);
 
             if (lastTime == time) return;
             lastTime = time;

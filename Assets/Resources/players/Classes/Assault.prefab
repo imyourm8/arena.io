@@ -12,7 +12,7 @@ GameObject:
   - 114: {fileID: 11496438}
   - 58: {fileID: 5860480}
   - 50: {fileID: 5053820}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Assault
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,7 +28,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 424622}
   - 212: {fileID: 21248386}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}

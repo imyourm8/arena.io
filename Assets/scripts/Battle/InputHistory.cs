@@ -1,4 +1,4 @@
-﻿//#define LOG
+﻿#define LOG
 using UnityEngine;
 using System.Collections;
 

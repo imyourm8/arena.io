@@ -142,25 +142,24 @@ namespace arena.battle
 
         private void HandleMainUpdate()
         {
+            //if mode == null, game was closed
+            if (mode_ != null)
+                MainUpdate();
+        }
+
+        private void HandleUpdate() 
+        {
+            long dt = (CurrentTime.Instance.CurrentTimeInMs - Time);
+            Time = CurrentTime.Instance.CurrentTimeInMs; 
             try
             {
-                //if mode == null, game was closed
-                if (mode_ != null)
-                    MainUpdate();
+                aiLoop_.Update(dt);
+                mainLoop_.Update(dt); 
             }
-            catch (Exception exc) 
+            catch (Exception exc)  
             {
                 int g = 0;
             }
-        }
-
-        private void HandleUpdate()
-        {
-            long dt = (CurrentTime.Instance.CurrentTimeInMs - Time);
-            Time = CurrentTime.Instance.CurrentTimeInMs;
-
-            aiLoop_.Update(dt);
-            mainLoop_.Update(dt); 
         }
 
         public Map Map
@@ -484,7 +483,7 @@ namespace arena.battle
             bool hasAnyPlayerInput = false;
             foreach (var plr in joinedPlayers_)
             {
-                hasAnyPlayerInput |= (plr.Input != null);
+                hasAnyPlayerInput |= plr.HasAnyInput();
             }
             return hasAnyPlayerInput;
         }
@@ -494,7 +493,7 @@ namespace arena.battle
             long ldt = GlobalDefs.MainTickInterval; 
             float dt = GlobalDefs.GetUpdateInterval();
 
-            do
+            while (PlayersHasInput())
             {
                 foreach (var plr in joinedPlayers_)
                 {
@@ -554,7 +553,7 @@ namespace arena.battle
                 ProcessDeathList();
                 mode_.Update(dt);
                 Tick++;
-            } while (PlayersHasInput());
+            }
         }
 
         public void Broadcast(proto_common.Events evtKey, object msg, Player exceptThis = null)

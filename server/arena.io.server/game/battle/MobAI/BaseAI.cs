@@ -16,6 +16,7 @@ namespace arena.battle.MobAI
 
         public virtual void Update(float dt)
         {
+            target_ = null;
             if (target_ == null)
             {
                 SearchForTarget();

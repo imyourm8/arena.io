@@ -59,7 +59,7 @@ public class MovementInterpolator
 
     private void SnapToNextPosition()
     {
-        long renderTime = GameApp.Instance.TimeMs() - interpolationTime_;
+        long renderTime = GameApp.Instance.ServerTimeMs() - interpolationTime_;
         long snapDuration = 0;
         long startTime = 0;
         Vector2 startPos = Vector2.zero;

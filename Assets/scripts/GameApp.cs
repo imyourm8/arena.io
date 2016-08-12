@@ -101,7 +101,7 @@ public class GameApp : SingletonMonobehaviour<GameApp>
         get { return timeSync_.Latency; }
     }
 
-	public long TimeMs()
+	public long ServerTimeMs()
 	{
 		return client_.ServerTime;
 	}

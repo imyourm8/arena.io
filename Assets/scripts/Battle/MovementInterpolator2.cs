@@ -47,7 +47,7 @@ public class MovementInterpolator2
         if (lastPacketTime_ >= time) return;
         Estimates(time);
 
-        long currentTime = GameApp.Instance.ClientTimeMs();
+        long currentTime = GameApp.Instance.ServerTimeMs();
 
         if (stop_ && !stop)
         {
@@ -111,9 +111,9 @@ public class MovementInterpolator2
     public void Reset()
     {
         positions_.Clear();
-        lastPacketTime_ = GameApp.Instance.ClientTimeMs();
+        lastPacketTime_ = GameApp.Instance.ServerTimeMs();
         interpolationTime_ = defaultInterpolationTime_;
-        snapTime_ = GameApp.Instance.ClientTimeMs();
+        snapTime_ = GameApp.Instance.ServerTimeMs();
         aimTime_ = snapTime_ + interpolationTime_;
         velocity_ = Vector2.zero;
         aimPos_ = Vector2.zero;
@@ -180,7 +180,7 @@ public class MovementInterpolator2
 
     public Vector2 GetPosition()
     {
-        return ReadPosition(GameApp.Instance.TimeMs());
+        return ReadPosition(GameApp.Instance.ServerTimeMs());
         /*
         if (positions_.Count < 2) 
             return owner_.Position;

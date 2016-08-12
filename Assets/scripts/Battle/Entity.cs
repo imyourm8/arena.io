@@ -88,14 +88,6 @@ public class Entity : MonoBehaviour
         set 
         { 
             local = value; 
-            if (!local)
-            { 
-                gameObject.layer = LayerMask.NameToLayer("Enemy"); 
-            }
-            else 
-            {
-                gameObject.layer = LayerMask.NameToLayer("Default"); 
-            }
         }
     }
 

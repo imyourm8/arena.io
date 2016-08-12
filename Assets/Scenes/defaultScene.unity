@@ -17636,8 +17636,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b99b1adb95e92e47904d43144efb360, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IncomingLag: 0
-  IncomingJitter: 0
+  IncomingLag: 200
+  IncomingJitter: 100
   IncomingPacketLoss: 0
   OutgoinLag: 0
   OutgoingJitter: 0
