@@ -14,9 +14,15 @@ enum Weapons
   Canon = 3;
 }
 
+enum Pickups
+{
+  SmallGoldCoin = 1;
+}
+
 enum Bullets
 {
   Common = 1;
+  CanonCore = 2;
 }
 
 enum MobType
@@ -107,7 +113,8 @@ message PlayerInput
     required float force_y = 2;
     required float rotation = 3;
     required int32 tick = 4;
-    optional Shoot shoot = 5;
+    optional bool shoot = 5;
+    optional bool skill = 6;
    
     extend proto_common.Request 
     {
@@ -122,8 +129,12 @@ message PlayerInput
     required float force_x = 3;
     required float force_y = 4;
     required int32 tick = 5;
-    optional Shoot shoot = 6;
-    required int64 time = 7;
+    required float velx = 6;
+    required float vely = 7;
+    required float rvelx = 8;
+    required float rvely = 9;
+    required bool shoot = 10;
+    required bool skill = 11;
     
     extend proto_common.Response 
 		{
@@ -212,75 +223,25 @@ message PlayerUpgrade
 	}
 }
 
-message GrabPowerUp
+message SyncTick
 {
   message Request
   {
-    required int32 powerUp = 1;
-    
     extend proto_common.Request
     {
-      optional proto_game.GrabPowerUp.Request grb_pwr_req = 2015; 
+      optional proto_game.SyncTick.Request sync_tick_req = 2015;
     }
   }
   
   message Response
   {
-    extend proto_common.Response
-    {
-      optional proto_game.GrabPowerUp.Response grb_pwr_res = 2015; 
-    }
-  }
-}
-
-message GrabGoldCoin
-{
-  message Request
-  {
-    required int32 goldCoin = 1;
-    
-    extend proto_common.Request
-    {
-      optional proto_game.GrabGoldCoin.Request grb_gold_req = 2016; 
-    }
-  }
+    required int32 tick = 1;
   
-  message Response
-  {
     extend proto_common.Response
     {
-      optional proto_game.GrabGoldCoin.Response grb_gold_res = 2016; 
+      optional proto_game.SyncTick.Response sync_tick_res = 2015;
     }
   }
-}
-
-
-message CastSkill
-{
-  message Request
-  {
-    required float direction = 1;
-    required float x = 2;
-    required float y = 3;
-    
-    extend proto_common.Request
-    {
-      optional proto_game.CastSkill.Request cast_req = 2017; 
-    }
-  }
-  
-  message Response
-  {
-    extend proto_common.Response
-    {
-      optional proto_game.CastSkill.Response cast_res = 2017; 
-    }
-  }
-}
-
-message Shoot
-{
-  required float direction = 1;
 }
 
 /*  EVENTS */ 
@@ -377,17 +338,22 @@ message SpawnGoldCoin
   }
 }
 
-message UnitMove
+message UnitState
 {
   required int32 guid = 1;
   required float x = 2;
   required float y = 3;
-  required int64 timestamp = 4;
-  required int32 tick = 5;
+  required float rotation = 5;
+}
+
+message UnitStatesUpdate
+{
+  repeated UnitState states = 1;
+  required int64 timestamp = 2;
   
   extend proto_common.Event 
 	{
-	  optional proto_game.UnitMove move_evt = 2004;
+	  optional proto_game.UnitStatesUpdate states_upd_evt = 2004;
 	}
 }
 
@@ -445,6 +411,7 @@ message UnitAttack
   required float direction = 2;
   required float x = 3;
   required float y = 4;
+  required int64 timestamp = 5;
   
   extend proto_common.Event 
 	{
@@ -510,16 +477,6 @@ message DamageDone
   extend proto_common.Event
   {
     optional proto_game.DamageDone dmg_done_evt = 2008; 
-  }
-}
-
-message SyncTick
-{
-  required int32 tick = 1;
-  
-  extend proto_common.Event
-  {
-    optional proto_game.SyncTick sync_tick_evt = 2021;
   }
 }
 

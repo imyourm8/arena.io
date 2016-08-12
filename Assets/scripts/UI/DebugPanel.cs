@@ -6,18 +6,17 @@ using System.Collections;
 public class DebugPanel : MonoBehaviour 
 {
     [SerializeField]
-    private Text latencyValue;
+    private Text latencyValue = null;
 
     [SerializeField]
-    private Text networkBytesPerSecondValue;
+    private Text networkBytesPerSecondValu = null;
 
     [SerializeField]
-    private Text networkBytesTotalValue;
+    private Text networkBytesTotalValue = null;
 
 	void Update () 
     {
         latencyValue.text = GameApp.Instance.Latency.ToString();
-        networkBytesPerSecondValue.text = ((float)GameApp.Instance.BytesReceivedPerSecond / 1024.0f).ToString();
-        networkBytesTotalValue.text = ((float)GameApp.Instance.BytesReceivedTotal/1024.0f).ToString();
+        networkBytesTotalValue.text = (GameApp.Instance.Client.TotalBytesReceived).ToString();
 	}
 }

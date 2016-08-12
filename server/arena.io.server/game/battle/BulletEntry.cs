@@ -13,14 +13,14 @@ namespace arena.battle
     {
         public BulletEntry(JToken data)
         {
-            MaxDistance = data["max_dist"].Value<float>();
+            TimeAlive = data["time_alive"].Value<float>();
             Radius = data["radius"].Value<float>();
             Speed = data["speed"].Value<float>();
             Penetrate = data["penetrate"].Value<bool>();
             Type = helpers.Parsing.ParseEnum<proto_game.Bullets>(data["type"].Value<string>());
         }
 
-        public float MaxDistance
+        public float TimeAlive
         { get; private set; }
 
         public float Radius

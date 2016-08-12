@@ -13,14 +13,4 @@ public class PowerUp : Entity
     {
         get; set;
     }
-
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        Entity entity = other.gameObject.GetComponent<Entity>();
-        Player plr = entity as Player;
-        if (plr != null)
-        {
-            plr.OnPowerUpGrabbed(this);
-        }
-    }
 }

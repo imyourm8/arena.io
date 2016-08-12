@@ -27,11 +27,28 @@ public class ServerClient  : IPhotonPeerListener {
 	public ServerClient(string address, ConnectionProtocol protocol = ConnectionProtocol.Tcp) 
     {
 		connection_ = new ServerConnection (this, protocol);
-		address_ = address;
+        address_ = address;
 	}
 
     public long TotalBytesReceived
-    { get; set; }
+    {  
+        get { return connection_.BytesIn; }
+    }
+
+    public int Latency
+    {
+        get { return connection_.RoundTripTime; }
+    }
+
+    public long ServerTime
+    {
+        get { return connection_.ServerTimeInMilliSeconds; }
+    }
+
+    public NetworkSimulationSet NetworkSettings
+    {
+        get { return connection_.NetworkSimulationSettings; }
+    }
 
 	public void Service() 
     {
@@ -55,7 +72,9 @@ public class ServerClient  : IPhotonPeerListener {
 
 	public bool Connect() 
     {
-		return connection_.Connect (address_, "arena.io.client");
+		var result = connection_.Connect (address_, "arena.io.client");
+        connection_.IsSimulationEnabled = true;
+        return result;
 	}
 
     //returns request id
@@ -145,7 +164,6 @@ public class ServerClient  : IPhotonPeerListener {
 			}
 		}
 
-        TotalBytesReceived += protoData.Length;
 		eventQueue.Enqueue (evt);
 	}
 	

@@ -14,7 +14,7 @@ namespace arena.battle
         public interface IEntity
         {
             Vector2 Position { get; }
-            void SetPosition(float x, float y);
+            Vector2 PrevPosition { get; }
             int ID { get; }
         }
 
@@ -40,11 +40,11 @@ namespace arena.battle
             RemoveFromBucket(entity);
         }
 
-        public void Move(IEntity entity, Vector2 pos)
+        public void RefreshHashPosition(IEntity entity)
         {
             var entityPos = entity.Position;
             var currentTile = GetTileCoord(entityPos);
-            var newTile = GetTileCoord(pos);
+            var newTile = GetTileCoord(entity.PrevPosition);
 
             if (newTile != currentTile)
             {
@@ -53,8 +53,6 @@ namespace arena.battle
                 var bucket = GetBucket(entityPos);
                 bucket.TryAdd(entity.ID, entity);
             }
-
-            entity.SetPosition(pos.x, pos.y);
         }
 
         public IEnumerable<IEntity> HitTest(Vector2 pos, float radius)

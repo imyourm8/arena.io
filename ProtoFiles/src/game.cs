@@ -149,13 +149,21 @@ namespace proto_game
       get { return _tick; }
       set { _tick = value; }
     }
-    private proto_game.Shoot _shoot = null;
+    private bool _shoot = default(bool);
     [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"shoot", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue(null)]
-    public proto_game.Shoot shoot
+    [global::System.ComponentModel.DefaultValue(default(bool))]
+    public bool shoot
     {
       get { return _shoot; }
       set { _shoot = value; }
+    }
+    private bool _skill = default(bool);
+    [global::ProtoBuf.ProtoMember(6, IsRequired = false, Name=@"skill", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(default(bool))]
+    public bool skill
+    {
+      get { return _skill; }
+      set { _skill = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -202,20 +210,47 @@ namespace proto_game
       get { return _tick; }
       set { _tick = value; }
     }
-    private proto_game.Shoot _shoot = null;
-    [global::ProtoBuf.ProtoMember(6, IsRequired = false, Name=@"shoot", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    [global::System.ComponentModel.DefaultValue(null)]
-    public proto_game.Shoot shoot
+    private float _velx;
+    [global::ProtoBuf.ProtoMember(6, IsRequired = true, Name=@"velx", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float velx
+    {
+      get { return _velx; }
+      set { _velx = value; }
+    }
+    private float _vely;
+    [global::ProtoBuf.ProtoMember(7, IsRequired = true, Name=@"vely", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float vely
+    {
+      get { return _vely; }
+      set { _vely = value; }
+    }
+    private float _rvelx;
+    [global::ProtoBuf.ProtoMember(8, IsRequired = true, Name=@"rvelx", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float rvelx
+    {
+      get { return _rvelx; }
+      set { _rvelx = value; }
+    }
+    private float _rvely;
+    [global::ProtoBuf.ProtoMember(9, IsRequired = true, Name=@"rvely", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float rvely
+    {
+      get { return _rvely; }
+      set { _rvely = value; }
+    }
+    private bool _shoot;
+    [global::ProtoBuf.ProtoMember(10, IsRequired = true, Name=@"shoot", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public bool shoot
     {
       get { return _shoot; }
       set { _shoot = value; }
     }
-    private long _time;
-    [global::ProtoBuf.ProtoMember(7, IsRequired = true, Name=@"time", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public long time
+    private bool _skill;
+    [global::ProtoBuf.ProtoMember(11, IsRequired = true, Name=@"skill", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public bool skill
     {
-      get { return _time; }
-      set { _time = value; }
+      get { return _skill; }
+      set { _skill = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -369,23 +404,16 @@ namespace proto_game
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"GrabPowerUp")]
-  public partial class GrabPowerUp : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"SyncTick")]
+  public partial class SyncTick : global::ProtoBuf.IExtensible
   {
-    public GrabPowerUp() {}
+    public SyncTick() {}
     
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Request")]
   public partial class Request : global::ProtoBuf.IExtensible
   {
     public Request() {}
     
-    private int _powerUp;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"powerUp", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int powerUp
-    {
-      get { return _powerUp; }
-      set { _powerUp = value; }
-    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -396,116 +424,18 @@ namespace proto_game
   {
     public Response() {}
     
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"GrabGoldCoin")]
-  public partial class GrabGoldCoin : global::ProtoBuf.IExtensible
-  {
-    public GrabGoldCoin() {}
-    
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Request")]
-  public partial class Request : global::ProtoBuf.IExtensible
-  {
-    public Request() {}
-    
-    private int _goldCoin;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"goldCoin", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int goldCoin
+    private int _tick;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"tick", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int tick
     {
-      get { return _goldCoin; }
-      set { _goldCoin = value; }
+      get { return _tick; }
+      set { _tick = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Response")]
-  public partial class Response : global::ProtoBuf.IExtensible
-  {
-    public Response() {}
-    
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CastSkill")]
-  public partial class CastSkill : global::ProtoBuf.IExtensible
-  {
-    public CastSkill() {}
-    
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Request")]
-  public partial class Request : global::ProtoBuf.IExtensible
-  {
-    public Request() {}
-    
-    private float _direction;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"direction", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public float direction
-    {
-      get { return _direction; }
-      set { _direction = value; }
-    }
-    private float _x;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"x", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public float x
-    {
-      get { return _x; }
-      set { _x = value; }
-    }
-    private float _y;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"y", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public float y
-    {
-      get { return _y; }
-      set { _y = value; }
-    }
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Response")]
-  public partial class Response : global::ProtoBuf.IExtensible
-  {
-    public Response() {}
-    
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Shoot")]
-  public partial class Shoot : global::ProtoBuf.IExtensible
-  {
-    public Shoot() {}
-    
-    private float _direction;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"direction", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public float direction
-    {
-      get { return _direction; }
-      set { _direction = value; }
-    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -801,10 +731,10 @@ namespace proto_game
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"UnitMove")]
-  public partial class UnitMove : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"UnitState")]
+  public partial class UnitState : global::ProtoBuf.IExtensible
   {
-    public UnitMove() {}
+    public UnitState() {}
     
     private int _guid;
     [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"guid", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
@@ -827,19 +757,36 @@ namespace proto_game
       get { return _y; }
       set { _y = value; }
     }
+    private float _rotation;
+    [global::ProtoBuf.ProtoMember(5, IsRequired = true, Name=@"rotation", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float rotation
+    {
+      get { return _rotation; }
+      set { _rotation = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"UnitStatesUpdate")]
+  public partial class UnitStatesUpdate : global::ProtoBuf.IExtensible
+  {
+    public UnitStatesUpdate() {}
+    
+    private readonly global::System.Collections.Generic.List<proto_game.UnitState> _states = new global::System.Collections.Generic.List<proto_game.UnitState>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"states", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<proto_game.UnitState> states
+    {
+      get { return _states; }
+    }
+  
     private long _timestamp;
-    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"timestamp", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"timestamp", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     public long timestamp
     {
       get { return _timestamp; }
       set { _timestamp = value; }
-    }
-    private int _tick;
-    [global::ProtoBuf.ProtoMember(5, IsRequired = true, Name=@"tick", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int tick
-    {
-      get { return _tick; }
-      set { _tick = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -969,6 +916,13 @@ namespace proto_game
     {
       get { return _y; }
       set { _y = value; }
+    }
+    private long _timestamp;
+    [global::ProtoBuf.ProtoMember(5, IsRequired = true, Name=@"timestamp", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public long timestamp
+    {
+      get { return _timestamp; }
+      set { _timestamp = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -1137,23 +1091,6 @@ namespace proto_game
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"SyncTick")]
-  public partial class SyncTick : global::ProtoBuf.IExtensible
-  {
-    public SyncTick() {}
-    
-    private int _tick;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"tick", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int tick
-    {
-      get { return _tick; }
-      set { _tick = value; }
-    }
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"SkillCasted")]
   public partial class SkillCasted : global::ProtoBuf.IExtensible
   {
@@ -1206,12 +1143,23 @@ namespace proto_game
       Canon = 3
     }
   
+    [global::ProtoBuf.ProtoContract(Name=@"Pickups")]
+    public enum Pickups
+    {
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SmallGoldCoin", Value=1)]
+      SmallGoldCoin = 1
+    }
+  
     [global::ProtoBuf.ProtoContract(Name=@"Bullets")]
     public enum Bullets
     {
             
       [global::ProtoBuf.ProtoEnum(Name=@"Common", Value=1)]
-      Common = 1
+      Common = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CanonCore", Value=2)]
+      CanonCore = 2
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"MobType")]

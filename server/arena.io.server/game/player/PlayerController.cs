@@ -34,9 +34,8 @@ namespace arena.player
             AddOperationHandler(proto_common.Commands.FIND_ROOM, new OperationHandler(HandleFindRoom));
             AddOperationHandler(proto_common.Commands.ADMIN_AUTH, new OperationHandler(HandleAdminAuth));
             AddOperationHandler(proto_common.Commands.STAT_UPGRADE, new OperationHandler(HandleStatUpgrade));
-            AddOperationHandler(proto_common.Commands.GRAB_POWERUP, new OperationHandler(HandleGrabPowerUp));
-            AddOperationHandler(proto_common.Commands.CAST_SKILL, new OperationHandler(HandleCastSkill));
             AddOperationHandler(proto_common.Commands.PLAYER_INPUT, new OperationHandler(HandleUserInput));
+            AddOperationHandler(proto_common.Commands.SYNC_TICK, new OperationHandler(HandleSyncTick));
 
             fiber_.Start();
         }
@@ -279,6 +278,15 @@ namespace arena.player
             state_ |= TapCommon.ClientState.InBattle;
         }
 
+        private void HandleSyncTick(proto_common.Request request)
+        {
+            var req = request.Extract<proto_game.SyncTick.Request>(proto_common.Commands.SYNC_TICK);
+
+            var syncPacket = new proto_game.SyncTick.Response();
+            syncPacket.tick = player_.Game.Tick;
+            SendResponse(proto_common.Commands.SYNC_TICK, syncPacket, request.id);
+        }
+
         private void HandlePing(proto_common.Request request)
         {
             var ping =
@@ -294,22 +302,6 @@ namespace arena.player
         {
             var turnRequest = request.Extract<proto_game.PlayerTurn>(proto_common.Commands.TURN);
             player_.Game.PlayerTurned(player_, turnRequest);
-        }
-
-        private void HandleGrabPowerUp(proto_common.Request request)
-        {
-            var grabReq = request.Extract<proto_game.GrabPowerUp.Request>(proto_common.Commands.GRAB_POWERUP);
-            bool grabbed = player_.Game.TryGrabPowerUp(grabReq.powerUp, player_);
-
-            var grabResponse = new proto_game.GrabPowerUp.Response();
-            SendResponse(proto_common.Commands.GRAB_POWERUP, grabResponse, request.id, grabbed ? 0 : -1); 
-        }
-
-        private void HandleCastSkill(proto_common.Request request)
-        {
-            var req = request.Extract<proto_game.CastSkill.Request>(proto_common.Commands.CAST_SKILL);
-            player_.Game.PlayerCast(player_, req);
-            SendResponse(proto_common.Commands.CAST_SKILL, new proto_game.CastSkill.Response(), request.id);
         }
 
         private void HandleUserInput(proto_common.Request request)

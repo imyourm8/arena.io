@@ -30,7 +30,7 @@ namespace arena.battle
             ArmorStep = (float)data["armor_step"];
             SkillDamage = (float)data["skill_damage"];
             SkillDamageStep = (float)data["skill_damage_step"];
-            SKill = helpers.Parsing.ParseEnum<proto_game.Skills>((string)data["skill"]);
+            Skill = helpers.Parsing.ParseEnum<proto_game.Skills>((string)data["skill"]);
             SkillCooldown = (float)(int)data["skill_cooldown"];
         }
 
@@ -91,7 +91,7 @@ namespace arena.battle
         public float ReloadSpeedStep
         { get; private set; }
 
-        public proto_game.Skills SKill
+        public proto_game.Skills Skill
         { get; private set; }
 
         public float SkillCooldown
@@ -102,5 +102,8 @@ namespace arena.battle
 
         public proto_game.Weapons Weapon
         { get; set; }
+
+        public float LinearDumping
+        { get;set; }
     }
 }

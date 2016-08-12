@@ -5,6 +5,6 @@ public class SkillBullet : Bullet
 {
     protected override void OnInit()
     {
-        Penetrate = true;
+        penetrate = true;
     }
 }

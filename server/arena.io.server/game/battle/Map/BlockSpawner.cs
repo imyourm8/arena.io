@@ -50,9 +50,10 @@ namespace arena.battle
 
         public void OnExpBlockRemoved(Entity entity)
         {
-            if (entity is ExpBlock)
+            var block = entity as ExpBlock;
+            if (block != null)
             {
-                control_.RemoveBlock(entity as ExpBlock);
+                control_.RemoveBlock(block);
 
                 var pos = entity.Position;
                 var tile = GetTileCoord(pos.x - spawnArea_.minX, pos.y - spawnArea_.minY);
@@ -63,6 +64,8 @@ namespace arena.battle
                 int count = 0;
                 bucket.TryGetValue(tile.Value, out count);
                 bucket.TryUpdate(tile.Value, count - 1, count);
+
+                Common.ClassPool<ExpBlock>.Release(block);
             }
         }
 
@@ -100,7 +103,7 @@ namespace arena.battle
 
         private void SpawnBlock(float minX, float maxX, float minY, float maxY)
         {
-            var block = new ExpBlock();
+            var block = Common.ClassPool<ExpBlock>.Get();
             block.SetPosition(MathHelper.Range(minX, maxX), MathHelper.Range(minY, maxY));
 
             var type = layer_.GetBlockTypeByPoint(block.Position);

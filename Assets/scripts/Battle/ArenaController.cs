@@ -8,6 +8,8 @@ namespace arena
 {
     public class ArenaController : Scene 
     {
+        private static readonly float SyncGameTickPeriod = 2.0f;
+
         [Header("Arena Set-Up")]
         [SerializeField]
         private Joystick moveJoystick_ = null;
@@ -45,16 +47,19 @@ namespace arena
         [SerializeField]
         private GameObject background_ = null;
 
-        private Player player_ = null;
-        private long prevTime_ = 0;
-        private Vector2 prevPos;
+        [SerializeField]
+        private EdgeCollider2D[] walls = null;
+
+        private WaitForSeconds waitForSync_ = new WaitForSeconds(SyncGameTickPeriod);
         private Dictionary<int, Entity> entities_ = new Dictionary<int, Entity>();
         private List<PowerUp> powerUps_ = new List<PowerUp>();
         private List<Player> players_ = new List<Player>();
         private Dictionary<Bullet, Bullet> bullets_ = new Dictionary<Bullet, Bullet>();
         private InputHistory inputHistory_ = new InputHistory();
-        private float accumulator_ = 0.0f;
         private List<proto_game.PlayerInput.Response> syncInputsQueue_ = new List<proto_game.PlayerInput.Response>();
+        private Player player_ = null;
+        private float accumulator_ = 0.0f;
+        private bool castSkill_;
 
         public int Tick
         { get; private set; }
@@ -71,7 +76,6 @@ namespace arena
             GameApp.Instance.Client.OnServerResponse += HandleResponse;
 
             Ready = false;
-
             arenaUI.StatsPanel.OnStatUpgrade = HandleUpgradeStat;
 
             var findRequest = new proto_game.FindRoom.Request();
@@ -85,6 +89,28 @@ namespace arena
                     OnJoinGame();
                 }
             });
+        }
+
+        public override void OnAfterShow()
+        {
+            StartCoroutine(SyncGameTicks());
+        }
+
+        private IEnumerator SyncGameTicks()
+        {
+            while (true)
+            {
+                yield return waitForSync_;
+
+                var syncRequest = new proto_game.SyncTick.Request();
+                var id = GameApp.Instance.Client.Send(syncRequest, proto_common.Commands.SYNC_TICK);
+                GameApp.Instance.RequestsManager.AddRequest(id, (proto_common.Response response)=>
+                {
+                    var syncResponse = response.Extract<proto_game.SyncTick.Response>(proto_common.Commands.SYNC_TICK);
+                    if (syncResponse.tick > Tick)
+                        Tick = syncResponse.tick + 1;
+                });
+            }
         }
 
         public override void OnBeforeHide()
@@ -163,41 +189,48 @@ namespace arena
 
     	private void Update () 
         {
-            foreach(var p in players_)
-            {
-                p.OnUpdate();
-            }
+            if (player_ == null) 
+                return;
 
-            accumulator_ += Time.deltaTime;
-            float inputDt = GameApp.Instance.MovementUpdateDT;
-
-            if (accumulator_ >= inputDt)
+            //just to make rotation smooth
+            if (shootJoystick_.inputDirection != Vector2.zero)
             {
-                accumulator_ -= inputDt;
-                SendLocalPlayerInput();
+                player_.SetRotation(shootJoystick_.inputDirection);
             }
     	}
 
         private void FixedUpdate()
         {
-            if (player_ == null) return;
-
-            foreach(var p in players_)
-            {
-                if (!p.Local)
-                    p.OnFixedUpdate(Time.fixedDeltaTime);
-            }
-
             FixedTick++;
         }
 
         private void LateUpdate()
         {
+            if (player_ == null)
+                return;
+
+            accumulator_ += Time.deltaTime;
+            float inputDt = GameApp.Instance.MovementUpdateDT;
+
+            while (accumulator_ >= inputDt)
+            {
+                accumulator_ -= inputDt;
+                SendLocalPlayerInput();
+            }
+
+            player_.InterpolationBaseValue = accumulator_;
+
             foreach(var sync in syncInputsQueue_)
             {
                 inputHistory_.Correction(sync, player_);
+                player_.MoveGhost(sync.x, sync.y);
             }
             syncInputsQueue_.Clear();
+
+            foreach(var p in entities_)
+            {
+                p.Value.OnUpdate(Time.deltaTime);
+            }
         }
 
         public void SendLocalPlayerInput()
@@ -217,18 +250,29 @@ namespace arena
             player_.Force = dir;
 
             var input = player_.Input;
+            input.shoot = false;
+            input.skill = false;
+
+            input.tick = Tick;
+            GetLocalPlayerMoves(input);
 
             if (shootJoystick_.inputDirection != Vector2.zero)
             {
                 if (player_.PerformAttack(shootJoystick_.inputDirection))
                 {
-                    input.shoot = player_.Shoot;
-                    input.shoot.direction = player_.Rotation * Mathf.Deg2Rad;
+                    input.shoot = true;
                 }
             }
 
-            input.tick = Tick;
-            GetLocalPlayerMoves(input);
+            if (castSkill_)
+            {
+                castSkill_ = false;
+                if (player_.CanCast())
+                {
+                    player_.CastSkill();
+                    input.skill = true;
+                }
+            }
 
             input.rotation = player_.Rotation;
             inputHistory_.Add(input, player_.GetState());
@@ -236,9 +280,7 @@ namespace arena
             GameApp.Instance.Client.Send(input, proto_common.Commands.PLAYER_INPUT);
             Tick++;
 
-            player_.OnFixedUpdate(GameApp.Instance.MovementUpdateDT);
-
-            input.shoot = null;
+            player_.ApplyInputs(GameApp.Instance.MovementUpdateDT);
         }
 
         private void GetLocalPlayerMoves(proto_game.PlayerInput.Request moveReq)
@@ -250,9 +292,9 @@ namespace arena
         #region Entry network point
         private void HandleEvent(proto_common.Event evt) 
         {
-            if (evt.type == proto_common.Events.UNIT_MOVE) 
+            if (evt.type == proto_common.Events.UNIT_STATE_UPDATE) 
             {
-                HandleUnitMove(evt);
+                HandleUnitStateUpdate(evt);
             } 
             else if (evt.type == proto_common.Events.PLAYER_APPEARED)
             {
@@ -325,22 +367,6 @@ namespace arena
         }
         #endregion
 
-        public void OnPowerUpGrabbed(Player player, PowerUp powerUp)
-        {
-            var request = new proto_game.GrabPowerUp.Request();
-            request.powerUp = powerUp.ID;
-
-            var reqID = GameApp.Instance.Client.Send(request, proto_common.Commands.GRAB_POWERUP);
-            GameApp.Instance.RequestsManager.AddRequest(reqID, (proto_common.Response response)=>
-            {
-                if (response.error == (int)proto_common.Common.CommonErrors.CE_NO_ERROR)
-                {
-                    player.AddStatus(powerUp.PowerUpType, powerUp.RemoveAfter);
-                    powerUp.gameObject.ReturnPooled();
-                }
-            });
-        }
-
         #region Network Handlers
         private void HandleLocalPlayerInputCorrection(proto_common.Response response)
         {
@@ -353,7 +379,8 @@ namespace arena
             var mobEvt = evt.Extract<proto_game.MobAppeared>(proto_common.Events.MOB_APPEARED);
 
             var mobObj = MobPrefabs.Instance.Get(mobEvt.type);
-            var entityScript = mobObj.GetComponent<Entity>();
+            var entityScript = mobObj.GetComponent<Unit>();
+            entityScript.WeaponUsed = mobEvt.weapon_used;
             entityScript.Init(this, new Vector2(mobEvt.x, mobEvt.y));
             entityScript.ID = mobEvt.id;
             entityScript.Rotation = 90;
@@ -395,6 +422,14 @@ namespace arena
         private void HandlePowerUpGrabbed(proto_common.Event evt)
         {
             var powerUpEvt = evt.Extract<proto_game.PowerUpGrabbed>(proto_common.Events.POWER_UP_GRABBED);
+            var whoGrabbed = GetEntity(powerUpEvt.who_grabbed) as Player;
+            var grabbedWhat = GetEntity(powerUpEvt.id) as PowerUp;
+
+            if (whoGrabbed != null && grabbedWhat!=null)
+            {
+                whoGrabbed.AddStatus(grabbedWhat.PowerUpType, grabbedWhat.RemoveAfter);
+                RemoveEntity(grabbedWhat);
+            }
         }
 
         private void HandleGameFinished(proto_common.Event evt)
@@ -457,8 +492,7 @@ namespace arena
 
             AddEntity(entity);
 
-            entity.OnUpdate();
-            entity.OnFixedUpdate(Time.fixedDeltaTime);
+            entity.OnUpdate(0.0f);
         }
 
         private void AddEntity(Entity entity)
@@ -475,17 +509,22 @@ namespace arena
             }
         }
 
-        private void HandleUnitMove(proto_common.Event evt)
+        private void HandleUnitStateUpdate(proto_common.Event evt)
         {
-            proto_game.UnitMove movePacket = 
-                ProtoBuf.Extensible.GetValue<proto_game.UnitMove> (evt, (int)proto_common.Events.UNIT_MOVE);
+            proto_game.UnitStatesUpdate updatesPacket = 
+                ProtoBuf.Extensible.GetValue<proto_game.UnitStatesUpdate> (evt, (int)proto_common.Events.UNIT_STATE_UPDATE);
 
-            Entity unit = GetEntity(movePacket.guid);
-
-            if (unit != null)
+            var length = updatesPacket.states.Count;
+            var states = updatesPacket.states;
+            for (var i = 0; i < length; ++i)
             {
-                //unit.SetNextPosition(movePacket.timestamp, new Vector2(movePacket.x, movePacket.y));
-                unit.Position = new Vector2(movePacket.x, movePacket.y);
+                var stateData = states[i];
+                Entity unit = GetEntity(stateData.guid);
+
+                if (unit != null)
+                {
+                    unit.UpdateState(stateData, updatesPacket.timestamp);
+                }
             }
         }
 
@@ -543,6 +582,7 @@ namespace arena
             if (playerToInited == player_)
             {
                 player_.Local = true;
+                player_.CreateServerGhost();
             }
         }
 
@@ -572,8 +612,8 @@ namespace arena
             Entity unit = GetEntity(attPacket.guid);
             if (unit != null)
             {
-                player_.AttackPosition = new Vector2(attPacket.x, attPacket.y);
-                player_.PerformAttack(attPacket.direction*Mathf.Rad2Deg, true);
+                unit.AttackPosition = new Vector2(attPacket.x, attPacket.y);
+                unit.PerformAttack(attPacket.direction*Mathf.Rad2Deg, attPacket.timestamp);
             }
         }
 
@@ -617,23 +657,7 @@ namespace arena
 
         public void HandleCastSkill()
         {
-            if (player_ != null)
-            {
-                if (player_.CanCast())
-                {
-                    var req = new proto_game.CastSkill.Request();
-                    req.direction = player_.Rotation;
-                    req.x = player_.Position.x;
-                    req.y = player_.Position.y;
-
-                    var id = GameApp.Instance.Client.Send(req, proto_common.Commands.CAST_SKILL);
-                    GameApp.Instance.RequestsManager.AddRequest(id,
-                    (proto_common.Response response)=>
-                    {
-                        player_.CastSkill();
-                    });
-                }
-            }
+            castSkill_ = true;
         }
 
         private void HandleUpgradeStat(proto_game.Stats stat)

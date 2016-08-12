@@ -61,6 +61,7 @@ public class SceneManager : SingletonMonobehaviour<SceneManager>
     {
         var scene = scenes[sceneId];
         scene.Show();
+        scene.OnAfterShow();
         activeScenes_.Add(scene);
     }
 

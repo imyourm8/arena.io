@@ -3,7 +3,23 @@ using System.Collections;
 
 public class Skill : MonoBehaviour 
 {
+    [SerializeField]
+    protected float recoil = 0.0f;
+
+    [SerializeField]
+    protected proto_game.Skills type;
+
     private long lastCastTime_ = 0;
+
+    #if UNITY_EDITOR
+    public float Recoil
+    {
+        get { return recoil; }
+    }
+
+    public proto_game.Skills Type
+    { get { return type; } }
+    #endif
 
     public long Cooldown
     { get; set; }

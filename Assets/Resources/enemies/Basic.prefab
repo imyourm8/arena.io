@@ -124,5 +124,7 @@ MonoBehaviour:
   transform_: {fileID: 424912}
   collider: {fileID: 5860480}
   sprite: {fileID: 21229216}
+  currentSpeed_: 0
   hpBar_: {fileID: 0}
+  weaponUsed: 0
   type: 1

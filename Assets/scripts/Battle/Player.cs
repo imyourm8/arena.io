@@ -5,33 +5,42 @@ using System.Collections.Generic;
 using System;
 using DG.Tweening;
 
-public class Player : Entity, PlayerExperience.IExpProvider 
+using arena.common.battle;
+
+public class Player : Unit, PlayerExperience.IExpProvider 
 {
-    private static readonly float defaultTightness = 0.06f;
-    private static readonly float smoothTightness = 0.025f;
+    private static readonly float SmoothTightness = 0.05f;
+    private static readonly float DefaulTightness = 0.1f;
 
     [SerializeField]
     private Vector3 nicknameOffset = Vector3.zero;
 
     [SerializeField]
-    private proto_game.Weapons weaponUsed;
-
-    [SerializeField]
-    private proto_profile.PlayerClasses plrClass;
+    private proto_profile.PlayerClasses plrClass = proto_profile.PlayerClasses.Assault;
 
     private Vector2 desiredPosition_;
     private PlayerExperience playerExp_;
     private Text nicknameText_ = null;
     private StatusManager statusManager_;
-    private Tween moveTween_;
-    private float tightness_ = defaultTightness;
-    private Nito.Deque<Vector2> localMoves_ = new Nito.Deque<Vector2>();
+    private Vector2 previousPos_ = Vector2.zero;
+    private float posAlpha_ = 0;
+    private float tightness_ = 0;
+    private float appliedRecoil_ = 0;
+
+    private GameObject serverGhost_ = null;
 
 	public Player()
 	{
         playerExp_ = new PlayerExperience(this);
         statusManager_ = new StatusManager(this);
 	}
+
+    public float InterpolationBaseValue
+    { get; set; }
+
+    public bool Smoothed
+    { get; private set; }
+
     #if UNITY_EDITOR 
     public proto_profile.PlayerClasses @Class
     { get { return plrClass; } }
@@ -41,12 +50,6 @@ public class Player : Entity, PlayerExperience.IExpProvider
 
     public proto_game.PlayerInput.Request Input
     { get; set; }
-
-    public proto_game.Shoot Shoot
-    { get; set; }
-
-    public proto_game.Weapons WeaponUsed
-    { get { return weaponUsed; } set { weaponUsed = value; } }
 
     public Text NicknameText
     { set { nicknameText_ = value; }}
@@ -64,9 +67,6 @@ public class Player : Entity, PlayerExperience.IExpProvider
     public int AttackCooldownLevel
     { get; set; }
 
-    public bool Smoothing 
-    { get { return tightness_ < defaultTightness-0.1f; } }
-
     public PlayerExperience PlayerExperience
     {
         get { return playerExp_; }
@@ -75,44 +75,36 @@ public class Player : Entity, PlayerExperience.IExpProvider
     public override void Init(arena.ArenaController controller, Vector2 startPos)
     {
         base.Init(controller, startPos);
+       
         Input = new proto_game.PlayerInput.Request();
-        Shoot = new proto_game.Shoot();
+
         Level = 1;
         Replaying = false;
-        var weapon = WeaponPrefabs.Instance.Get(WeaponUsed);
-        var weaponScript = weapon.GetComponent<Weapon>();
-        weaponScript.Init(this);
-        gameObject.AddChild(weapon);
-        weapon_ = weaponScript;
         desiredPosition_ = startPos;
     }
 
-    public void OnPowerUpGrabbed(PowerUp powerUp)
+    public override void OnUpdate(float dt)
     {
-        Controller.OnPowerUpGrabbed(this, powerUp);
-    }
+        statusManager_.Update(dt);
 
-    public override void OnUpdate()
-    {
-        base.OnUpdate();
+        posAlpha_ = InterpolationBaseValue / GameApp.Instance.MovementUpdateDT;
 
-        statusManager_.Update();
-
-        var prevPosition = Position;
-        if (!Replaying && (Smoothing || moveTween_ == null))
+        if (!Smoothed)
         {
-            Position = prevPosition + (desiredPosition_ - prevPosition) * tightness_;
+            Position = Vector2.Lerp(previousPos_, desiredPosition_, posAlpha_);
+        }
+        else
+        {
+            Position = Position + (desiredPosition_ - Position) * tightness_;
+            tightness_ += (DefaulTightness - tightness_) * 0.01666f;
+
+            if ((desiredPosition_-Position).magnitude < 0.01f)
+            {
+                Smoothed = false;
+            }
         }
 
-        tightness_ += (defaultTightness - tightness_) * 0.01666f;
-    }
-
-    public void LateUpdate()
-    {
-        if (Local)
-        {
-            UpdateHpBarPosition();    
-        }
+        base.OnUpdate(dt);
 
         if (nicknameText_ != null)
         {
@@ -120,10 +112,16 @@ public class Player : Entity, PlayerExperience.IExpProvider
         }
     }
 
-    public void CancelMoving()
+    public void CreateServerGhost()
     {
-        if (moveTween_ != null)
-            moveTween_.Kill();
+        serverGhost_ = gameObject.GetPooled();
+        serverGhost_.GetComponent<Player>().Collider.enabled = false;
+        Controller.gameObject.AddChild(serverGhost_);
+    }
+
+    public void MoveGhost(float x, float y)
+    {
+        serverGhost_.transform.localPosition = new Vector3(x, y, 0);
     }
 
     public void Snap(float x, float y)
@@ -132,27 +130,62 @@ public class Player : Entity, PlayerExperience.IExpProvider
         desiredPosition_.y = y;
     }
 
-    public override void OnFixedUpdate(float dt)
+    public void ApplyInputs(float dt)
     {
-        var totalImpulse = Velocity;
-        totalImpulse.x *= dt;
-        totalImpulse.y *= dt;
-        desiredPosition_ += totalImpulse;
+        var speed = Stats.GetFinValue(proto_game.Stats.MovementSpeed);
+        Vector2 totalImpulse = new Vector2(speed, speed);
+        totalImpulse.Scale(Force);
 
-        if (!Replaying && !Smoothing)
+        if (totalImpulse != Vector2.zero)
         {
-            CancelMoving();
-            moveTween_ = DOTween.To(()=>Position,x=>Position=x,desiredPosition_,GameApp.Instance.MovementUpdateDT);
-            moveTween_.OnComplete(HandleMoveTweenComplete);
+            Velocity = totalImpulse;
         }
 
-        base.OnFixedUpdate(dt);
+        if (appliedRecoil_ > 0.001f)
+        {
+            appliedRecoil_ *= -1;
+            var dir = AttackDirection; 
+            dir.x *= appliedRecoil_;
+            dir.y *= appliedRecoil_;
+            RecoilVelocity = dir;
+            appliedRecoil_ = 0.0f;
+        }
+
+        var friction = Mathf.Clamp01(1.0f - dt * Body.drag);
+        RecoilVelocity *= friction;
+        Velocity *= friction;
+
+        if (Mathf.Approximately(RecoilVelocity.magnitude, 0.0f))
+        {
+            RecoilVelocity = Vector2.zero;
+        }
+
+        if (Mathf.Approximately(Velocity.magnitude, 0.0f))
+        {
+            Velocity = Vector2.zero;
+        }
+
+        totalImpulse = Velocity + RecoilVelocity;
+        totalImpulse.x *= dt;
+        totalImpulse.y *= dt;
+
+        if (!Replaying)
+        {
+            previousPos_ = desiredPosition_;
+        }
+        desiredPosition_ += totalImpulse;
+        AttackPosition = desiredPosition_;
+    }
+
+    public override void ApplyRecoil(float recoil)
+    {
+        appliedRecoil_ += recoil;
     }
 
     public void Smooth()
     {
-        tightness_ = smoothTightness;
-        localMoves_.Clear();
+        tightness_ = SmoothTightness;
+        Smoothed = true;
     }
 
     public void SetPosition(float x, float y)
@@ -161,40 +194,35 @@ public class Player : Entity, PlayerExperience.IExpProvider
         desiredPosition_ = new Vector2(x, y);
     }
 
-    public override PhysicalState GetState()
+    public PhysicalState GetState()
     {
-        if (!Local) return base.GetState();
-
         PhysicalState state = new PhysicalState();
         state.Position = desiredPosition_;
+        state.Rotation = Rotation;
         state.Velocity = Velocity;
+        state.RecoilVelocity = RecoilVelocity;
+        state.Recoil = appliedRecoil_;
         return state;
     }
 
     public override void OnRemove()
     {
         base.OnRemove();
-        CancelMoving();
         if (weapon_ != null)
+        {
             weapon_.gameObject.ReturnPooled();
+            weapon_ = null;
+        }
         if (nicknameText_ != null)
+        {
             nicknameText_.gameObject.ReturnPooled();
+            nicknameText_ = null;
+        }
     }
 
     public void AddStatus(proto_game.PowerUpType effectType, float duration)
     {
         Status statusEffect = new Status(effectType, duration);
         statusManager_.Add(statusEffect);
-    }
-
-    private void MoveTo(Vector2 pos)
-    {
-        moveTween_ = DOTween.To(()=>Position,x=>Position=x,desiredPosition_,GameApp.Instance.MovementUpdateDT);
-        moveTween_.OnComplete(HandleMoveTweenComplete);
-    }
-
-    private void HandleMoveTweenComplete()
-    {
-        moveTween_ = null;
     }
 }

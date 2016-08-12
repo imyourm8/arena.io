@@ -41,7 +41,7 @@ namespace arena.battle
                 var spawnPoint = new SpawnPoint(spawnPointData);
                 spawnPoints_.Add(spawnPoint);
             }
-
+            Recoil = data.SelectToken("recoil").Value<float>();
             Type = helpers.Parsing.ParseEnum<proto_game.Weapons>(data["type"].Value<string>());
         }
 
@@ -50,5 +50,8 @@ namespace arena.battle
 
         public proto_game.Weapons Type
         { get; set; }
+
+        public float Recoil
+        { get; private set; }
     }
 }

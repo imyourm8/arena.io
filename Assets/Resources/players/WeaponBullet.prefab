@@ -11,7 +11,7 @@ GameObject:
   - 212: {fileID: 21228428}
   - 58: {fileID: 5802464}
   - 114: {fileID: 11485706}
-  m_Layer: 1
+  m_Layer: 9
   m_Name: WeaponBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,19 +56,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67b53aafd90613348b83f9cdd4915066, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  local: 0
-  hpBarOffset_: {x: 0, y: 0, z: 0}
-  body_: {fileID: 0}
-  transform_: {fileID: 407876}
-  collider: {fileID: 5802464}
-  sprite: {fileID: 21228428}
-  currentSpeed_: 0
-  hpBar_: {fileID: 0}
   collider: {fileID: 5802464}
   sprite: {fileID: 21228428}
   bulletType: 1
-  maxDistance: 0
   moveSpeed: -1
+  timeAlive: 1.4
+  penetrate: 0
 --- !u!212 &21228428
 SpriteRenderer:
   m_ObjectHideFlags: 1

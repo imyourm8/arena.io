@@ -19,6 +19,9 @@ public class Weapon : MonoBehaviour
         owner_ = owner;
     }
 
+
+    public float Recoil
+    { get { return recoil; } }
     #if UNITY_EDITOR
     public List<BulletSpawnPoint> GetSpawnPoints()
     {
@@ -31,8 +34,10 @@ public class Weapon : MonoBehaviour
     }
     #endif
 
-    public void SpawnBullets()
+    public void SpawnBullets(long serverSpawnTime)
     {
+        var timeElapsedSinceServerSpawn = GameApp.Instance.ClientTimeMs() - serverSpawnTime;
+
         var ownerAttPos = owner_.AttackPosition;
         var ownerAttRot = owner_.AttackDirection;
 
@@ -46,26 +51,30 @@ public class Weapon : MonoBehaviour
             if (bullet == null) 
                 continue;
 
-            var position = p.transform.localPosition + new Vector3(ownerAttPos.x, ownerAttPos.y, 0);
-
             var point = p.transform.localPosition;
             var x = point.x * cos - point.y * sin;
             var y = point.x * sin + point.y * cos;
             point.x = x + ownerAttPos.x;
             point.y = y + ownerAttPos.y;
 
-            bullet.Init(
-                owner_, 
-                new Vector3(ownerAttRot.x, ownerAttRot.y, 0) + p.transform.localRotation.eulerAngles, 
-                owner_.Stats.GetFinValue(proto_game.Stats.BulletSpeed), 
-                point, 
-                owner_.Stats.GetFinValue(proto_game.Stats.BulletDamage)
-            );
+            var alpha = ((float)timeElapsedSinceServerSpawn/1000.0f) / bullet.TimeAlive;
 
+            if (alpha < 0.9f)
+            {
+                bullet.Init(
+                    owner_, 
+                    new Vector3(ownerAttRot.x, ownerAttRot.y, 0) + p.transform.localRotation.eulerAngles, 
+                    owner_.Stats.GetFinValue(proto_game.Stats.BulletSpeed), 
+                    point, 
+                    owner_.Stats.GetFinValue(proto_game.Stats.BulletDamage),
+                    alpha
+                );
+
+                owner_.Controller.AddBullet(bullet);
+                //dont allow collide with owned bullets
+                //Physics2D.IgnoreCollision(bullet.Collider, owner_.Collider);
+            }
             owner_.ApplyRecoil(recoil);
-            owner_.Controller.AddBullet(bullet);
-            //dont allow collide with owned bullets
-            Physics2D.IgnoreCollision(bullet.Collider, owner_.Collider);
         }
     }
 }

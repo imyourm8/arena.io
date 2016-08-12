@@ -64,12 +64,14 @@ namespace arena.battle
 
         public void Add(Entity entity)
         {
-            entityHash_.Add(entity);
+            if (entity.TrackSpatially)
+                entityHash_.Add(entity);
         }
 
         public void Remove(Entity entity)
         {
-            entityHash_.Remove(entity);
+            if (entity.TrackSpatially)
+                entityHash_.Remove(entity);
         }
 
         public void Clear()
@@ -77,9 +79,9 @@ namespace arena.battle
             entityHash_.Clear();
         }
 
-        public void Move(Entity entity, Vector2 pos)
+        public void RefreshHashPosition(Entity entity)
         {
-            entityHash_.Move(entity, pos);
+            entityHash_.RefreshHashPosition(entity);
         }
 
         public IEnumerable<SpatialHash.IEntity> HitTest(Vector2 pos, float radius)

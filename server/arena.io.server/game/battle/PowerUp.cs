@@ -8,6 +8,12 @@ namespace arena.battle
 {
     class PowerUp : Entity
     {
+        public PowerUp()
+        {
+            Category = PhysicsDefs.Category.PICKUPS;
+            TrackSpatially = false;
+        }
+
         public proto_game.PowerUpType Type
         { get; set; }
 
@@ -29,6 +35,17 @@ namespace arena.battle
             powerUpPacket.lifetime = Lifetime;
 
             return powerUpPacket;
+        }
+
+        public override void InitPhysics(bool dynamicBody = true, bool isSensor = false)
+        {
+            base.InitPhysics(dynamicBody, true);
+            AddToCollisionMask((ushort)PhysicsDefs.Category.PLAYER);
+        }
+
+        public void OnPickUpBy(Player player)
+        {
+            Game.TryGrabPowerUp(ID, player);
         }
     }
 }

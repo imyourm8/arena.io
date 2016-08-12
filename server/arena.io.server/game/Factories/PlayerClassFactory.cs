@@ -38,11 +38,12 @@ namespace arena.Factories
 
             while(data.Read())
             {
-                var entry = new PlayerClassEntry(data);
+                var entry = new PlayerClassEntry(data); 
                 classes_.Add(entry.@Class, entry);
 
                 var plr = dict[entry.@Class];
                 entry.CollisionRadius = plr.SelectToken("radius").Value<float>();
+                entry.LinearDumping = plr.SelectToken("linear_dumping").Value<float>();
                 entry.Weapon = helpers.Parsing.ParseEnum<proto_game.Weapons>(plr.SelectToken("weapon").Value<string>());
             };
         }

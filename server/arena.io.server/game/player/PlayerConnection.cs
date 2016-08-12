@@ -26,14 +26,14 @@ namespace arena.player
         void Disconnect();
     }
 
-    public class PlayerConnection : Photon.SocketServer.PeerBase, IGameConnection
+    public class PlayerConnection : Photon.SocketServer.ClientPeer, IGameConnection
     {
         private RequestHandler controller_;
         private SendParameters defaultSendParams_;
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();
 
-        public PlayerConnection(IRpcProtocol protocol, IPhotonPeer unmanagedPeer)
-            : base(protocol, unmanagedPeer)
+        public PlayerConnection(InitRequest initRequest)
+            :base(initRequest)
         {
             defaultSendParams_.ChannelId = 0;
             defaultSendParams_.Encrypted = false;

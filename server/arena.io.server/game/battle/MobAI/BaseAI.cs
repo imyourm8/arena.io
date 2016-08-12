@@ -22,13 +22,14 @@ namespace arena.battle.MobAI
             }
 
 
-            if (target_ != null)
+            if (target_ != null) 
             {
                 var distance = MathHelper.Distance(Owner.Position, target_.Position);
 
                 if (distance <= Owner.Entry.AttackRange)
                 {
                     Attack();
+                    Stop();
                 }
                 else if (distance < Owner.Entry.ReturnRange)
                 {
@@ -55,10 +56,16 @@ namespace arena.battle.MobAI
             }
         }
 
+        protected void Stop()
+        {
+            Owner.StopMovement();
+        }
+
         protected void Attack()
         {
             var dir = target_.Position - Owner.Position;
             float direction = (float)Math.Atan2(dir.y, dir.x);
+            Owner.Rotation = direction;
             Owner.PerformAttackAtDirection(direction);
         }
 

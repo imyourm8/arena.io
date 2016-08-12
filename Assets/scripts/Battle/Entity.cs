@@ -17,10 +17,6 @@ public class Entity : MonoBehaviour
     public delegate void OnDamageCallback (Entity entity, float damage);
     public event OnDamageCallback OnDamage = null;
 
-    public delegate void OnStopCallback (Entity entity);
-    public event OnStopCallback OnStop;
-    public event OnStopCallback OnStartMove;
-
     [SerializeField]
     private bool local = false;
 
@@ -42,13 +38,14 @@ public class Entity : MonoBehaviour
     private bool firstInit_ = true;
     private Color initialColor_;
     private Vector3 initialScale_;
-    private MovementInterpolator moveInterpolator_;
+    private StateInterpolator stateInterpolator_;
     private Vector2 previousPosition_;
     protected Weapon weapon_;
     private arena.ArenaController controller_;
     private Tween rotationTweener_;
     private Vector2 moveImpulse_;
     private Skill skill_;
+    private bool destroyed_ = false;
 
     #region getter & setters
     public Rigidbody2D Body
@@ -61,13 +58,7 @@ public class Entity : MonoBehaviour
     {
         set 
         {   
-            force_ = value; 
-            Vector2 totalImpulse = new Vector2(
-                Stats.GetFinValue(proto_game.Stats.MovementSpeed), 
-                Stats.GetFinValue(proto_game.Stats.MovementSpeed)
-            );
-            totalImpulse.Scale(force_);
-            Velocity = totalImpulse;
+            force_ = value;
         }
         get { return force_; }
     }
@@ -111,14 +102,6 @@ public class Entity : MonoBehaviour
     public Vector2 AttackDirection
     {
         get; private set;
-    }
-
-    public virtual PhysicalState GetState()
-    {
-        PhysicalState state = new PhysicalState();
-        state.Position = Position;
-        state.Velocity = Velocity;
-        return state;
     }
 
     public void Remove(bool animated)
@@ -264,6 +247,9 @@ public class Entity : MonoBehaviour
         }
     }
 
+    public Vector2 RecoilVelocity
+    { get; set; }
+
     public Vector2 Velocity
     { get; set; }
       
@@ -282,6 +268,11 @@ public class Entity : MonoBehaviour
     private Attributes.UnitAttributes stats_ = new Attributes.UnitAttributes();
     public Attributes.UnitAttributes Stats { get { return stats_; }}
     #endregion
+
+    public void SetRotation(Vector2 rot)
+    {
+        Rotation = (float)Math.Atan2(rot.y, rot.x) * Mathf.Rad2Deg;
+    }
 
 	protected Entity() 
     {
@@ -304,34 +295,27 @@ public class Entity : MonoBehaviour
             transform_.localScale = initialScale_;
             sprite.color = initialColor_;
         }
-
+        destroyed_ = false;
         AttackRange = 0.0f;
         controller_ = controller;
-        if (moveInterpolator_ == null)
-            moveInterpolator_ = new MovementInterpolator(this);
         Position = startPos;
 
+        if (stateInterpolator_ == null)
+            stateInterpolator_ = new StateInterpolator(this);
         if (!local) 
-            moveInterpolator_.Reset(Position);
+            stateInterpolator_.Reset();
 	}
 
-    public void ApplyRecoil(float recoil)
+    public virtual void ApplyRecoil(float recoil)
     {
-        if (local && body_ != null)
-        {
-            recoil *= -1;
-            var dir = AttackDirection; 
-            dir.x *= recoil;
-            dir.y *= recoil;
-            body_.AddForce(dir, ForceMode2D.Impulse);
-        }
+        
     }
 
-    public bool PerformAttack(float direction, bool i = false)
+    public bool PerformAttack(float direction, long time = -1)
     {
         Rotation = direction;
 
-        if (Time.time < nextAttack_ && !i)
+        if (Time.time < nextAttack_)
         {
             return false;
         }
@@ -341,51 +325,42 @@ public class Entity : MonoBehaviour
 
         if (weapon_ != null)
         {
-            weapon_.SpawnBullets();
+            weapon_.SpawnBullets(time);
         }
 
         return true;
     }
 
-	public bool PerformAttack(Vector2 direction)
+    public bool PerformAttack(Vector2 direction, long time = -1)
 	{
-        return PerformAttack(Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+        return PerformAttack((float)Math.Atan2(direction.y, direction.x) * Mathf.Rad2Deg, time);
 	}
 
-    public virtual void OnFixedUpdate(float dt)
-    {
+	public virtual void OnUpdate (float dt) 
+	{
         previousPosition_ = Position;
         prevRotation_ = rotation_; 
 
         if (!local)
         {
-            Position = moveInterpolator_.GetPosition();
-            UpdateHpBarPosition();
+            if (stateInterpolator_ != null)
+                stateInterpolator_.Update();
         }
 
-        if (!Moved && !stopped_ && local)
-        {
-            //OnStop(this);
-            stopped_ = true;
-        }
-        else if (Moved && stopped_ && local)
-        {
-            //OnStartMove(this);
-            stopped_ = false;
-        }
-    }
-
-	public virtual void OnUpdate () 
-	{
+        UpdateHpBarPosition();
 	}
 
     protected void UpdateHpBarPosition()
     {
-        hpBar_.transform.position = transform_.localPosition + hpBarOffset_;
+        if (hpBar_ != null)
+            hpBar_.transform.position = transform_.localPosition + hpBarOffset_;
     }
 
     public virtual void OnRemove()
     {
+        if (destroyed_) 
+            return;
+        destroyed_ = true;
         if (hpBar_ != null)
         {
             hpBar_.gameObject.ReturnPooled();
@@ -401,9 +376,9 @@ public class Entity : MonoBehaviour
         gameObject.ReturnPooled();
     }
 
-	public void SetNextPosition(long time, Vector2 pos)
+	public void UpdateState(proto_game.UnitState state, long time)
 	{
-        moveInterpolator_.PushNextMovement(time, pos);
+        stateInterpolator_.PushState(state, time);
 	}
 
     public void ApplyStats(proto_game.PlayerStats stats)

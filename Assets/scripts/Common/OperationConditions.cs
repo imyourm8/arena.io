@@ -45,8 +45,8 @@ namespace TapCommon
             {(int)proto_common.Commands.FIND_ROOM, new OperationCondition(ClientState.Logged, 1, ExecutionMethod.AlwaysExecute)},
             {(int)proto_common.Commands.ADMIN_AUTH, new OperationCondition(ClientState.Unlogged, 1, ExecutionMethod.AlwaysExecute)},
             {(int)proto_common.Commands.STAT_UPGRADE, new OperationCondition(ClientState.InBattle, 1, ExecutionMethod.Queued)},
-            {(int)proto_common.Commands.GRAB_POWERUP, new OperationCondition(ClientState.InBattle, 1, ExecutionMethod.Queued)},
-            {(int)proto_common.Commands.PLAYER_INPUT, new OperationCondition(ClientState.InBattle, 1, ExecutionMethod.Queued)}
+            {(int)proto_common.Commands.PLAYER_INPUT, new OperationCondition(ClientState.InBattle, 1, ExecutionMethod.Queued)},
+            {(int)proto_common.Commands.SYNC_TICK, new OperationCondition(ClientState.InBattle, 1, ExecutionMethod.Queued)}
 		};
 	};
 }

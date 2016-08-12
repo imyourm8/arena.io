@@ -22,7 +22,7 @@ GameObject:
   - 212: {fileID: 212000013828500604}
   - 58: {fileID: 58000013408623728}
   - 114: {fileID: 114000012607555282}
-  m_Layer: 1
+  m_Layer: 9
   m_Name: GunnerSkillCore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collider: {fileID: 58000013408623728}
   sprite: {fileID: 212000013828500604}
-  maxDistance: 8
+  bulletType: 2
+  moveSpeed: 25
+  timeAlive: 1
+  penetrate: 1
 --- !u!212 &212000013828500604
 SpriteRenderer:
   m_ObjectHideFlags: 1

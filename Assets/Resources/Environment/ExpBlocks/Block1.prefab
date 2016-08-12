@@ -12,7 +12,7 @@ GameObject:
   - 58: {fileID: 5812340}
   - 50: {fileID: 50000012153363456}
   - 114: {fileID: 114000011103438932}
-  m_Layer: 8
+  m_Layer: 12
   m_Name: Block1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,5 +124,6 @@ MonoBehaviour:
   transform_: {fileID: 492814}
   collider: {fileID: 5812340}
   sprite: {fileID: 21270134}
+  currentSpeed_: 0
   hpBar_: {fileID: 0}
   blockType: 0

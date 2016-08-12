@@ -8,6 +8,7 @@ namespace arena.helpers
 {
     static class MathHelper
     {
+        public static readonly float Deg2Rad = 0.0174533f;
         static Random random_ = new Random((int)CurrentTime.Instance.CurrentTimeInMs);
         public static float Range(float min, float max)
         {
@@ -27,7 +28,7 @@ namespace arena.helpers
 
         public static bool Approx(Vector2 v1, Vector2 v2)
         {
-            return Approx(v1.x, v2.x) && Approx(v2.x, v2.y);
+            return Approx(v1.x, v2.x) && Approx(v1.y, v2.y);
         }
 
         public static float Distance(float x, float y, float x2, float y2)
@@ -38,6 +39,18 @@ namespace arena.helpers
         public static float Distance(Vector2 v1, Vector2 v2)
         {
             return Distance(v1.x, v1.y, v2.x, v2.y);
+        }
+
+        public static float Clamp01(float val)
+        {
+            return Clamp(val, 0, 1);
+        }
+
+        public static float Clamp(float val, float min, float max)
+        { 
+            val = val < min ? min : val;
+            val = val > max ? max : val;
+            return val;
         }
     }
 }

@@ -1,0 +1,18 @@
+2016-08-09 14:06:30,214 [1] INFO  Photon.StarDust.Client.Program - Starting 5 games with 3 players
+2016-08-09 14:06:31,221 [10] DEBUG Photon.StarDust.Client.Program - peers: 1, r-ev: 0, ur-ev: 0, r-op: 1.663446, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0
+2016-08-09 14:06:32,232 [15] DEBUG Photon.StarDust.Client.Program - peers: 1, r-ev: 0, ur-ev: 0, r-op: 0, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0
+2016-08-09 14:06:33,246 [19] DEBUG Photon.StarDust.Client.Program - peers: 1, r-ev: 0, ur-ev: 0, r-op: 0, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0
+2016-08-09 14:06:34,202 [5] INFO  Photon.StarDust.Client.Program - [8308] Started game IMYUORM8-PC(8308)1 with 3 clients
+2016-08-09 14:06:34,261 [12] DEBUG Photon.StarDust.Client.Program - peers: 1, r-ev: 0, ur-ev: 0, r-op: 0, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0
+2016-08-09 14:06:35,275 [12] DEBUG Photon.StarDust.Client.Program - peers: 1, r-ev: 0, ur-ev: 0, r-op: 0, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0
+2016-08-09 14:06:36,289 [19] DEBUG Photon.StarDust.Client.Program - peers: 1, r-ev: 0, ur-ev: 0, r-op: 0, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0
+2016-08-09 14:06:37,304 [23] DEBUG Photon.StarDust.Client.Program - peers: 5, r-ev: 0, ur-ev: 0, r-op: 3.940849, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0
+2016-08-09 14:06:38,318 [24] DEBUG Photon.StarDust.Client.Program - peers: 5, r-ev: 0, ur-ev: 0, r-op: 0, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0
+2016-08-09 14:06:38,371 [5] INFO  Photon.StarDust.Client.Program - [8308] Started game IMYUORM8-PC(8308)2 with 3 clients
+2016-08-09 14:06:39,331 [12] DEBUG Photon.StarDust.Client.Program - peers: 7, r-ev: 0, ur-ev: 0, r-op: 1.974381, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0
+2016-08-09 14:06:41,441 [21] DEBUG Photon.StarDust.Client.Program - peers: 7, r-ev: 0, ur-ev: 0, r-op: 0, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0
+2016-08-09 14:06:42,450 [12] DEBUG Photon.StarDust.Client.Program - peers: 8, r-ev: 0, ur-ev: 0, r-op: 0.9915142, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0
+2016-08-09 14:06:43,464 [6] DEBUG Photon.StarDust.Client.Program - peers: 8, r-ev: 0, ur-ev: 0, r-op: 0, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0
+2016-08-09 14:06:44,234 [5] INFO  Photon.StarDust.Client.Program - [8308] Started game IMYUORM8-PC(8308)3 with 3 clients
+2016-08-09 14:06:44,478 [7] DEBUG Photon.StarDust.Client.Program - peers: 8, r-ev: 0, ur-ev: 0, r-op: 0, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0
+2016-08-09 14:06:45,492 [14] DEBUG Photon.StarDust.Client.Program - peers: 8, r-ev: 0, ur-ev: 0, r-op: 0, ur-op: 0, res: 0, r-rtt: 0, ur-rtt: 0, rtt: 0, var: 0, flsh-rtt: 0, flsh-ev 0, flsh-op 0

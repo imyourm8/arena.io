@@ -73,9 +73,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletSpawnPoints:
   - {fileID: 114000013998063396}
-  recoil: 0.1
+  recoil: 0.4
   weaponType: 1
-  bulletType: 0
 --- !u!212 &21220734
 SpriteRenderer:
   m_ObjectHideFlags: 1

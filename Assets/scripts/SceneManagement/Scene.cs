@@ -37,6 +37,9 @@ public class Scene : MonoBehaviour
     public virtual void OnBeforeShow()
     {}
 
+    public virtual void OnAfterShow()
+    {}
+
     public virtual void OnBeforeHide()
     {}
 }

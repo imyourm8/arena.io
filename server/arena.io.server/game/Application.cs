@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Photon.SocketServer;
 using Photon.SocketServer.Concurrency;
 using Photon.SocketServer.Operations;
-using Photon.SocketServer.PeerConnectionStateMachine;
 using Photon.SocketServer.ServerToServer;
 using Photon.SocketServer.Security;
 using Photon.SocketServer.Numeric;
@@ -28,7 +27,7 @@ namespace arena
         private static ILogger log = LogManager.GetCurrentClassLogger(); 
         protected override PeerBase CreatePeer(InitRequest initRequest)
         {
-            PlayerConnection connection = new PlayerConnection(initRequest.Protocol, initRequest.PhotonPeer);
+            PlayerConnection connection = new PlayerConnection(initRequest);
             connection.SetController(new PlayerController());
             return connection;
         }
@@ -50,6 +49,8 @@ namespace arena
             Factories.WeaponFactory.Instance.Init();
             Factories.BulletFactory.Instance.Init();
             Factories.ExpBlockFactory.Instance.Init();
+            Factories.PowerUpFactory.Instance.Init();
+            Factories.SkillFactory.Instance.Init(); 
         }
 
         protected override void TearDown()

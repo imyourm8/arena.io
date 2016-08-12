@@ -146,6 +146,12 @@
     <Compile Include="..\..\..\Assets\scripts\Common\Battle\PlayerExperience.cs">
       <Link>Common\Battle\PlayerExperience.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Battle\Status.cs">
+      <Link>Common\Battle\Status.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Battle\StatusManager.cs">
+      <Link>Common\Battle\StatusManager.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\ClientState.cs">
       <Link>Common\ClientState.cs</Link>
     </Compile>
@@ -221,10 +227,12 @@
     <Compile Include="Application.cs" />
     <Compile Include="battle\AttackData.cs" />
     <Compile Include="battle\Bullet.cs" />
-    <Compile Include="battle\BulletContactListener.cs" />
+    <Compile Include="battle\DetermenisticTimer.cs" />
+    <Compile Include="battle\GameContactListener.cs" />
     <Compile Include="battle\BulletEntry.cs" />
     <Compile Include="battle\ExpBlockEntry.cs" />
     <Compile Include="battle\GlobalDefs.cs" />
+    <Compile Include="battle\PickUp.cs" />
     <Compile Include="battle\Map\BlockSpawner.cs" />
     <Compile Include="battle\Entity.cs" />
     <Compile Include="battle\ExpBlock.cs" />
@@ -248,17 +256,23 @@
     <Compile Include="battle\MobAI\TypesOfAI.cs" />
     <Compile Include="battle\MobEntry.cs" />
     <Compile Include="battle\PhysicsDefs.cs" />
+    <Compile Include="battle\PickUpEntry.cs" />
     <Compile Include="battle\Player.cs" />
     <Compile Include="battle\PlayerClassEntry.cs" />
     <Compile Include="battle\PlayerBattleStats.cs" />
     <Compile Include="battle\PlayerInput.cs" />
     <Compile Include="battle\PowerUp.cs" />
+    <Compile Include="battle\PowerUpEntry.cs" />
     <Compile Include="battle\Room.cs" />
     <Compile Include="battle\RoomManager.cs" />
     <Compile Include="battle\Map\SpatialHash.cs" />
+    <Compile Include="battle\Skills\GunnerSkill.cs" />
     <Compile Include="battle\Skills\Skill.cs" />
+    <Compile Include="battle\Skills\SkillEntry.cs" />
+    <Compile Include="battle\Status\Status.cs" />
     <Compile Include="battle\Unit.cs" />
     <Compile Include="battle\WeaponEntry.cs" />
+    <Compile Include="Common\ClassPool.cs" />
     <Compile Include="Database\Postgres\AuthDB.cs" />
     <Compile Include="Database\Postgres\CreatureDB.cs" />
     <Compile Include="Database\Postgres\PlayerDB.cs" />
@@ -266,7 +280,10 @@
     <Compile Include="Database\Postgres\WorldDB.cs" />
     <Compile Include="Factories\ExpBlockFactory.cs" />
     <Compile Include="Factories\MobsFactory.cs" />
+    <Compile Include="Factories\PickUpFactory.cs" />
     <Compile Include="Factories\PlayerClassFactory.cs" />
+    <Compile Include="Factories\PowerUpFactory.cs" />
+    <Compile Include="Factories\SkillFactory.cs" />
     <Compile Include="Factories\WeaponFactory.cs" />
     <Compile Include="Factories\BulletFactory.cs" />
     <Compile Include="helpers\CurrentTime.cs" />
@@ -281,9 +298,7 @@
     <Compile Include="player\RequestHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Common\Status\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -49,7 +49,7 @@ namespace arena.battle
 
             HP = Stats.GetFinValue(proto_game.Stats.MaxHealth);
             Exp = entry.Exp;
-            Skill = entry.SKill;
+            Skill = Skills.Skill.Create(entry.Skill);
             Radius = entry.CollisionRadius;
             Weapon = Factories.WeaponFactory.Instance.GetEntry(entry.Weapon);
             Entry = entry;
@@ -75,8 +75,7 @@ namespace arena.battle
 
         public override void Update(float dt)
         {
-            base.Update(dt);
-
+ 	        base.Update(dt);
             ai_.Update(dt);
         }
     }

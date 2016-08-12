@@ -30,7 +30,6 @@ namespace arena.battle
             }
             
             prevSpawnTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
-
             foreach (var spawn in spawnPoints_)
             {
                 while (spawn.Count < spawn.MaxCount)

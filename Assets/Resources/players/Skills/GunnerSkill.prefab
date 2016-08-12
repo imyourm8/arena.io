@@ -51,6 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c77cd87742dbc44f8ad77dad8392f13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  core: {fileID: 1000012325496774, guid: 60a1193269316a2459b96a0a708e93eb, type: 2}
-  coreSpeed: 25
   recoil: 3
+  type: 1
+  core: {fileID: 1000012325496774, guid: 60a1193269316a2459b96a0a708e93eb, type: 2}

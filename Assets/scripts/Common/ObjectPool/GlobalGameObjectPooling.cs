@@ -54,16 +54,16 @@ namespace ObjectPool
             if (!objectsByPrefabs_.TryGetValue(obj, out prefab))
             {
 #if TRACK
-            var retainedObject = trackedObjects_[obj];
-            if (retainedObject != null)
-            {
-                Debug.LogErrorFormat("Object already returned at {0}", stackFrames_[retainedObject]);
-            }
-            else 
-            {
-                Debug.LogError("Trying to return object not from GameObject Pool!");
-            }
-            Debug.Break();
+                var retainedObject = trackedObjects_[obj];
+                if (retainedObject != null)
+                {
+                    Debug.LogErrorFormat("Object already returned at {0}", stackFrames_[retainedObject]);
+                }
+                else 
+                {
+                    Debug.LogError("Trying to return object not from GameObject Pool!");
+                }
+                Debug.Break();
 #endif
             }
             else 
@@ -71,6 +71,11 @@ namespace ObjectPool
     			GetPool(prefab).Return(obj);
                 objectsByPrefabs_.Remove (obj);
                 gameObject.AddChild(obj);
+
+#if TRACK
+                stackFrames_[obj] = Environment.StackTrace;
+                trackedObjects_[obj] = obj;
+#endif
             }
 		}
 		
@@ -79,10 +84,6 @@ namespace ObjectPool
 			var pool = GetPool (obj);
 			var pooledObj = pool.Get ();
 			objectsByPrefabs_[pooledObj] = obj;
-#if TRACK
-            stackFrames_[pooledObj] = Environment.StackTrace;
-            trackedObjects_[pooledObj] = pooledObj;
-#endif
 			return pooledObj;
 		}
 

@@ -14,7 +14,15 @@ namespace arena.battle
         public Attributes.UnitAttributes Stats
         { get { return stats_; } }
 
+        public Entity()
+        {
+            TrackSpatially = true;
+        }
+
         public int ID
+        { get; set; }
+
+        public bool TrackSpatially
         { get; set; }
 
         public float Radius
@@ -80,6 +88,9 @@ namespace arena.battle
             }
         }
 
+        public float LinearDumping
+        { get; set; }
+
         public Vector2 RotationVec
         { get; set; }
 
@@ -105,7 +116,12 @@ namespace arena.battle
 
         public bool IsAlive
         {
-            get { return !MathHelper.Approx(HP, 0.0f); }
+            get { return HP > 0.1f; }
+        }
+
+        public void StopMovement()
+        {
+            Velocity = Vector2.zero;
         }
 
         public proto_game.UnitDie GetDiePacket()
@@ -137,6 +153,8 @@ namespace arena.battle
 
         public virtual void Update(float dt)
         {
+            Game.Map.RefreshHashPosition(this);
+            PrevPosition = Position;
         }
 
         public void ApplyDamage(Entity attacker, float damage)
@@ -145,7 +163,12 @@ namespace arena.battle
                 return; 
 
             HP -= Math.Max(damage - Stats.GetFinValue(proto_game.Stats.Armor), 1);
-             
+
+            if (this is Player)
+            {
+                HP = 1.0f;
+            }
+
             var dmgDonePacket = new proto_game.DamageDone();
             dmgDonePacket.hp_left = HP;
             dmgDonePacket.target = ID;
@@ -163,24 +186,26 @@ namespace arena.battle
             dir.Normilize();
             dir.Scale(Stats.GetFinValue(proto_game.Stats.MovementSpeed));
             Velocity = dir;
+            Body.SetLinearVelocity(Velocity);
         }
 
-        public virtual void InitPhysics(bool dynamicBody = true)
+        public virtual void InitPhysics(bool dynamicBody = true, bool isSensor = false)
         {
             if (Body != null)
                 return;
 
             BodyDef def = new BodyDef();
-
+            def.FixedRotation = true;
+            
             Body body = Game.CreateBody(def);
-            body.SetFixedRotation(true);
 
             CircleDef shape = new CircleDef();
             shape.Radius = Radius;
             shape.Density = dynamicBody?1.0f:0.0f;//dynamic body
             shape.Filter.CategoryBits = (ushort)Category;
+            shape.IsSensor = isSensor;
 
-            ushort mask = (ushort)PhysicsDefs.Category.BULLET | (ushort)PhysicsDefs.Category.WALLS;
+            ushort mask = (ushort)PhysicsDefs.Category.WALLS;
             shape.Filter.MaskBits = mask;
             body.CreateFixture(shape);
             body.SetMassFromShapes();
@@ -189,6 +214,14 @@ namespace arena.battle
             var pos = Position;
             Body = body;
             Position = pos;
+            PrevPosition = pos;
+        }
+
+        public void AddToCollisionMask(ushort mask)
+        {
+            var filter = Body.GetFixtureList().Filter;
+            filter.MaskBits |= mask;
+            Body.GetFixtureList().Filter = filter;        
         }
     }
 }

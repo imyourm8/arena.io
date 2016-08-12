@@ -23,7 +23,6 @@ public class MovementInterpolator
     private const int MaxMovements = 5;
     private long interpolationTime_ = 0;
     private long defaultInterpolationTime_ = 0;
-    private Entity owner_ = null;
     private Deque<MoveData> positions_; 
     private long lastPacketTime_ = 0;
     private Vector2 snapPos_ = Vector2.zero;
@@ -34,7 +33,6 @@ public class MovementInterpolator
     {
         interpolationTime_ = (long)(GameApp.Instance.MovementInterpolationTime * 1000.0f);
         defaultInterpolationTime_ = interpolationTime_;
-        owner_ = owner;
         positions_ = new Deque<MoveData>(MaxMovements);
     }
 

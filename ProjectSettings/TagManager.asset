@@ -14,11 +14,11 @@ TagManager:
   - 
   - 
   - Enemy
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Bullet
+  - Wall
+  - Player
+  - Block
+  - PowerUp
   - 
   - 
   - 

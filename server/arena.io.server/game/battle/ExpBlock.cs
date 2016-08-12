@@ -33,5 +33,11 @@ namespace arena.battle
             packet.type = BlockType;
             return packet;
         }
+
+        public override void InitPhysics(bool dynamicBody = true, bool isSensor = false)
+        {
+            base.InitPhysics(dynamicBody, isSensor);
+            AddToCollisionMask((ushort)PhysicsDefs.Category.BULLET);
+        }
     }
 }

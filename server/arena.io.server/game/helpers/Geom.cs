@@ -48,7 +48,7 @@ namespace arena.helpers
 
         public void Normilize()
         {
-            float length = (float)Math.Sqrt(x * x + y * y);
+            float length = Length();
             if (length > 1.0f)
             {
                 x /= length;
@@ -60,6 +60,11 @@ namespace arena.helpers
         {
             x *= s;
             y *= s;
+        }
+
+        public float Length()
+        {
+            return (float)Math.Sqrt(x * x + y * y);
         }
 
         public static Vector2 operator *(Vector2 other, float scale)

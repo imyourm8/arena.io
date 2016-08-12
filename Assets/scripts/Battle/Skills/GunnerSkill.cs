@@ -6,12 +6,6 @@ public class GunnerSkill : Skill
     [SerializeField]
     private GameObject core = null;
 
-    [SerializeField]
-    private float coreSpeed = 0.0f;
-
-    [SerializeField]
-    private float recoil = 0.0f;
-
     protected override void OnCast()
     {
         SkillBullet bullet = core.GetPooled().GetComponent<SkillBullet>();
@@ -21,7 +15,7 @@ public class GunnerSkill : Skill
         bullet.Init(
             Owner, 
                 new Vector3(ownerAttRot.x, ownerAttRot.y, 0), 
-                coreSpeed, 
+                bullet.MoveSpeed, 
                 ownerAttPosition, 
                 Owner.Stats.GetFinValue(proto_game.Stats.SkillDamage)
             );

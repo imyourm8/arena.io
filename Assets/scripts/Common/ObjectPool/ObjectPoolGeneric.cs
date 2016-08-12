@@ -59,9 +59,9 @@ namespace ObjectPool
 			maxSize_ = maxSize;
 			fixedSize_ = isFixed;
 			#if UNITY_5
-			IncreasePoolSize (Mathf.Min(Mathf.Max (initialSize_, 1), 5000));
+			IncreasePoolSize (Mathf.Max(initialSize_, 1));
             #else       
-            IncreasePoolSize(Math.Min(Math.Max(initialSize_, 1), 5000));
+            IncreasePoolSize(Math.Max(initialSize_, 1));
             #endif
             }
 		
@@ -104,7 +104,7 @@ namespace ObjectPool
 					toAdd = Mathf.Min(maxSize_-pool_.Count, toAdd);
 				}
 #else
-                int toAdd = (int)Math.Floor((float)pool_.Count * 1.6f);
+                int toAdd = (int)Math.Floor((float)pool_.Count * 2.0f);
 
                 if (fixedSize_)
                 {

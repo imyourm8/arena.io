@@ -14,40 +14,48 @@ public class GameApp : SingletonMonobehaviour<GameApp>
 	private readonly DateTime Jan1St1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 	private proto_profile.UserInfo userInfo_;
 	private ServerClient client_;
-	private ServerTimeSync timeSync_;
-    private long nextBytesReceivedUpdate_ = 0;
-    private long bytesReceivedPerSecond_ = 0;
-    private long bytesReceivedTotal_ = 0;
 
     [SerializeField]
-    private float movementInterpolationTime_ = 0.2f;
+    private long movementInterpolationTime_ = 200;
 
     [SerializeField]
     private int movementUpdateFrequency = 5;
     private RequestsManager requestsManager_ = new RequestsManager();
+    private ServerTimeSync timeSync_ = new ServerTimeSync();
 
 	void Start () 
     {
-        //string ip = "192.168.1.2:4530";
-        string ip = "127.0.0.1:4530";
+        string ip = "192.168.1.2:4530";
+        //string ip = "127.0.0.1:4530";
         //string ip = "46.188.22.12:4530";
 		client_ = new ServerClient (ip, ExitGames.Client.Photon.ConnectionProtocol.Tcp);
 		client_.OnStatusChange += HandleOnStatusChange;
-		timeSync_ = new ServerTimeSync ();
 
-        nextBytesReceivedUpdate_ = ClientTimeMs() + 1000;
         DOTween.SetTweensCapacity(3000, 1000);
 
         client_.OnServerResponse += (proto_common.Response response) => requestsManager_.Update(response);
 
         SceneManager.Instance.SetActive(SceneManager.Scenes.Login);
+
+
+        float p = 49.88312f;
+        var bytes = BitConverter.GetBytes(p);
+
+        if (BitConverter.IsLittleEndian)
+        {
+            var sign = bytes[3] & 1;
+            var exp =  ((bytes[2] & 1) << 8) | (bytes[3] & (254));
+            var mantisa = (bytes[0] << 16) | (bytes[1]<<8) | (bytes[2] & 254);
+
+            Debug.LogFormat("Sign: {0} Exp: {1} Mantissa: {2}", sign,exp,mantisa);
+        }
 	}
 
 	void HandleOnStatusChange (ExitGames.Client.Photon.StatusCode status)
 	{
 		if (status == ExitGames.Client.Photon.StatusCode.Connect)
 		{
-			timeSync_.Start();
+            timeSync_.Start();
             Events.GlobalNotifier.Instance.Trigger(ConnectToServerSuccess);
 		}
 	}
@@ -56,16 +64,9 @@ public class GameApp : SingletonMonobehaviour<GameApp>
     {
 		if (client_ != null) 
         {
+            timeSync_.Update();
 		    client_.Service();
-			timeSync_.Update();
 		}
-
-        if (ClientTimeMs() >= nextBytesReceivedUpdate_)
-        {
-            nextBytesReceivedUpdate_ += 1000;
-            bytesReceivedPerSecond_ = client_.TotalBytesReceived - bytesReceivedTotal_;
-            bytesReceivedTotal_ = client_.TotalBytesReceived;
-        }
 	}
 
 	void Awake() 
@@ -92,7 +93,7 @@ public class GameApp : SingletonMonobehaviour<GameApp>
 
 	public long Ping()
 	{
-		return timeSync_.Ping;
+		return client_.Latency / 2;
 	}
 
     public long Latency
@@ -102,18 +103,8 @@ public class GameApp : SingletonMonobehaviour<GameApp>
 
 	public long TimeMs()
 	{
-		return ClientTimeMs() + timeSync_.ServerTimeDifference;
+		return client_.ServerTime;
 	}
-
-    public long BytesReceivedPerSecond
-    {
-        get { return bytesReceivedPerSecond_; }
-    }
-
-    public long BytesReceivedTotal
-    {
-        get { return bytesReceivedTotal_; }
-    }
 
 	public ServerClient Client 
     {
@@ -126,7 +117,7 @@ public class GameApp : SingletonMonobehaviour<GameApp>
 		set { userInfo_ = value; }
 	}
 
-    public float MovementInterpolationTime
+    public long MovementInterpolationTime
     {
         get { return movementInterpolationTime_; } 
     }

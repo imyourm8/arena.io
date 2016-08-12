@@ -14,7 +14,8 @@ namespace arena.battle
             PLAYER = 1<<1,
             BULLET = 1<<2,
             WALLS = 1<<3,
-            EXP_BLOCK = 1<<4
+            EXP_BLOCK = 1<<4,
+            PICKUPS = 1<<5
         }
     }
 }
