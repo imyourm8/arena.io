@@ -17,10 +17,10 @@ namespace arena.player
 {
     class PlayerController : RequestHandler, player.IActionInvoker
     {
-        private static ILogger log = LogManager.GetCurrentClassLogger();
+        private static ILogger log = LogManager.GetCurrentClassLogger(); 
         private TapCommon.ClientState state_ = TapCommon.ClientState.Unlogged;
         private battle.Player player_;
-        private PoolFiber fiber_ = new PoolFiber();
+        private PoolFiber fiber_ = new PoolFiber(new ExitGames.Concurrency.Core.DefaultExecutor());
         private bool loginInProcess_ = false;
         private AuthEntry currentAuthEntry_ = null;
 
@@ -36,6 +36,7 @@ namespace arena.player
             AddOperationHandler(proto_common.Commands.STAT_UPGRADE, new OperationHandler(HandleStatUpgrade));
             AddOperationHandler(proto_common.Commands.PLAYER_INPUT, new OperationHandler(HandleUserInput));
             AddOperationHandler(proto_common.Commands.SYNC_TICK, new OperationHandler(HandleSyncTick));
+            AddOperationHandler(proto_common.Commands.DAMAGE_APPLY, new OperationHandler(HandleDamageApply));
 
             fiber_.Start();
         }
@@ -196,12 +197,20 @@ namespace arena.player
             var authReq =
                 ProtoBuf.Extensible.GetValue<proto_auth.Auth.Request>(request, (int)proto_common.Commands.AUTH);
 
-            var authEntry = new AuthEntry();
-            authEntry.authUserID = authReq.m_oauth.uid;
-            currentAuthEntry_ = authEntry;
+            if (authReq.m_oauth.uid.Trim() == "")
+            {
+                var response = new proto_auth.Auth.Response();
+                SendResponse(proto_common.Commands.AUTH, response, request.id, -1); 
+            }
+            else
+            {
+                var authEntry = new AuthEntry();
+                authEntry.authUserID = authReq.m_oauth.uid;
+                currentAuthEntry_ = authEntry;
 
-            Database.Database.Instance.GetAuthDB().LoginUser(authEntry, HandleDBLogin);
-            loginInProcess_ = true;
+                Database.Database.Instance.GetAuthDB().LoginUser(authEntry, HandleDBLogin);
+                loginInProcess_ = true;
+            }
         }
 
         private void HandleDBLogin(QueryResult result, IDataReader data)
@@ -296,6 +305,11 @@ namespace arena.player
             pong.timestamp = helpers.CurrentTime.Instance.CurrentTimeInMs;
 
             SendResponse(proto_common.Commands.PING, pong, request.id);
+
+            if (player_ != null)
+            {
+                player_.Ping = ping.current_ping;
+            }
         }
 
         private void HandlePlayerTurn(proto_common.Request request)
@@ -308,6 +322,12 @@ namespace arena.player
         {
             var req = request.Extract<proto_game.PlayerInput.Request>(proto_common.Commands.PLAYER_INPUT);
             player_.AddInput(req);
+        }
+
+        private void HandleDamageApply(proto_common.Request request)
+        {
+            var req = request.Extract<proto_game.DamageApply.Request>(proto_common.Commands.DAMAGE_APPLY);
+            player_.Game.DamageApply(player_, req);
         }
 
         #endregion

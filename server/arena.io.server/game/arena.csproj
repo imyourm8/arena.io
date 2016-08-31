@@ -67,7 +67,7 @@
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Box2DX, Version=2.0.1.42700, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Box2DX, Version=2.0.1.28417, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Box2DX.dll</HintPath>
     </Reference>
@@ -227,6 +227,7 @@
     <Compile Include="Application.cs" />
     <Compile Include="battle\AttackData.cs" />
     <Compile Include="battle\Bullet.cs" />
+    <Compile Include="battle\DetermenisticScheduler.cs" />
     <Compile Include="battle\DetermenisticTimer.cs" />
     <Compile Include="battle\GameContactListener.cs" />
     <Compile Include="battle\BulletEntry.cs" />
@@ -298,7 +299,6 @@
     <Compile Include="player\RequestHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

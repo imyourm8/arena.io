@@ -49,6 +49,7 @@ public class ServerTimeSync
         }
 
         pingRequest_.timestamp = GetClientTime();
+        pingRequest_.current_ping = (int)latency_;
         timestampSent_ = pingRequest_.timestamp;
 
         proto_common.Request req = new proto_common.Request ();
@@ -72,13 +73,11 @@ public class ServerTimeSync
             return;
         }
 
-        var pong = 
-            ProtoBuf.Extensible.GetValue<proto_game.Ping.Response> (response, (int)proto_common.Commands.PING);
+        var pong = ProtoBuf.Extensible.GetValue<proto_game.Ping.Response> (response, (int)proto_common.Commands.PING);
 
-        ping_ = (ping_ + GetClientTime () - timestampSent_) / 2;
-
-        var lat = (GetClientTime () - timestampSent_) / 2;
-        if (lat < 0) lat = 0;
+        var lat = (GetClientTime () - timestampSent_);
+        if (lat < 0) 
+            lat = 0;
 
         if (lat > latency_)
         {
@@ -89,8 +88,9 @@ public class ServerTimeSync
             latency_ = (latency_ * 7 + lat) / 8;
         }
 
-        serverTimeDiff_ = pong.timestamp - GetClientTime () + ping_ / 2;
+        ping_ = latency_ / 2;
+        serverTimeDiff_ = (pong.timestamp + latency_ / 2) - GetClientTime();
 
-        nextUpdate_ = GetClientTime() + 2000;
+        nextUpdate_ = GetClientTime() + 1000;
     }
 }

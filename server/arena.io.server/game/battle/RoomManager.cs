@@ -18,6 +18,7 @@ namespace arena.battle
 
             foreach (var r in rooms_)
             {
+                break;
                 if (!r.Closed && r.PlayersCount < MaxPlayersPerRoom)
                 {
                     room = r;
@@ -44,7 +45,7 @@ namespace arena.battle
 
         private Room CreateRoom()
         {
-            return new Room();
+            return new Room(); 
         }
     }
 }

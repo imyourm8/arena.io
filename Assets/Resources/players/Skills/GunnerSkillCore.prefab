@@ -67,7 +67,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18586fa3969959747b69e7be0a0e9afd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  body_: {fileID: 0}
   collider: {fileID: 58000013408623728}
+  transform_: {fileID: 4000012804923454}
   sprite: {fileID: 212000013828500604}
   bulletType: 2
   moveSpeed: 25

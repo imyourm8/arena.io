@@ -29,6 +29,7 @@ namespace arena.battle
 
         public override void InitPhysics(bool dynamicBody = true, bool isSensor = false)
         {
+            return; //TODO trying client side hit detection
             base.InitPhysics(dynamicBody, isSensor);
             ushort mask = (ushort)PhysicsDefs.Category.PLAYER;
             switch ((ushort)Owner.Category)
@@ -43,9 +44,9 @@ namespace arena.battle
 
         public void OnCollision(Entity target)
         {
-            if (target == null || target == Owner) 
+            if (target == null || target == Owner)  
             {
-                return;
+                return; 
             }
 
             target.ApplyDamage(Owner, Stats.GetFinValue(proto_game.Stats.BulletDamage));

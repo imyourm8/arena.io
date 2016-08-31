@@ -1,5 +1,6 @@
-﻿#define TRACK_ALL
+﻿//#define TRACK_ALL
 #if UNITY_5
+#define TRACK_ALL
 using UnityEngine;
 #endif
 using System;

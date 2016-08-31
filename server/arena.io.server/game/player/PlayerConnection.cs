@@ -76,6 +76,7 @@ namespace arena.player
                 {
                     log.Error("Response send failed with result code: " + result.ToString() + ". Response type " + response.type);
                 }
+                //Flush();
             }
         }
 
@@ -106,7 +107,7 @@ namespace arena.player
                 {
                     log.Error("Event send failed with result code: " + result.ToString() + ". Event type " + evt.type);
                 }
-                Flush();
+               // Flush();
             }
         }
 

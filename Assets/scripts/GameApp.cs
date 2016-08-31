@@ -19,9 +19,18 @@ public class GameApp : SingletonMonobehaviour<GameApp>
     private long movementInterpolationTime_ = 200;
 
     [SerializeField]
+    private float extrapolateNetworkedEntitieTime = 0.25f;
+
+    [SerializeField]
     private int movementUpdateFrequency = 5;
     private RequestsManager requestsManager_ = new RequestsManager();
     private ServerTimeSync timeSync_ = new ServerTimeSync();
+    private long adaptiveInterpolationTime_ = 0;
+
+    public float ExtrapolateNetworkedEntitiesTime
+    {
+        get { return extrapolateNetworkedEntitieTime; }
+    }
 
 	void Start () 
     {
@@ -66,6 +75,9 @@ public class GameApp : SingletonMonobehaviour<GameApp>
         {
             timeSync_.Update();
 		    client_.Service();
+
+            //adaptive interpolation window
+            adaptiveInterpolationTime_ = movementInterpolationTime_;// + timeSync_.Ping;
 		}
 	}
 
@@ -90,12 +102,7 @@ public class GameApp : SingletonMonobehaviour<GameApp>
 	{
 		return (long)((DateTime.UtcNow - Jan1St1970).TotalMilliseconds);
 	}
-
-	public long Ping()
-	{
-		return client_.Latency / 2;
-	}
-
+   
     public long Latency
     {
         get { return timeSync_.Latency; }
@@ -103,7 +110,8 @@ public class GameApp : SingletonMonobehaviour<GameApp>
 
 	public long ServerTimeMs()
 	{
-		return client_.ServerTime;
+        return ClientTimeMs() + timeSync_.ServerTimeDifference;
+        //return client_.ServerTime;
 	}
 
 	public ServerClient Client 
@@ -119,7 +127,7 @@ public class GameApp : SingletonMonobehaviour<GameApp>
 
     public long MovementInterpolationTime
     {
-        get { return movementInterpolationTime_; } 
+        get { return adaptiveInterpolationTime_; } 
     }
 
     public float MovementUpdateDT

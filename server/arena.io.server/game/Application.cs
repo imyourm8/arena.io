@@ -29,17 +29,17 @@ namespace arena
         {
             PlayerConnection connection = new PlayerConnection(initRequest);
             connection.SetController(new PlayerController());
-            return connection;
+            return connection;  
         }
 
         protected override void Setup()
-        {
-            log4net.GlobalContext.Properties["Photon:ApplicationLogPath"] = Path.Combine(this.ApplicationRootPath, "log");
+        {  
+            log4net.GlobalContext.Properties["Photon:ApplicationLogPath"] = Path.Combine(this.ApplicationPath, "log");
             var configFileInfo = new FileInfo(Path.Combine(this.BinaryPath, "log4net.config"));
             if (configFileInfo.Exists)
             {
                 LogManager.SetLoggerFactory(Log4NetLoggerFactory.Instance);
-                XmlConfigurator.ConfigureAndWatch(configFileInfo);
+                XmlConfigurator.ConfigureAndWatch(configFileInfo); 
             }
 
             Database.Database.Instance.SetDatabaseImplementation(new Database.Postgres.PostgresImpl());

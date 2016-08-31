@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 using arena.helpers;
 using Box2DX.Dynamics;
 
+using ExitGames.Logging;
+using ExitGames.Logging.Log4Net;
+
 namespace arena.battle
 {
     class Entity : SpatialHash.IEntity
     {
+        private static ILogger log = LogManager.GetCurrentClassLogger();
         private Attributes.UnitAttributes stats_ = new Attributes.UnitAttributes();
         public Attributes.UnitAttributes Stats
         { get { return stats_; } }
@@ -34,7 +38,6 @@ namespace arena.battle
         private Vector2 position_ = Vector2.zero;
         public void SetPosition(float x, float y)
         {
-            PrevPosition = position_;
             position_.x = x;
             position_.y = y;
             if (Body != null)
@@ -43,8 +46,15 @@ namespace arena.battle
             }
         }
 
+        private Vector2 prevPosition1_;
+        private Vector2 prevPosition2_;
+        private Vector2 prevPosition_;
+
         public Vector2 PrevPosition
-        { get; private set; }
+        {
+            get { return prevPosition_; }
+            private set { prevPosition_ = value; }
+        }
 
         public Vector2 Position
         {
@@ -69,11 +79,6 @@ namespace arena.battle
             set
             {
                 velocity_ = value;
-
-                if (Body != null)
-                {
-                    Body.SetLinearVelocity(velocity_);
-                }
             }
         }
 
@@ -93,6 +98,12 @@ namespace arena.battle
 
         public Vector2 RotationVec
         { get; set; }
+
+        public void SetRotation(Vector2 dir)
+        {
+            dir.Normilize();
+            Rotation = (float)Math.Atan2(dir.y, dir.x);
+        }
 
         public bool Moved
         {
@@ -131,20 +142,16 @@ namespace arena.battle
             return diePck;
         }
 
-        public proto_game.PlayerStats GetStatsPacket()
+        public void FillStatsPacket(List<proto_game.StatValue> stats)
         {
-            proto_game.PlayerStats stats = new proto_game.PlayerStats();
-
             foreach (var stat in Stats)
             {
                 var s = new proto_game.StatValue();
                 s.step = stat.Step;
                 s.stat = stat.ID;
                 s.value = stat.FinalValue;
-                stats.stats.Add(s);
+                stats.Add(s);
             }
-
-            return stats;
         }
 
         public virtual void OnRemove()
@@ -154,10 +161,19 @@ namespace arena.battle
         public virtual void Update(float dt)
         {
             Game.Map.RefreshHashPosition(this);
-            PrevPosition = Position;
+            if (Game.Tick % 2 == 0)
+            {
+                prevPosition2_ = Position;
+                prevPosition_ = prevPosition1_;
+            }
+            else
+            {
+                prevPosition1_ = Position;
+                prevPosition_ = prevPosition2_;
+            }
         }
 
-        public void ApplyDamage(Entity attacker, float damage)
+        public void ApplyDamage(Entity attacker, float damage) 
         {
             if (!IsAlive) 
                 return; 
@@ -166,7 +182,7 @@ namespace arena.battle
 
             if (this is Player)
             {
-                HP = 1.0f;
+                HP = Math.Max(1.0f, HP);
             }
 
             var dmgDonePacket = new proto_game.DamageDone();
@@ -197,7 +213,7 @@ namespace arena.battle
             BodyDef def = new BodyDef();
             def.FixedRotation = true;
             
-            Body body = Game.CreateBody(def);
+            Body body = Game.CreateBody(def); 
 
             CircleDef shape = new CircleDef();
             shape.Radius = Radius;
@@ -214,8 +230,11 @@ namespace arena.battle
             var pos = Position;
             Body = body;
             Position = pos;
-            PrevPosition = pos;
+            PrevPosition = pos;   
         }
+
+        public virtual void PostUpdate()
+        { }
 
         public void AddToCollisionMask(ushort mask)
         {

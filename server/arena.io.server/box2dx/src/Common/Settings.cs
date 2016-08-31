@@ -47,7 +47,7 @@ namespace Box2DX.Common
 		// Collision
 		public static readonly int MaxManifoldPoints = 2;
 		public static readonly int MaxPolygonVertices = 8;
-		public static readonly int MaxProxies = 512; // this must be a power of two
+		public static readonly int MaxProxies = 1024; // this must be a power of two
 		public static readonly int MaxPairs = 8 * MaxProxies; // this must be a power of two
 
 		// Dynamics

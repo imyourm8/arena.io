@@ -27,6 +27,7 @@ enum Commands
   STAT_UPGRADE = 2014;
   SYNC_TICK = 2015;
   PLAYER_INPUT = 2016;
+  DAMAGE_APPLY = 2017;
 };
 
 enum Events
@@ -51,6 +52,7 @@ enum Events
   SPAWN_GOLD_COIN = 2018;
   SKILL_CASTED = 2019;
   MOB_APPEARED = 2020;
+  BULLET_DESTROYED = 2021;
 };
 
 enum PacketFlags

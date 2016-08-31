@@ -176,6 +176,8 @@ public class LoginSceneController : Scene
 
     private void AuthWithNickname()
     {
+        if (nicknameLoginField.text.Trim() == "") 
+            return;
         proto_auth.AdminAuth.Request authReq = new proto_auth.AdminAuth.Request ();
         authReq.name = nicknameLoginField.text;
 
@@ -249,17 +251,7 @@ public class LoginSceneController : Scene
         User.Instance.Name = info.name;
         User.Instance.Level = info.level;
 
-        if (info.name == "" || info.name == null)
-        {
-            //create nickname first
-            //nicknamePanel.SetActive(true);
-
-            //nicknameLogin.onClick.AddListener (OnNicknameChange);
-        }
-        else 
-        {
-            ShowHeroSelection();
-        }
+        ShowHeroSelection();
     }
 
     void OnNicknameChange()

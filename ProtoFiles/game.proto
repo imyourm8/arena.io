@@ -12,6 +12,8 @@ enum Weapons
   MachineGun = 1;
   DualMachineGun = 2;
   Canon = 3;
+  
+  MobGun = 4;
 }
 
 enum Pickups
@@ -23,6 +25,8 @@ enum Bullets
 {
   Common = 1;
   CanonCore = 2;
+  
+  MonSlowBullet = 3;
 }
 
 enum MobType
@@ -82,11 +86,28 @@ message Vector
 
 /* REQUESTS */
 
+message DamageApply
+{
+  message Request
+  {
+    required int32 bullet = 1;
+    required int32 attacker = 2;
+    required float damage = 3;
+    required int32 target = 4;
+    
+    extend proto_common.Request 
+		{
+			optional proto_game.DamageApply.Request dmg_apply_req = 2017;
+		}
+  }
+}
+
 message Ping 
 {
   message Request 
 	{
     required int64 timestamp = 1;
+    required int32 current_ping = 2;
     
     extend proto_common.Request 
 		{
@@ -129,12 +150,8 @@ message PlayerInput
     required float force_x = 3;
     required float force_y = 4;
     required int32 tick = 5;
-    required float velx = 6;
-    required float vely = 7;
-    required float rvelx = 8;
-    required float rvely = 9;
-    required bool shoot = 10;
-    required bool skill = 11;
+    required bool shoot = 6;
+    required bool skill = 7;
     
     extend proto_common.Response 
 		{
@@ -261,8 +278,8 @@ message MobAppeared
   required float x = 2;
   required float y = 3;
   required int32 id = 4;
-  required float hp = 5;
-  required float max_hp = 6;
+  repeated StatValue stats = 5;
+  required float hp = 6;
   required float attack_range = 7;
   required Weapons weapon_used = 8;
   
@@ -297,11 +314,6 @@ message PowerUpGrabbed
   }
 }
 
-message PlayerStats
-{
-  repeated StatValue stats = 1;
-}
-
 message BlockAppeared
 {
 	required int32 guid = 1;
@@ -323,6 +335,16 @@ message UnitDie
   extend proto_common.Event 
   {
     optional proto_game.UnitDie unit_die_evt = 2003;
+  }
+}
+
+message BulletsRemoved
+{
+  repeated int32 guid = 1;
+  
+  extend proto_common.Event 
+  {
+    optional proto_game.BulletsRemoved bullet_removed_evt = 2021;
   }
 }
 
@@ -349,7 +371,8 @@ message UnitState
 message UnitStatesUpdate
 {
   repeated UnitState states = 1;
-  required int64 timestamp = 2;
+  required int32 tick = 2;
+  required int64 timestamp = 3;
   
   extend proto_common.Event 
 	{
@@ -411,7 +434,10 @@ message UnitAttack
   required float direction = 2;
   required float x = 3;
   required float y = 4;
-  required int64 timestamp = 5;
+  required int32 time_advance = 5;
+  required int32 first_bullet_id = 6;
+  required int32 tick = 7;
+  required bool local = 8;
   
   extend proto_common.Event 
 	{
@@ -424,7 +450,7 @@ message PlayerAppeared
 	required string name = 1;
   required Vector position = 2;
   required int32 guid = 3;
-  required PlayerStats stats = 4;
+  repeated StatValue stats = 4;
   required float hp = 5;
   required bool local = 6;
   required proto_profile.PlayerClasses class = 7;

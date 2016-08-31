@@ -24,7 +24,7 @@ public class Skill : MonoBehaviour
     public long Cooldown
     { get; set; }
 
-    public Entity Owner
+    public Unit Owner
     { get; set; }
 
     public void Cast()

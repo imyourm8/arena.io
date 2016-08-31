@@ -31,13 +31,20 @@ namespace arena.battle
 
             var attData = new AttackData();
             attData.Direction = attRotation;
+            attData.FirstBulletID = Game.GetCurrentEntityID();
 
+            foreach (var sp in Weapon.SpawnPoints) 
+            {
+                Game.GenerateID();
+            }
+            
             double angleInRadians = attRotation;
+            /*
             float cosTheta = (float)Math.Cos(angleInRadians);
             float sinTheta = (float)Math.Sin(angleInRadians);
 
-            float damage = Stats.GetFinValue(proto_game.Stats.BulletSpeed);  
-            float speed = Stats.GetFinValue(proto_game.Stats.BulletDamage);
+            float damage = Stats.GetFinValue(proto_game.Stats.BulletDamage);  
+            float speed = Stats.GetFinValue(proto_game.Stats.BulletSpeed);
 
             foreach (var sp in Weapon.SpawnPoints)
             {
@@ -56,11 +63,15 @@ namespace arena.battle
                 bullet.Rotation = rot;
                 bullet.MoveInDirection(bullet.RotationVec);
             }
-
+            */
             ApplyRecoil(Weapon.Recoil, (float)angleInRadians);
             Game.OnUnitAttack(this, attData);
             SetWeaponCooldown();
+            OnWeaponAttack(attData);
         }
+
+        protected virtual void OnWeaponAttack(AttackData attData)
+        { }
 
         protected void AddSkill(proto_game.Skills skill)
         {
@@ -86,8 +97,16 @@ namespace arena.battle
             }
         }
 
+        public override void PostUpdate()
+        {
+            base.PostUpdate();
+
+            Body.SetLinearVelocity(Vector2.zero); 
+        }
+
         public void ApplyRecoil(float recoil, float attRotation)
         {
+            return;
             if (Body != null)
             {
                 recoil *= -1.0f; 

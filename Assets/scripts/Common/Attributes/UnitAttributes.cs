@@ -10,6 +10,7 @@ namespace Attributes
             Add(new Attribute<proto_game.Stats>().Init(proto_game.Stats.HealthRegen));
             Add(new Attribute<proto_game.Stats>().Init(proto_game.Stats.BulletDamage));
             Add(new Attribute<proto_game.Stats>().Init(proto_game.Stats.BulletSpeed));
+            Add(new Attribute<proto_game.Stats>().Init(proto_game.Stats.BulletSize));
             Add(new Attribute<proto_game.Stats>().Init(proto_game.Stats.MovementSpeed));
             Add(new Attribute<proto_game.Stats>().Init(proto_game.Stats.ReloadSpeed));
             Add(new Attribute<proto_game.Stats>().Init(proto_game.Stats.SkillDamage));

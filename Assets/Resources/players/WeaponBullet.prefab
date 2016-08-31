@@ -56,10 +56,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67b53aafd90613348b83f9cdd4915066, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  body_: {fileID: 0}
   collider: {fileID: 5802464}
+  transform_: {fileID: 407876}
   sprite: {fileID: 21228428}
   bulletType: 1
-  moveSpeed: -1
+  moveSpeed: 1.5
   timeAlive: 1.4
   penetrate: 0
 --- !u!212 &21228428

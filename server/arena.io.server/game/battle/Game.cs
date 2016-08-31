@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using ExitGames.Concurrency.Fibers;
+using ExitGames.Logging;
+using ExitGames.Logging.Log4Net;
 
 using arena.Common;
 using arena.helpers;
@@ -19,10 +21,13 @@ namespace arena.battle
 {
     class Game : player.IActionInvoker, BlockSpawner.IBlockControl
     {
+        private static ILogger log = LogManager.GetCurrentClassLogger();
+
         private HashSet<Player> joinedPlayers_ = new HashSet<Player>();
         private Dictionary<int, Entity> units_ = new Dictionary<int, Entity>();
         private Dictionary<int, Mob> mobs_ = new Dictionary<int, Mob>();
         private Dictionary<int, Bullet> bullets_ = new Dictionary<int, Bullet>();
+        private List<Bullet> bulletsToRemove_ = new List<Bullet>();
         private List<Player> players_ = new List<Player>();
         private List<PowerUp> powerUps_ = new List<PowerUp>();
         private List<KeyValuePair<Entity, Entity>> deathList_ = new List<KeyValuePair<Entity, Entity>>();
@@ -33,13 +38,13 @@ namespace arena.battle
         private Room room_;
         private Map map_;
         private World pWorld_;
-        private DetermenisticTimer mainLoop_ = new DetermenisticTimer(GlobalDefs.MainTickInterval);
-        private DetermenisticTimer aiLoop_ = new DetermenisticTimer(GlobalDefs.AITickInterval);
+        private DetermenisticScheduler scheduler_ = new DetermenisticScheduler();
+        private long prevUpdateTime_ = 0;
+        private long startUpTime_ = 0;
 
         public long Time
         {
-            get;
-            private set;
+            get { return Tick * GlobalDefs.MainTickInterval; }
         }
 
         public int Tick
@@ -50,10 +55,11 @@ namespace arena.battle
 
         public Game(GameModes.GameMode mode, Room room)    
         {
-            room_ = room;
+            room_ = room; 
             matchFinishAt_ = CurrentTime.Instance.CurrentTimeInMs + mode.GetMatchDuration();
 
-            Time = helpers.CurrentTime.Instance.CurrentTimeInMs;
+            startUpTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
+            prevUpdateTime_ = startUpTime_;
 
             mode_ = mode;
             mode_.Game = this; 
@@ -63,23 +69,26 @@ namespace arena.battle
 
             var worldAABB = new AABB();
             var mapArea = map_.GetOuterBorder();
-            worldAABB.LowerBound = new Vec2(mapArea[0], mapArea[1]);
+            worldAABB.LowerBound = new Vec2(mapArea[0], mapArea[1]); 
             worldAABB.UpperBound = new Vec2(mapArea[2], mapArea[3]);
             pWorld_ = new World(worldAABB, new Vec2(0, 0), true);
             CreateWallsAroundWorld(worldAABB);
 
-            var bulletListenerAndFilter = new GameContactListener();
+            var bulletListenerAndFilter = new GameContactListener(); 
             pWorld_.SetContactListener(bulletListenerAndFilter);
             pWorld_.SetContactFilter(bulletListenerAndFilter);
 
-            mainLoop_.OnElapsed(HandleMainUpdate);
-            aiLoop_.OnElapsed(HandleAIUpdate);
+            scheduler_.SetStep(GlobalDefs.EventPoolInterval);      
+            scheduler_.ScheduleOnInterval(HandleMainUpdate, GlobalDefs.MainTickInterval);
+            scheduler_.ScheduleOnInterval(HandleAIUpdate, GlobalDefs.AITickInterval);
+            scheduler_.ScheduleOnInterval(BroadcastEntities, GlobalDefs.BroadcastEntitiesInterval);
+            scheduler_.ScheduleOnInterval(SendPlayerStatuses, 500);
 
-            fiber_.ScheduleOnInterval(HandleUpdate, 0, GlobalDefs.MainTickInterval);
-            fiber_.ScheduleOnInterval(SendPlayerStatuses, 500, 500);
+            fiber_.ScheduleOnInterval(HandleUpdate, 0, GlobalDefs.EventPoolInterval);
+            //fiber_.ScheduleOnInterval(SendPlayerStatuses, 500, 500);
             fiber_.ScheduleOnInterval(UpdateMap, 0, 15000);
-            fiber_.ScheduleOnInterval(BroadcastEntities, 0, GlobalDefs.BroadcastEntitiesInterval);
-            //fiber_.Schedule(HandleAIUpdate, GlobalDefs.AITickInterval);
+            //fiber_.ScheduleOnInterval(BroadcastEntities, 0, GlobalDefs.BroadcastEntitiesInterval);
+            //fiber_.ScheduleOnInterval(HandleAIUpdate, GlobalDefs.AITickInterval, GlobalDefs.AITickInterval);
             fiber_.Schedule(FinishGame, mode.GetMatchDuration());
 
             fiber_.Start();
@@ -93,8 +102,10 @@ namespace arena.battle
             var edge = new EdgeDef(); 
             edge.Density = 0.0f;
             edge.Filter.CategoryBits = (ushort)PhysicsDefs.Category.WALLS;
-            edge.Filter.MaskBits = (ushort)PhysicsDefs.Category.EXP_BLOCK | (ushort)PhysicsDefs.Category.PLAYER;
+            edge.Filter.MaskBits = 
+                (ushort)PhysicsDefs.Category.EXP_BLOCK|(ushort)PhysicsDefs.Category.PLAYER|(ushort)PhysicsDefs.Category.MOB;
 
+            //shrink need to prevent physics object stuck in world's bounds, dunno why it happends
             float shrinkAABB = 0.1f;
             edge.Vertex1.Set(worldAABB.LowerBound.X + shrinkAABB, worldAABB.UpperBound.Y - shrinkAABB);
             edge.Vertex2.Set(worldAABB.UpperBound.X - shrinkAABB, worldAABB.UpperBound.Y - shrinkAABB);
@@ -115,51 +126,45 @@ namespace arena.battle
 
         private void BroadcastEntities()
         {
-            var unitStates = new proto_game.UnitStatesUpdate();
+            var unitStates = new proto_game.UnitStatesUpdate();        
             foreach (var mobData in mobs_)
             {
-                var unitStatePacket = new proto_game.UnitState();
+                var unitStatePacket = new proto_game.UnitState();         
                 var mob = mobData.Value;
                 var pos = mob.Position;
                 unitStatePacket.guid = mob.ID;
                 unitStatePacket.x = pos.x;
                 unitStatePacket.y = pos.y;
-                unitStatePacket.rotation = mob.Rotation;
+                unitStatePacket.rotation = mob.Rotation;              
                 unitStates.states.Add(unitStatePacket);
             }
+            unitStates.tick = Tick;
             unitStates.timestamp = CurrentTime.Instance.CurrentTimeInMs;
             Broadcast(proto_common.Events.UNIT_STATE_UPDATE, unitStates);
         }
 
         private void HandleAIUpdate()
         {
-            var dt = GlobalDefs.GetAIUpdateInterval();
+            var dt = GlobalDefs.GetAIUpdateInterval();  
             foreach (var pair in mobs_)
             {
                 pair.Value.Update(dt);
             }
+
+            pWorld_.Step(dt, 1, 1);
+
+            foreach (var pair in mobs_)
+            {
+                pair.Value.PostUpdate();
+            }
         }
 
-        private void HandleMainUpdate()
+        private void HandleUpdate()  
         {
-            //if mode == null, game was closed
-            if (mode_ != null)
-                MainUpdate();
-        }
-
-        private void HandleUpdate() 
-        {
-            long dt = (CurrentTime.Instance.CurrentTimeInMs - Time);
-            Time = CurrentTime.Instance.CurrentTimeInMs; 
-            try
-            {
-                aiLoop_.Update(dt);
-                mainLoop_.Update(dt); 
-            }
-            catch (Exception exc)  
-            {
-                int g = 0;
-            }
+            var t = CurrentTime.Instance.CurrentTimeInMs;
+            long dt = (t - prevUpdateTime_);
+            scheduler_.Update(dt);  
+            prevUpdateTime_ = CurrentTime.Instance.CurrentTimeInMs;
         }
 
         public Map Map
@@ -168,6 +173,11 @@ namespace arena.battle
         public int GenerateID()
         {
             return id_++;
+        }
+
+        public int GetCurrentEntityID()
+        {
+            return id_;
         }
 
         private void UpdateMap()
@@ -194,7 +204,15 @@ namespace arena.battle
 
         public int MaxTickDelta
         {
-            get { return (int)(1.0f / GlobalDefs.GetUpdateInterval() * 2.2f); }
+            get { return (int)(1.0f / GlobalDefs.GetUpdateInterval() * 0.6f); }
+        }
+
+        public void DamageApply(Player player, proto_game.DamageApply.Request damageData)
+        {
+            GetEntity(damageData.target).ApplyDamage(GetEntity(damageData.attacker), damageData.damage);
+            var bulletsRemovedPacket = new proto_game.BulletsRemoved();
+            bulletsRemovedPacket.guid.Add(damageData.bullet); 
+            Broadcast(proto_common.Events.BULLET_DESTROYED, bulletsRemovedPacket, player);
         }
 
         public void PlayerJoin(Player player)
@@ -216,7 +234,7 @@ namespace arena.battle
                     player.Controller.SendEvent(proto_common.Events.PLAYER_APPEARED, p.GetAppearedPacket());
                 }
 
-                //send blocks, mobs, atc
+                //send blocks, mobs, etc
                 foreach (var e in units_)
                 {
                     if (e.Value is ExpBlock)
@@ -250,7 +268,7 @@ namespace arena.battle
             });
         }
 
-        public Body CreateBody(BodyDef def)
+        public Body CreateBody(BodyDef def) 
         {
             return pWorld_.CreateBody(def);
         }
@@ -273,11 +291,7 @@ namespace arena.battle
 
         public void Remove(Bullet bullet)
         {
-            mainLoop_.DelayAction(()=>
-            {
-                bullets_.Remove(bullet.ID);
-                Remove((Entity)bullet);
-            });
+            bulletsToRemove_.Add(bullet);
         }
 
         private void PlayerDead(Player player)
@@ -333,18 +347,40 @@ namespace arena.battle
              
         }
 
+        public void SyncAttackWithRemotePlayer(Player player, AttackData attData, int inputTick)
+        {
+            proto_game.UnitAttack attackData = new proto_game.UnitAttack();
+            attackData.direction = attData.Direction;
+            attackData.guid = player.ID;
+            attackData.time_advance = 0;
+            attackData.first_bullet_id = attData.FirstBulletID;
+            attackData.tick = inputTick;
+            attackData.local = true;
+
+            if (player != null)
+            {
+                attackData.local = true;
+                attackData.time_advance = System.Math.Max(0, player.Ping);
+                player.Controller.SendEvent(proto_common.Events.UNIT_ATTACK, attackData);
+            }
+        }
+
         public void OnUnitAttack(Unit unit, AttackData attack)
         {
             proto_game.UnitAttack attackData = new proto_game.UnitAttack();
             attackData.direction = attack.Direction;
             attackData.guid = unit.ID;
-            attackData.timestamp = Time;
+            attackData.time_advance = 0;
+            attackData.first_bullet_id = attack.FirstBulletID;
+            attackData.tick = Tick;
+            attackData.local = false;
 
             var pos = unit.Position;
             attackData.x = pos.x;
             attackData.y = pos.y;
 
-            Broadcast(proto_common.Events.UNIT_ATTACK, attackData, unit as Player);
+            var player = unit as Player;
+            Broadcast(proto_common.Events.UNIT_ATTACK, attackData, player);
         }
 
         public void PlayerTurned(Player player, proto_game.PlayerTurn turnData)
@@ -478,25 +514,25 @@ namespace arena.battle
             }
         }
 
-        private bool PlayersHasInput()
+        private bool HasInputs()
         {
-            bool hasAnyPlayerInput = false;
-            foreach (var plr in joinedPlayers_)
+            bool hasInput = false;
+            foreach (var plr in players_)
             {
-                hasAnyPlayerInput |= plr.HasAnyInput();
+                hasInput |= plr.HasInput();
             }
-            return hasAnyPlayerInput;
+            return hasInput;
         }
 
-        private void MainUpdate()
+        private void HandleMainUpdate()
         {
-            long ldt = GlobalDefs.MainTickInterval; 
             float dt = GlobalDefs.GetUpdateInterval();
 
-            while (PlayersHasInput())
+            while (HasInputs())
             {
                 foreach (var plr in joinedPlayers_)
                 {
+                    plr.Update(dt);
                     plr.ProcessInput(dt);
                 }
 
@@ -505,37 +541,45 @@ namespace arena.battle
                 var playerMoveResponse = new proto_game.PlayerInput.Response();
                 foreach (var plr in joinedPlayers_)
                 {
-                    plr.Update(dt);
+                    plr.PostUpdate();
 
                     if (plr.Input == null)
                         continue;
+
                     //send sync packet
                     playerMoveResponse.tick = plr.Input.tick;
                     playerMoveResponse.force_x = plr.Input.force_x;
                     playerMoveResponse.force_y = plr.Input.force_y;
                     playerMoveResponse.x = plr.Body.GetPosition().X;
                     playerMoveResponse.y = plr.Body.GetPosition().Y;
-                    playerMoveResponse.velx = plr.Velocity.x;
-                    playerMoveResponse.vely = plr.Velocity.y;
-                    playerMoveResponse.rvelx = plr.RecoilVelocity.x;
-                    playerMoveResponse.rvely = plr.RecoilVelocity.y;
                     playerMoveResponse.shoot = plr.Input.shoot;
                     playerMoveResponse.skill = plr.Input.skill;
 
                     plr.Controller.SendResponse(proto_common.Commands.PLAYER_INPUT, playerMoveResponse);
                 }
 
+                /*
                 foreach (var bullet in bullets_)
                 {
                     bullet.Value.Update(dt);
                 }
 
+                var bulletsRemovedPacket = new proto_game.BulletsRemoved();
+                foreach (var bullet in bulletsToRemove_)
+                {
+                    bullets_.Remove(bullet.ID);
+                    Remove((Entity)bullet);
+                    bulletsRemovedPacket.guid.Add(bullet.ID);
+                }
+                bulletsToRemove_.Clear();
+                Broadcast(proto_common.Events.BULLET_DESTROYED, bulletsRemovedPacket);
+                */
                 List<PowerUp> toRemove = ListPool<PowerUp>.Get();
                 foreach (var pwr in powerUps_)
                 {
                     if (pwr.Holder != null)
                     {
-                        pwr.Lifetime -= (int)ldt;
+                        pwr.Lifetime -= (int)GlobalDefs.MainTickInterval;
                         if (pwr.Lifetime <= 0)
                         {
                             toRemove.Add(pwr);
@@ -551,9 +595,10 @@ namespace arena.battle
                 ListPool<PowerUp>.Release(toRemove);
 
                 ProcessDeathList();
-                mode_.Update(dt);
-                Tick++;
-            }
+            };
+
+            mode_.Update(dt);
+            Tick++;
         }
 
         public void Broadcast(proto_common.Events evtKey, object msg, Player exceptThis = null)

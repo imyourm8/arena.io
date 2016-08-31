@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace arena.helpers
 {
-    class CurrentTime : TapCommon.Singleton<CurrentTime>
+    class CurrentTime : TapCommon.Singleton<CurrentTime>  
     {
         private static readonly DateTime Jan1St1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 

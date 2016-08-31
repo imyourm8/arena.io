@@ -161,7 +161,10 @@ namespace proto_common
       SYNC_TICK = 2015,
             
       [global::ProtoBuf.ProtoEnum(Name=@"PLAYER_INPUT", Value=2016)]
-      PLAYER_INPUT = 2016
+      PLAYER_INPUT = 2016,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DAMAGE_APPLY", Value=2017)]
+      DAMAGE_APPLY = 2017
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"Events")]
@@ -226,7 +229,10 @@ namespace proto_common
       SKILL_CASTED = 2019,
             
       [global::ProtoBuf.ProtoEnum(Name=@"MOB_APPEARED", Value=2020)]
-      MOB_APPEARED = 2020
+      MOB_APPEARED = 2020,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"BULLET_DESTROYED", Value=2021)]
+      BULLET_DESTROYED = 2021
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"PacketFlags")]

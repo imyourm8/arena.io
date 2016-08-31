@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ExitGames.Logging;
+using ExitGames.Logging.Log4Net;
+
 using Box2DX.Common;
 using Box2DX.Dynamics;
 
@@ -16,17 +19,20 @@ namespace arena.battle
     class Player : Unit, PlayerExperience.IExpProvider
     {
         private static readonly int MaxStoredInputs = 100;
+        private static ILogger log = LogManager.GetCurrentClassLogger();
 
         private HashSet<Entity> visibleEntities_ = new HashSet<Entity>();
         private PlayerExperience exp_;
         private Deque<proto_game.PlayerInput.Request> inputs_ = new Deque<proto_game.PlayerInput.Request>();
         private StatusManager statusManager_;
+        private bool castSkill_ = false;
+        private bool shoot_ = false;
 
         public Player(player.PlayerController controller, player.Profile profile)
         {
             Controller = controller;
             statusManager_ = new StatusManager(this); 
-            Category = PhysicsDefs.Category.PLAYER;
+            Category = PhysicsDefs.Category.PLAYER; 
             Level = 1;
             Profile = profile;
             exp_ = new PlayerExperience(this);
@@ -51,10 +57,13 @@ namespace arena.battle
         public Room Room
         { get; set; }
 
+        public int Ping
+        { get; set; }
+
         public player.PlayerController Controller
         { get; private set; }
 
-        public void AssignStats()
+        public void AssignStats() 
         {
             var entry = Factories.PlayerClassFactory.Instance.GetEntry(SelectedClass);
 
@@ -68,6 +77,7 @@ namespace arena.battle
             Stats.SetValue(proto_game.Stats.Armor, entry.Armor).SetStep(entry.ArmorStep).ResetSteps();
             Stats.SetValue(proto_game.Stats.SkillCooldown, entry.SkillCooldown).SetStep(0).ResetSteps();
             Stats.SetValue(proto_game.Stats.Armor, entry.Armor).SetStep(entry.ArmorStep).ResetSteps();
+            Stats.SetValue(proto_game.Stats.BulletSize, entry.BulletSize);
 
             HP = Stats.GetFinValue(proto_game.Stats.MaxHealth);
             AddSkill(entry.Skill);
@@ -81,7 +91,6 @@ namespace arena.battle
         public override void InitPhysics(bool dynamicBody = true, bool isSensor = false)
         {
             base.InitPhysics(dynamicBody, isSensor);
-            //Body.SetLinearDamping(LinearDumping);
             AddToCollisionMask((ushort)PhysicsDefs.Category.PICKUPS);
         }
 
@@ -93,7 +102,7 @@ namespace arena.battle
             appearData.guid = ID;
             appearData.hp = HP;
             appearData.level = Level;
-            appearData.stats = GetStatsPacket();
+            FillStatsPacket(appearData.stats);
             appearData.position = new proto_game.Vector();
 
             var pos = Position;
@@ -115,7 +124,7 @@ namespace arena.battle
         public override void Update(float dt)
         {
             base.Update(dt);
-            AfterInput();
+            
             statusManager_.Update(dt);
             HP = System.Math.Min(HP + Stats.GetFinValue(proto_game.Stats.HealthRegen) * dt * 0.2f, Stats.GetFinValue(proto_game.Stats.MaxHealth));
         }
@@ -139,12 +148,29 @@ namespace arena.battle
             statusManager_.Add(status);
         }
 
-        private void AfterInput()
+        protected override void OnWeaponAttack(AttackData attData)
         {
-            Body.SetLinearVelocity(Vec2.Zero);
+            base.OnWeaponAttack(attData);     
+
+            Game.SyncAttackWithRemotePlayer(this, attData, Input.tick);
         }
 
-        public bool HasAnyInput()
+        public override void PostUpdate()
+        {
+            base.PostUpdate();
+
+            proto_game.PlayerInput.Request input = null;
+            //process only one tick at time
+            if (inputs_.Count > 0)
+            {
+                input = inputs_[0];
+                inputs_.RemoveFromFront();
+            }
+
+            Input = input;
+        }
+
+        public bool HasInput()
         {
             return inputs_.Count > 0;
         }
@@ -155,42 +181,33 @@ namespace arena.battle
             if (input != null)
             {
                 var force = new helpers.Vector2(input.force_x, input.force_y);
-                if (!helpers.MathHelper.Approx(force, helpers.Vector2.zero))
-                {
-                    MoveInDirection(force);
-                }
-                
+                MoveInDirection(force);
                 //convert angle to radians
                 Rotation = input.rotation * helpers.MathHelper.Deg2Rad;
 
-                if (input.shoot) 
+                shoot_ = input.shoot;
+                castSkill_ = input.skill;
+
+                if (shoot_)
                 {
                     PerformAttackAtDirection(Rotation);
                 }
 
-                if (input.skill)
+                if (castSkill_)
                 {
                     CastSkill();
                 }
 
                 ApplyDumping();
-            }
 
-            //process only one tick at time
-            input = null;
-            if (inputs_.Count > 0)
-            {
-                input = inputs_[0];
-                inputs_.RemoveFromFront();
+                Body.SetLinearVelocity(Velocity + RecoilVelocity);
             }
-
-            Input = input;
         }
 
         private void ApplyDumping()
         {
             var dumpingCoefficent = helpers.MathHelper.Clamp01(1.0f - GlobalDefs.GetUpdateInterval() * LinearDumping);
-            Velocity *= dumpingCoefficent;
+            //Velocity *= dumpingCoefficent;
             RecoilVelocity *= dumpingCoefficent;
             if (helpers.MathHelper.Approx(Velocity.Length(), 0.0f))
             {
@@ -199,8 +216,7 @@ namespace arena.battle
             if (helpers.MathHelper.Approx(RecoilVelocity.Length(), 0.0f))
             {
                 RecoilVelocity = helpers.Vector2.zero;
-            }
-            Body.SetLinearVelocity(Velocity + RecoilVelocity);
+            } 
         }
 
         public void AddInput(proto_game.PlayerInput.Request input)
@@ -219,10 +235,8 @@ namespace arena.battle
             var maxTickDelta = Game.MaxTickDelta;
             int nMinDelta = System.Math.Max(0, Game.Tick - maxTickDelta);
             int nMaxDelta = Game.Tick + maxTickDelta;
-
             bool valid = (input.tick >= nMinDelta && input.tick < nMaxDelta);
-
-            return valid || true;
+            return valid;
         }
     }
 }

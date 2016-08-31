@@ -32,6 +32,7 @@ namespace arena.battle
             SkillDamageStep = (float)data["skill_damage_step"];
             Skill = helpers.Parsing.ParseEnum<proto_game.Skills>((string)data["skill"]);
             SkillCooldown = (float)(int)data["skill_cooldown"];
+            BulletSize = (float)data["bullet_size"];
         }
 
         public proto_profile.PlayerClasses @Class
@@ -65,6 +66,9 @@ namespace arena.battle
         { get; private set; }
 
         public float BulletSpeedStep
+        { get; private set; }
+
+        public float BulletSize
         { get; private set; }
 
         public float MovementSpeed

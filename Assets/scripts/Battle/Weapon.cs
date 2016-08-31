@@ -7,14 +7,14 @@ public class Weapon : MonoBehaviour
     private BulletSpawnPoint[] bulletSpawnPoints = null;
 
     [SerializeField]
-    private float recoil;
+    private float recoil = 0.0f;
 
     [SerializeField]
-    private proto_game.Weapons weaponType;
+    private proto_game.Weapons weaponType = proto_game.Weapons.MachineGun;
 
-    private Entity owner_;
+    private Unit owner_;
 
-	public void Init(Entity owner)
+    public void Init(Unit owner)
     {
         owner_ = owner;
     }
@@ -34,9 +34,14 @@ public class Weapon : MonoBehaviour
     }
     #endif
 
-    public void SpawnBullets(long serverSpawnTime)
+    public void SpawnBullets(long serverSpawnTime, int firstBulletID)
     {
-        var timeElapsedSinceServerSpawn = GameApp.Instance.ClientTimeMs() - serverSpawnTime;
+        var timeElapsedSinceServerSpawn = 0.0f;
+
+        if (serverSpawnTime > -1)
+        {
+            timeElapsedSinceServerSpawn = owner_.Controller.GameTime - (float)serverSpawnTime / 1000;
+        }
 
         var ownerAttPos = owner_.AttackPosition;
         var ownerAttRot = owner_.AttackDirection;
@@ -45,34 +50,49 @@ public class Weapon : MonoBehaviour
         float sin = Mathf.Sin(rad);
         float cos = Mathf.Cos(rad);
 
+        var ownerIsLocalPlayer = owner_.Controller.IsLocalPlayer(owner_);
+
         foreach(var p in bulletSpawnPoints)
         {
-            var bullet = owner_.Controller.CreateBullet();
+            var bullet = BulletPrefabs.Instance.Get(p.Bullet).GetComponent<Bullet>();
             if (bullet == null) 
                 continue;
 
-            var point = p.transform.localPosition;
-            var x = point.x * cos - point.y * sin;
-            var y = point.x * sin + point.y * cos;
-            point.x = x + ownerAttPos.x;
-            point.y = y + ownerAttPos.y;
+            var spawnPoint = p.transform.localPosition;
+            var x = spawnPoint.x * cos - spawnPoint.y * sin;
+            var y = spawnPoint.x * sin + spawnPoint.y * cos;
+            spawnPoint.x = x + ownerAttPos.x;
+            spawnPoint.y = y + ownerAttPos.y;
 
-            var alpha = ((float)timeElapsedSinceServerSpawn/1000.0f) / bullet.TimeAlive;
+            //var alpha = owner_.Local ? 0.0f : ((float)timeElapsedSinceServerSpawn/1000.0f) / bullet.TimeAlive;
+            var alpha = owner_.Local ? 0.0f : timeElapsedSinceServerSpawn / bullet.TimeAlive;
 
             if (alpha < 0.9f)
             {
-                bullet.Init(
-                    owner_, 
-                    new Vector3(ownerAttRot.x, ownerAttRot.y, 0) + p.transform.localRotation.eulerAngles, 
-                    owner_.Stats.GetFinValue(proto_game.Stats.BulletSpeed), 
-                    point, 
-                    owner_.Stats.GetFinValue(proto_game.Stats.BulletDamage),
-                    alpha
-                );
+                bullet.ID = firstBulletID++;
+                bullet.Init(owner_.Controller);
+                bullet.SetOwner(owner_);
+                bullet.TickOfCreation = owner_.Controller.Tick;
+                bullet.SetStartPoint(spawnPoint);
+                bullet.SetDirection(new Vector3(ownerAttRot.x, ownerAttRot.y, 0) + p.transform.localRotation.eulerAngles);
 
-                owner_.Controller.AddBullet(bullet);
-                //dont allow collide with owned bullets
-                //Physics2D.IgnoreCollision(bullet.Collider, owner_.Collider);
+                //if its local dont move projectile until response from server about move
+                bullet.SetMoveSpeed(owner_.Stats.GetFinValue(proto_game.Stats.BulletSpeed));
+                bullet.SetDamage(owner_.Stats.GetFinValue(proto_game.Stats.BulletDamage));
+                if (alpha > 0.0f)
+                    bullet.AdjustPositionToServerTime(alpha);
+                bullet.Prepare();
+
+                if (serverSpawnTime > -1)
+                    owner_.Controller.Add(bullet);
+                else
+                    owner_.Controller.AddToScene(bullet);
+
+                if (ownerIsLocalPlayer)
+                {
+                    //save bullet to start movement after
+                    (owner_ as Player).OnBulletShoot(bullet);
+                }
             }
             owner_.ApplyRecoil(recoil);
         }

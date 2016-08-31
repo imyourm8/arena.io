@@ -9,9 +9,6 @@ public struct PhysicalState
     public float Rotation
     { get; set; }
 
-    public Vector2 Velocity
-    { get; set; }
-
     public Vector2 RecoilVelocity
     { get; set; }
 

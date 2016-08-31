@@ -118,13 +118,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7255e9f8f89ea8a4a9b9c4d1ee0704e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  local: 0
-  hpBarOffset_: {x: 0, y: -0.6, z: 0}
   body_: {fileID: 5053820}
-  transform_: {fileID: 424912}
   collider: {fileID: 5860480}
+  transform_: {fileID: 424912}
   sprite: {fileID: 21229216}
-  currentSpeed_: 0
+  hpBarOffset_: {x: 0, y: -0.6, z: 0}
   hpBar_: {fileID: 0}
-  weaponUsed: 0
+  weaponUsed: 4
   type: 1

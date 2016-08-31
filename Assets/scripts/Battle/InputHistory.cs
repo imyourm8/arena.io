@@ -1,4 +1,4 @@
-﻿#define LOG
+﻿//#define LOG
 using UnityEngine;
 using System.Collections;
 
@@ -34,8 +34,8 @@ public class InputHistory
             inputs_.RemoveFromFront();
         }
 #if LOG
-        Debug.LogFormat("ADD {0} {1} | {2} {3} | {4} {5} | {6}=>{7} TICK: {8}  ================================", 
-            state.Position.x,state.Position.y, state.Velocity.x,state.Velocity.y, state.RecoilVelocity.x,state.RecoilVelocity.y,
+        Debug.LogFormat("ADD {0} {1} | {2} {3} | {4}=>{5} TICK: {6}  ================================", 
+            state.Position.x,state.Position.y,state.RecoilVelocity.x,state.RecoilVelocity.y,
             state.Recoil, state.Rotation, input.tick);
 #endif
         var move = new Move();
@@ -121,9 +121,8 @@ public class InputHistory
                     #endif
                 }
 #if LOG
-                Debug.LogFormat("FIX {0} {1} | {2} {3} | {4} {5} | {6}=>{7} TICK: {8}", 
+                Debug.LogFormat("FIX {0} {1} | {2} {3} | {4}=>{5} TICK: {6}", 
                     replayedInput.state.Position.x, replayedInput.state.Position.y,
-                    replayedInput.state.Velocity.x, replayedInput.state.Velocity.y, 
                     player.RecoilVelocity.x,player.RecoilVelocity.y,
                     replayedInput.recoil, replayedInput.state.Rotation, replayedInput.tick);
 #endif

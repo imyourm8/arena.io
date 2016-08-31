@@ -26,11 +26,12 @@ namespace arena.battle.MobAI
             if (target_ != null) 
             {
                 var distance = MathHelper.Distance(Owner.Position, target_.Position);
-
+                
                 if (distance <= Owner.Entry.AttackRange)
                 {
                     Attack();
                     Stop();
+                    Chase(dt);
                 }
                 else if (distance < Owner.Entry.ReturnRange)
                 {
@@ -39,6 +40,7 @@ namespace arena.battle.MobAI
                 else
                 {
                     target_ = null;
+                    Stop();
                     ReturnToSpawnPoint();
                 }
             }
@@ -74,6 +76,7 @@ namespace arena.battle.MobAI
         {
             var dir = target_.Position - Owner.Position;
             Owner.MoveInDirection(dir);
+            Owner.SetRotation(dir);
         }
 
         protected void ReturnToSpawnPoint()

@@ -46,6 +46,7 @@ namespace arena.battle
             Stats.SetValue(proto_game.Stats.Armor, entry.Armor).SetStep(entry.ArmorStep).ResetSteps();
             Stats.SetValue(proto_game.Stats.SkillCooldown, entry.SkillCooldown).SetStep(0).ResetSteps();
             Stats.SetValue(proto_game.Stats.Armor, entry.Armor).SetStep(entry.ArmorStep).ResetSteps();
+            Stats.SetValue(proto_game.Stats.BulletSize, entry.BulletSize);
 
             HP = Stats.GetFinValue(proto_game.Stats.MaxHealth);
             Exp = entry.Exp;
@@ -59,13 +60,12 @@ namespace arena.battle
         {
             var appearData = new proto_game.MobAppeared();
 
-            appearData.id = ID;
-            appearData.max_hp = Stats.GetFinValue(proto_game.Stats.MaxHealth);
-            appearData.hp = HP;
-
             var pos = Position;
             appearData.x = pos.x;
             appearData.y = pos.y;
+            appearData.id = ID;
+            appearData.hp = HP;
+            FillStatsPacket(appearData.stats);
             appearData.type = MobType;
             appearData.weapon_used = Weapon.Type;
             appearData.attack_range = Entry.AttackRange;

@@ -15,5 +15,8 @@ namespace arena.battle
 
         public Vector2 Position
         { get; set; }
+
+        public int FirstBulletID
+        { get; set; }
     }
 }

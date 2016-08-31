@@ -12,15 +12,18 @@ public class GunnerSkill : Skill
 
         var ownerAttRot = Owner.AttackDirection;
         var ownerAttPosition = Owner.AttackPosition;
-        bullet.Init(
-            Owner, 
-                new Vector3(ownerAttRot.x, ownerAttRot.y, 0), 
-                bullet.MoveSpeed, 
-                ownerAttPosition, 
-                Owner.Stats.GetFinValue(proto_game.Stats.SkillDamage)
-            );
-
+        bullet.Init(Owner.Controller);
+        bullet.SetOwner(Owner);
+        bullet.SetMoveSpeed(bullet.MoveSpeed);
+        bullet.SetDirection(new Vector3(ownerAttRot.x, ownerAttRot.y, 0));
+        bullet.Position = ownerAttPosition;
+        bullet.SetDamage(Owner.Stats.GetFinValue(proto_game.Stats.SkillDamage));
+        bullet.Prepare();
         Owner.ApplyRecoil(recoil);
-        Physics2D.IgnoreCollision(Owner.Collider, bullet.Collider);
+
+        if (Owner.Controller.IsLocalPlayer(Owner))
+        {
+            (Owner as Player).OnBulletShoot(bullet);
+        }
     }
 }

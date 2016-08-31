@@ -11,11 +11,11 @@ namespace arena.battle
 {
     class BulletEntry
     {
-        public BulletEntry(JToken data)
+        public BulletEntry(JToken data) 
         {
             TimeAlive = data["time_alive"].Value<float>();
             Radius = data["radius"].Value<float>();
-            Speed = data["speed"].Value<float>();
+            Speed = data["speed"].Value<float>(); 
             Penetrate = data["penetrate"].Value<bool>();
             Type = helpers.Parsing.ParseEnum<proto_game.Bullets>(data["type"].Value<string>());
         }

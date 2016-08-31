@@ -28,11 +28,11 @@ namespace arena.battle
             {
                 return; 
             }
-            
+            int i = 0;
             prevSpawnTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
             foreach (var spawn in spawnPoints_)
             {
-                while (spawn.Count < spawn.MaxCount)
+                while (spawn.Count < spawn.MaxCount) 
                 {
                     var type = helpers.Extensions.PickRandom<proto_game.MobType>(spawn.Probabilities, spawn.TotalWeight);
                     Mob mob = new Mob();
@@ -55,7 +55,10 @@ namespace arena.battle
                     }
                     mob.AI = ai;
                     Game.Add(mob);
+                    break;
                 }
+                i += spawn.Count;
+                if (i == 1) break;
             }
         }
 
