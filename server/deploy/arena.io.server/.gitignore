@@ -34,3 +34,6 @@ ehthumbs.db
 
 server/arena.io.server/arena.io.server.opensdf
 log/
+bin/arena.dll
+bin/arena.pdb
+bin/ProtoLib.dll
