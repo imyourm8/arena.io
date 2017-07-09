@@ -10,26 +10,11 @@ namespace arena.battle.GameModes
 {
     class FFA : GameMode
     {
-        private Area centralArea_ = new Area(-20, 20, -20, 20);
-        Dictionary<proto_game.ExpBlocks, float> expBlockSpawnChances_ = new Dictionary<proto_game.ExpBlocks, float> 
-        { 
-            {proto_game.ExpBlocks.Small, 50},
-            {proto_game.ExpBlocks.Medium, 25},
-            {proto_game.ExpBlocks.Big, 20.5f},
-            {proto_game.ExpBlocks.Huge, 10.25f}
-        };
-        private float wholeAreaSpawnWeight_ = 0;
-        private float centerAreaSpawnWeight_ = 0;
+
         private float timeElapsed_ = 0.0f;
 
         public FFA()
         {
-            wholeAreaSpawnWeight_ += expBlockSpawnChances_[proto_game.ExpBlocks.Small];
-            wholeAreaSpawnWeight_ += expBlockSpawnChances_[proto_game.ExpBlocks.Medium];
-
-            centerAreaSpawnWeight_ = wholeAreaSpawnWeight_;
-            centerAreaSpawnWeight_ += expBlockSpawnChances_[proto_game.ExpBlocks.Big];
-            centerAreaSpawnWeight_ += expBlockSpawnChances_[proto_game.ExpBlocks.Huge];
         }
 
         public override void SpawnPlayer(Player player)
@@ -44,18 +29,20 @@ namespace arena.battle.GameModes
             return 1500000;
         }
 
-        public override int GetExpFor(Player player)
+        public override int GetExpFor(Player killer, Player victim)
         {
-            int exp = player.BattleStats.Kills * 40;
-            exp += 20;
-            return exp;
+            var lvlDiff = System.Math.Max(1, victim.Level - killer.Level);
+            return 10 * victim.Level * lvlDiff;
         }
 
-        public override int GetCoinsFor(Player player)
+        public override int GetCoinsFor(Player killer, Player victim)
         {
-            int gold = player.BattleStats.Gold;
-            gold += player.BattleStats.Kills * 10;
-            return gold;
+            return victim.Level / 10;
+        }
+
+        public override int GetScoreFor(Player killer, Player victim)
+        {
+            return victim.BattleStats.Score / 10;
         }
 
         public override string GetMapPath()

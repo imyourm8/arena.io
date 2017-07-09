@@ -41,7 +41,7 @@ namespace arena.battle
             RemoveFromBucket(entity);
         }
 
-        public void RefreshHashPosition(IEntity entity)
+        public void RefreshHashPosition(IEntity entity )
         {
             var entityPos = entity.Position;
             var currentTile = GetTileCoord(entityPos);
@@ -49,7 +49,7 @@ namespace arena.battle
 
             if (newTile != currentTile)
             {
-                RemoveFromBucket(entity);
+                RemoveFromBucket(entity, usePreviousPosition: true);
 
                 var bucket = GetBucket(entityPos);
                 bucket.TryAdd(entity.ID, entity);
@@ -71,9 +71,9 @@ namespace arena.battle
                 }
         }
 
-        private void RemoveFromBucket(IEntity entity)
+        private void RemoveFromBucket(IEntity entity, bool usePreviousPosition = false)
         {
-            var bucket = GetBucket(entity.Position);
+            var bucket = GetBucket(usePreviousPosition?entity.PrevPosition:entity.Position);
             bucket.TryRemove(entity.ID, out entity);
         }
 

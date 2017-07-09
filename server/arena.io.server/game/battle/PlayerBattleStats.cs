@@ -11,7 +11,7 @@ namespace arena.battle
         public int Score
         { get; set; }
 
-        public int Gold
+        public int Coins
         { get; set; }
 
         public int Kills
@@ -28,7 +28,7 @@ namespace arena.battle
             Score = 0;
             Kills = 0;
             FlagsCaptured = 0;
-            Gold = 0;
+            Coins = 0;
         }
     }
 }

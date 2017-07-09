@@ -21,7 +21,7 @@ namespace arena.battle
         public int Coins
         { get; set; }
 
-        public proto_game.BlockAppeared GetAppearedPacket()
+        public override Net.EventPacket GetAppearedPacket()
         {
             proto_game.BlockAppeared packet = new proto_game.BlockAppeared();
             packet.guid = ID;
@@ -33,7 +33,7 @@ namespace arena.battle
             packet.hp = HP;
             packet.max_hp = Stats.GetFinValue(proto_game.Stats.MaxHealth);
             packet.type = BlockType;
-            return packet;
+            return ConstructPacket(proto_common.Events.BLOCK_APPEARED, packet);
         }
 
         public override void InitPhysics()

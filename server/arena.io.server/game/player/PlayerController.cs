@@ -79,6 +79,7 @@ namespace arena.player
 
         public void SendEvent(proto_common.Events evtCode, object data)
         {
+            System.Diagnostics.Debug.Assert(data != null);
             var evt = new proto_common.Event();
             evt.type = evtCode;
             evt.timestamp = helpers.CurrentTime.Instance.CurrentTimeInMs;

@@ -270,10 +270,5 @@ namespace arena.battle
         {
             statusManager_.Remove(status);
         }
-
-        public virtual void OnDestroy(Logic.IOnDestroyResponser responser)
-        {
-            responser.WasDestroyed(this);
-        }
     }
 }

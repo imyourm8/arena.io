@@ -19,8 +19,7 @@ namespace arena.battle.Logic.Statuses
 
         public override void Remove()
         {
-            Owner.Stats.Get(proto_game.Stats.MovementSpeed).RemoveAttribute(movementAttribute_);
-            
+            Owner.Stats.Get(proto_game.Stats.MovementSpeed).RemoveAttribute(movementAttribute_);         
         }
 
         public override void Apply()

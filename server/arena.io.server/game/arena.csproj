@@ -257,7 +257,6 @@
     <Compile Include="battle\Logic\Behaviours\StayCloseToSpawn.cs" />
     <Compile Include="battle\Logic\IBehaviour.cs" />
     <Compile Include="battle\Logic\ILogicElement.cs" />
-    <Compile Include="battle\Logic\IOnDestroyResponser.cs" />
     <Compile Include="battle\Logic\IState.cs" />
     <Compile Include="battle\Logic\IStateHolder.cs" />
     <Compile Include="battle\Logic\ITransition.cs" />

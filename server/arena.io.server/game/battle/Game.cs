@@ -19,8 +19,7 @@ namespace arena.battle
 {
     class Game : 
         player.IActionInvoker, 
-        BlockSpawner.IBlockControl,
-        IOnDestroyResponser
+        BlockSpawner.IBlockControl
     {
         private static ILogger log = LogManager.GetCurrentClassLogger();
 
@@ -28,6 +27,7 @@ namespace arena.battle
         private HashSet<Unit> broadcastedUnits_ = new HashSet<Unit>();
         private Dictionary<int, Entity> entities_ = new Dictionary<int, Entity>();
         private Dictionary<int, Mob> mobs_ = new Dictionary<int, Mob>();
+        private Dictionary<int, ExpBlock> expBlocks_ = new Dictionary<int, ExpBlock>();
         private Dictionary<int, Bullet> bullets_ = new Dictionary<int, Bullet>();
         private List<Bullet> bulletsToRemove_ = new List<Bullet>();
         private List<Player> players_ = new List<Player>();
@@ -36,7 +36,7 @@ namespace arena.battle
         private PoolFiber fiber_ = new PoolFiber(new DebugExecutor());
         private int id_ = 0;
         private GameModes.GameMode mode_;
-        private long matchFinishAt_;
+        private long gameFinishAt_;
         private Room room_;
         private Map map_;
         private World world_;
@@ -58,7 +58,7 @@ namespace arena.battle
         public Game(GameModes.GameMode mode, Room room)    
         {
             room_ = room; 
-            matchFinishAt_ = CurrentTime.Instance.CurrentTimeInMs + mode.GetMatchDuration();
+            gameFinishAt_ = CurrentTime.Instance.CurrentTimeInMs + mode.GetMatchDuration();
 
             startUpTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
             prevUpdateTime_ = startUpTime_;
@@ -188,7 +188,7 @@ namespace arena.battle
             map_.Update();
         }
 
-        public void Add(Player player)
+        public void ConnectPlayer(Player player)
         {
             player.Game = this;
             player.BattleStats.Reset();
@@ -238,21 +238,30 @@ namespace arena.battle
             {
                 //player.ID = GenerateID();
                 mode_.SpawnPlayer(player);
-                //map_.Add(player);
                 player.AssignStats();
-                Add((Entity)player);
-                //broadcast new player across other players
-                var appearedPacket = player.GetAppearedPacket(); 
-                Broadcast(proto_common.Events.PLAYER_APPEARED, appearedPacket, player); 
+                Add(player);
 
-                //send all entities
-                foreach (var e in entities_)
+                //send all mobs
+                foreach (var e in mobs_)
+                {
+                    player.Controller.SendEvent(e.Value.GetAppearedPacket());
+                }
+
+                //send all powerups
+                foreach (var e in powerUps_)
+                {
+                    player.Controller.SendEvent(e.GetAppearedPacket());
+                }
+
+                //send all exp blocks
+                foreach (var e in expBlocks_)
                 {
                     player.Controller.SendEvent(e.Value.GetAppearedPacket());
                 }
 
                 //send packet to connected player aswell
                 //TODO remove this part, client should track everything by itself
+                var appearedPacket = player.GetAppearedPacket(); 
                 (appearedPacket.Packet as proto_game.PlayerAppeared).local = true;
                 player.Controller.SendEvent(appearedPacket);
 
@@ -266,7 +275,7 @@ namespace arena.battle
                     joinPacket.outer_border.Add(coord); 
                 }
                 joinPacket.tick = Tick;
-                joinPacket.time_left = (int)(matchFinishAt_ - Time);
+                joinPacket.time_left = (int)(gameFinishAt_ - Time);
                 player.Controller.SendResponse(proto_common.Commands.JOIN_GAME, joinPacket); 
             });
         }
@@ -420,6 +429,31 @@ namespace arena.battle
             player.Controller.SendEvent(proto_common.Events.PLAYER_COINS, evt);
         }
 
+        private void ProcessKill(Entity target)
+        {
+            ExpBlock expBlock = target as ExpBlock;
+            if (expBlock != null)
+            {
+                map_.OnExpBlockRemoved(expBlock);
+                SpawnGoldPiles(expBlock);
+                return;
+            }
+
+            Mob mob = target as Mob;
+            if (mob != null)
+            {
+                map_.OnMobDead(mob);
+                return;
+            }
+
+            Player player = target as Player;
+            if (player != null)
+            {
+                PlayerDead(player);
+                return;
+            }
+        }
+
         private void ProcessDeathList()
         {
             foreach (var pair in deathList_)
@@ -429,32 +463,31 @@ namespace arena.battle
                 var player = killer as Player;
 
                 if (player != null)
-                    mode_.HandleEntityKill(player, target); 
+                    mode_.HandleEntityKill(player, target);
 
                 int expGenerated = target.Exp;
                 int score = 0;
-                int gold = 0;
+                int coins = 0;
 
-                target.OnDestroy(this);
+                ProcessKill(target);
 
                 if (player != null)
                 {
-                    var targetPlayer = target as Player;
-                    if (targetPlayer != null)
+                    var victim = target as Player;
+                    if (victim != null)
                     {
-                        var lvlDiff = System.Math.Max(1, targetPlayer.Level - player.Level);
-                        expGenerated = 10 * targetPlayer.Level * lvlDiff;
-                        score = targetPlayer.BattleStats.Score / 10;
                         player.BattleStats.Kills++;
-                        gold += targetPlayer.Level / 10;
+                        expGenerated = mode_.GetExpFor(player, victim);
+                        coins = mode_.GetCoinsFor(player, victim);
+                        score = mode_.GetScoreFor(player, victim);
                     }
 
                     player.BattleStats.Score += score;
-                    player.BattleStats.Gold += gold;
+                    player.BattleStats.Coins += coins;
+                    player.AddExperience(expGenerated);
 
                     var expPacket = new proto_game.PlayerExperience(); 
                     expPacket.exp = expGenerated;
-                    player.AddExperience(expGenerated);
                     player.Controller.SendEvent(proto_common.Events.PLAYER_EXPERIENCE, expPacket);
                 }
             }
@@ -542,12 +575,14 @@ namespace arena.battle
 
         void BlockSpawner.IBlockControl.AddBlock(ExpBlock block)
         {
-            Add(block); 
+            Add(block);
+            expBlocks_.Add(block.ID, block);
         }
 
         void BlockSpawner.IBlockControl.RemoveBlock(ExpBlock block)
         {
             Remove(block);
+            expBlocks_.Remove(block.ID);
         }
 
         private Entity GetEntity(int id)
@@ -654,7 +689,8 @@ namespace arena.battle
 
         public void Broadcast(Net.EventPacket packet, Player exceptThis = null)
         {
-            Broadcast(packet.EventID, packet.Packet, exceptThis);
+            if (packet.IsValid)
+                Broadcast(packet.EventID, packet.Packet, exceptThis);
         }
 
         public void Broadcast(proto_common.Events evtKey, object msg, Player exceptThis = null)
@@ -702,8 +738,8 @@ namespace arena.battle
 
             foreach (var player in players_)
             {
-                finishPacket.exp = mode_.GetExpFor(player);
-                finishPacket.coins = mode_.GetCoinsFor(player);
+                finishPacket.exp = player.Exp;
+                finishPacket.coins = player.BattleStats.Coins;
                 //apply new data to player's profile 
                 player.Profile.AddExperience(finishPacket.exp);
                 player.Profile.AddCoins(finishPacket.coins);
@@ -726,28 +762,5 @@ namespace arena.battle
             mode_ = null;
             map_.Clear();
         }
-
-#region IOnDestroyResponser implementation
-        void IOnDestroyResponser.WasDestroyed(ExpBlock expBlock)
-        {
-            map_.OnExpBlockRemoved(expBlock);
-            SpawnGoldPiles(expBlock);  
-        }
-
-        void IOnDestroyResponser.WasDestroyed(Mob mob)
-        {
-            map_.OnMobDead(mob);
-        }
-
-        void IOnDestroyResponser.WasDestroyed(Player player)
-        {
-            PlayerDead(player);
-        }
-
-        void IOnDestroyResponser.WasDestroyed(Entity entity)
-        {
-            
-        }
-#endregion
     }
 }

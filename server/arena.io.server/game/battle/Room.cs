@@ -28,7 +28,7 @@ namespace arena.battle
         {
             players_.Add(player);
             player.Room = this;
-            game_.Add(player);
+            game_.ConnectPlayer(player);
         }
 
         public void Remove(Player player)

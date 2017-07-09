@@ -65,7 +65,7 @@ namespace arena.battle
             Entry = entry;
         }
 
-        public proto_game.MobAppeared GetAppearedPacket()
+        public override Net.EventPacket GetAppearedPacket()
         {
             var appearData = new proto_game.MobAppeared();
 
@@ -79,7 +79,7 @@ namespace arena.battle
             appearData.weapon_used = Weapon.Type;
             appearData.attack_range = Entry.AttackRange;
 
-            return appearData;
+            return ConstructPacket(proto_common.Events.MOB_APPEARED, appearData);
         }
 
         public override void Update(float dt)
