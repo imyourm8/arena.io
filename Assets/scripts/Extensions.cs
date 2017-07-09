@@ -39,6 +39,12 @@ public static class Extensions
         return builder.ToString();
     }
 
+    public static Color Multiply(this Color thisColor, Color color)
+    {
+        Color newColor = thisColor;
+        return newColor;
+    }
+
     public static void AddChild(this GameObject obj, GameObject child)
     {
         child.transform.SetParent(obj.transform, false); 

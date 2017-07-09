@@ -23,6 +23,7 @@ public class ClassHolder : MonoBehaviour
 
     private Events.Slot<string> evtSlot_;
     private proto_profile.ClassInfo info_;
+    private Toggle toggle_ = null;
 
     public proto_profile.PlayerClasses Class
     { get { return playerClass; }}
@@ -31,6 +32,8 @@ public class ClassHolder : MonoBehaviour
     {
         evtSlot_ = new Events.Slot<string>(Events.GlobalNotifier.Instance);
         evtSlot_.SubscribeOn(ClassSelection.UlockEvent, HandleUnlock);
+        toggle_ = GetComponent<Toggle>();
+        toggle_.onValueChanged.AddListener(HandleValueChanged);
 
         if (unlocked)
         {
@@ -67,14 +70,15 @@ public class ClassHolder : MonoBehaviour
 
     private void SwitchOn()
     {
-        //StartCoroutine(SwitchOnInternal());
-        GetComponent<Toggle>().isOn = true;
+        if (toggle_ != null)
+            toggle_.isOn = true;
     }
 
     private IEnumerator SwitchOnInternal()
     {
         yield return null;
-        GetComponent<Toggle>().isOn = true;
+        if (toggle_ != null)
+            toggle_.isOn = true;
     }
 
     public void HandleValueChanged(bool value)
@@ -87,7 +91,7 @@ public class ClassHolder : MonoBehaviour
 
     private void HandleUnlock(Events.IEvent<string> evt)
     {
-        if (evt.UserData == this)
+        if ((evt.UserData as ClassHolder) == this)
         {
             SetUnlocked();
         }
@@ -95,7 +99,8 @@ public class ClassHolder : MonoBehaviour
 
     private void SetUnlocked()
     {
-        disabledOverlay.SetActive(false);
+        if (disabledOverlay != null)
+            disabledOverlay.SetActive(false);
         unlocked = true;
     }
 

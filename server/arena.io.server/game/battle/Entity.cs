@@ -3,17 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using arena.helpers;
-using Box2DX.Dynamics;
+using arena.battle.Logic;
+using arena.common.battle;
+using arena.battle.Logic.Statuses;
+using arena.battle.Net;
 
 using ExitGames.Logging;
 using ExitGames.Logging.Log4Net;
 
+using Box2CS;
+
 namespace arena.battle
 {
-    class Entity : SpatialHash.IEntity
+    class Entity : NetworkEntity, SpatialHash.IEntity
     {
         private static ILogger log = LogManager.GetCurrentClassLogger();
+
+        private StateManager stateManager_;
+        private StatusManager statusManager_;
+        protected bool dynamicBody_ = true;
+        protected bool sensorBody_ = false;
+        protected ushort additionalCollisionMask_ = 0;
+            
         private Attributes.UnitAttributes stats_ = new Attributes.UnitAttributes();
         public Attributes.UnitAttributes Stats
         { get { return stats_; } }
@@ -21,7 +34,13 @@ namespace arena.battle
         public Entity()
         {
             TrackSpatially = true;
+            ReplicateOnClients = false;
+            stateManager_ = new StateManager(this);
+            statusManager_ = new StatusManager(this);
         }
+
+        public bool ReplicateOnClients
+        { get; set; }
 
         public int ID
         { get; set; }
@@ -42,7 +61,7 @@ namespace arena.battle
             position_.y = y;
             if (Body != null)
             {
-                Body.SetPosition(position_);
+                Body.Position = position_;
             }
         }
 
@@ -56,13 +75,18 @@ namespace arena.battle
             private set { prevPosition_ = value; }
         }
 
+        public void SetRootState(Logic.States.State state)
+        {
+            stateManager_.SwitchTo(state);
+        }
+
         public Vector2 Position
         {
             get 
             {
                 if (Body != null)
                 {
-                    position_ = Body.GetPosition();
+                    position_ = Body.Position;
                 }
                 return position_;
             }
@@ -135,13 +159,6 @@ namespace arena.battle
             Velocity = Vector2.zero;
         }
 
-        public proto_game.UnitDie GetDiePacket()
-        {
-            proto_game.UnitDie diePck = new proto_game.UnitDie();
-            diePck.guid = ID;
-            return diePck;
-        }
-
         public void FillStatsPacket(List<proto_game.StatValue> stats)
         {
             foreach (var stat in Stats)
@@ -161,6 +178,7 @@ namespace arena.battle
         public virtual void Update(float dt)
         {
             Game.Map.RefreshHashPosition(this);
+            //hacky way to keep previous position with box2d
             if (Game.Tick % 2 == 0)
             {
                 prevPosition2_ = Position;
@@ -171,6 +189,9 @@ namespace arena.battle
                 prevPosition1_ = Position;
                 prevPosition_ = prevPosition2_;
             }
+
+            stateManager_.Update(dt);
+            statusManager_.Update(dt);
         }
 
         public void ApplyDamage(Entity attacker, float damage) 
@@ -202,30 +223,34 @@ namespace arena.battle
             dir.Normilize();
             dir.Scale(Stats.GetFinValue(proto_game.Stats.MovementSpeed));
             Velocity = dir;
-            Body.SetLinearVelocity(Velocity);
+
+            if (Body != null)
+                Body.LinearVelocity = Velocity;
         }
 
-        public virtual void InitPhysics(bool dynamicBody = true, bool isSensor = false)
+        public virtual void InitPhysics()
         {
             if (Body != null)
                 return;
 
             BodyDef def = new BodyDef();
             def.FixedRotation = true;
+            def.BodyType = dynamicBody_ ? BodyType.Dynamic : BodyType.Static;
             
-            Body body = Game.CreateBody(def); 
+            Body body = Game.CreateBody(def);
 
-            CircleDef shape = new CircleDef();
+            CircleShape shape = new CircleShape();
             shape.Radius = Radius;
-            shape.Density = dynamicBody?1.0f:0.0f;//dynamic body
-            shape.Filter.CategoryBits = (ushort)Category;
-            shape.IsSensor = isSensor;
+
+            FixtureDef fixture = new FixtureDef(shape);
+            fixture.Filter.CategoryBits = (ushort)Category;
+            fixture.IsSensor = sensorBody_;
 
             ushort mask = (ushort)PhysicsDefs.Category.WALLS;
-            shape.Filter.MaskBits = mask;
-            body.CreateFixture(shape); 
-            body.SetMassFromShapes();
-            body.SetUserData(this);
+            mask |= additionalCollisionMask_;
+            fixture.Filter.MaskBits = mask;
+            body.UserData = this;
+            body.CreateFixture(fixture);
             //refresh body's position just in case
             var pos = Position;
             Body = body;
@@ -236,11 +261,19 @@ namespace arena.battle
         public virtual void PostUpdate()
         { }
 
-        public void AddToCollisionMask(ushort mask)
+        public void AddStatus(GameStatus status)
         {
-            var filter = Body.GetFixtureList().Filter;
-            filter.MaskBits |= mask;
-            Body.GetFixtureList().Filter = filter;        
+            statusManager_.Add(status);
+        }
+
+        public void RemoveStatus(GameStatus status)
+        {
+            statusManager_.Remove(status);
+        }
+
+        public virtual void OnDestroy(Logic.IOnDestroyResponser responser)
+        {
+            responser.WasDestroyed(this);
         }
     }
 }

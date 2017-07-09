@@ -387,6 +387,7 @@ public class ExporterForServer : EditorWindow
                 scale = Mathf.Abs(scale);
                 node["radius"] = new JSONData((w.Collider as CircleCollider2D).radius * scale);
                 node["type"] = new JSONData(w.PowerUpType.ToString());
+                node["pickup_type"] = new JSONData(w.PickupType.ToString());
                 data.Add(node);
             }
 

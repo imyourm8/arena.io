@@ -27,9 +27,9 @@ public class Skill : MonoBehaviour
     public Unit Owner
     { get; set; }
 
-    public void Cast()
+    public void Cast(long serverSpawnTime = -1, int firstBulletID = -1)
     {
-        OnCast();
+        OnCast(serverSpawnTime, firstBulletID);
         lastCastTime_ = GameApp.Instance.ServerTimeMs();
     }
 
@@ -43,6 +43,6 @@ public class Skill : MonoBehaviour
         return true;
     }
 
-    protected virtual void OnCast()
+    protected virtual void OnCast(long serverSpawnTime = -1, int firstBulletID = -1)
     {}
 }

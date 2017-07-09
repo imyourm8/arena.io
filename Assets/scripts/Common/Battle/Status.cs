@@ -6,7 +6,15 @@ using arena.battle;
 
 namespace arena.common.battle
 {
-    public abstract class Status 
+    interface IStatus
+    {
+        bool Update(float dt);
+        void Remove();
+        void Apply();
+        Entity Owner { set; }
+    }
+
+    class Status : IStatus
     {
         private float timeElapsed = 0.0f;
         private float removeAfter_ = 0.0f;
@@ -17,7 +25,7 @@ namespace arena.common.battle
             removeAfter_ = removeAfter;
         }
 
-        internal Entity Owner
+        public Entity Owner
         { get; set; }
 
         public proto_game.PowerUpType Type
@@ -78,7 +86,7 @@ namespace arena.common.battle
             var stat = Owner.Stats.Get(proto_game.Stats.BulletSize);
             if (apply)
             {
-                stat.SetMultiplier(2.5f);
+                stat.SetMultiplier(2.0f);
             }
             else 
             {

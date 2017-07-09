@@ -56,14 +56,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f494b083452144394abf9b86f0bff1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  local: 0
-  hpBarOffset_: {x: 0, y: 0, z: 0}
   body_: {fileID: 0}
-  transform_: {fileID: 427124, guid: be5af83159696eb43add5950c664201c, type: 2}
   collider: {fileID: 5899444}
+  transform_: {fileID: 427124, guid: be5af83159696eb43add5950c664201c, type: 2}
   sprite: {fileID: 21217468}
-  currentSpeed_: 0
+  id_: -1
+  hpBarOffset_: {x: 0, y: 0, z: 0}
   hpBar_: {fileID: 0}
+  pickupType: 4
   Type: 0
 --- !u!212 &21217468
 SpriteRenderer:

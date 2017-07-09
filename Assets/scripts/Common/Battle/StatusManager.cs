@@ -8,7 +8,7 @@ namespace arena.common.battle
 {
     class StatusManager
     {
-        private List<Status> statuses_ = new List<Status>();
+        private List<IStatus> statuses_ = new List<IStatus>();
         private Entity owner_;
 
         public StatusManager(Entity owner)
@@ -16,16 +16,22 @@ namespace arena.common.battle
             owner_ = owner;
         }
 
-        public void Add(Status status)
+        public void Add(IStatus status)
         {
             status.Owner = owner_;
             statuses_.Add(status); 
             status.Apply();   
         }
 
+        public void Remove(IStatus status)
+        {
+            statuses_.Remove(status);
+            status.Remove();
+        }
+
         public void Update(float dt)
         {
-            List<Status> toRemove = ListPool<Status>.Get(5);
+            List<IStatus> toRemove = ListPool<IStatus>.Get(5);
             foreach(var s in statuses_)
             {
                 if (s.Update(dt))
@@ -38,7 +44,7 @@ namespace arena.common.battle
                 r.Remove();
                 statuses_.Remove(r);
             }
-            ListPool<Status>.Release(toRemove);
+            ListPool<IStatus>.Release(toRemove);
         }
     }
 }

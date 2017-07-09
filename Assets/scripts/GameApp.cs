@@ -34,9 +34,10 @@ public class GameApp : SingletonMonobehaviour<GameApp>
 
 	void Start () 
     {
-        //string ip = "192.168.1.2:4530";
+        Application.runInBackground = true;
+        string ip = "127.0.0.1:4530";
         //string ip = "127.0.0.1:4530";
-        string ip = "46.188.22.12:4530";
+        //string ip = "46.188.22.12:4530";
 		client_ = new ServerClient (ip, ExitGames.Client.Photon.ConnectionProtocol.Tcp);
 		client_.OnStatusChange += HandleOnStatusChange;
 
@@ -76,7 +77,6 @@ public class GameApp : SingletonMonobehaviour<GameApp>
             timeSync_.Update();
 		    client_.Service();
 
-            //adaptive interpolation window
             adaptiveInterpolationTime_ = movementInterpolationTime_;// + timeSync_.Ping;
 		}
 	}

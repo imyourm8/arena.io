@@ -79,6 +79,17 @@ namespace arena.battle
             entityHash_.Clear();
         }
 
+        public Vector2 Center
+        {
+            get
+            {
+                return new Vector2(
+                   navLayer_.OuterBorder.minX + navLayer_.OuterBorder.Width / 2,
+                   navLayer_.OuterBorder.minY + navLayer_.OuterBorder.Height / 2
+                );
+            }
+        }
+
         public void RefreshHashPosition(Entity entity)
         {
             entityHash_.RefreshHashPosition(entity);
@@ -87,6 +98,32 @@ namespace arena.battle
         public IEnumerable<SpatialHash.IEntity> HitTest(Vector2 pos, float radius)
         {
             return entityHash_.HitTest(pos, radius);
+        }
+
+        public IEnumerable<Entity> GetNearestEntities(Vector2 pos, float radius)
+        {
+            foreach (var e in HitTest(pos, radius))
+            {
+                var newDist = helpers.MathHelper.Distance(pos, e.Position);
+                if (newDist < radius)
+                {
+                    yield return e as Entity;
+                }
+            }
+            yield break;
+        }
+
+        public IEnumerable<Entity> GetNearestEntities(Vector2 pos, float radius, PhysicsDefs.Category category)
+        {
+            foreach (var e in HitTest(pos, radius))
+            {
+                if (e.Category != category) continue;
+                if (helpers.MathHelper.Distance(pos, e.Position) < radius)
+                {
+                    yield return e as Entity;
+                }
+            }
+            yield break;
         }
 
         public void OnExpBlockRemoved(Entity entity)

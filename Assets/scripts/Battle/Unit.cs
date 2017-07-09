@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Unit : Entity 
 {
@@ -8,6 +9,7 @@ public class Unit : Entity
 
     protected Skill skill_;
     protected Weapon weapon_;
+    private HashSet<Bullet> firedBullets_ = new HashSet<Bullet>();
 
     public proto_game.Weapons WeaponUsed
     { get { return weaponUsed; } set { weaponUsed = value; } }
@@ -28,6 +30,13 @@ public class Unit : Entity
     {
         base.Init(controller);
 
+        firedBullets_.Clear();
+
+        if (weapon_ != null)
+        {
+            weapon_.gameObject.ReturnPooled();
+        }
+
         var weapon = WeaponPrefabs.Instance.Get(WeaponUsed);
         var weaponScript = weapon.GetComponent<Weapon>();
         weaponScript.Init(this);
@@ -45,9 +54,9 @@ public class Unit : Entity
         return skill_.CanCast();
     }
 
-    public void CastSkill()
+    public void CastSkill(long serverSpawnTime = -1, int firstBulletID = -1)
     {
-        skill_.Cast();
+        skill_.Cast(serverSpawnTime, firstBulletID);
     }
 
     public void SetSkillCooldown()
@@ -72,6 +81,16 @@ public class Unit : Entity
     public void SetAttackCooldown()
     {
         nextAttack_ = Time.time + AutoAttackCooldown;
+    }
+
+    public void RegisterBullet(Bullet bullet)
+    {
+        firedBullets_.Add(bullet);
+    }
+
+    public void UnregisterBullet(Bullet bullet)
+    {
+        firedBullets_.Remove(bullet);
     }
 
     public bool PerformAttack(float direction, long time = -1, int firstBulletID = -1)
@@ -100,5 +119,17 @@ public class Unit : Entity
             skill_.gameObject.ReturnPooled();
             skill_ = null;
         }
+    }
+
+    protected override void OnBeforeRemove()
+    {
+        base.OnBeforeRemove();
+
+        foreach(var bullet in firedBullets_)
+        {
+            Controller.OnBulletExpired(bullet);
+        }
+
+        firedBullets_.Clear();
     }
 }

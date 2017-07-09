@@ -60,8 +60,10 @@ MonoBehaviour:
   collider: {fileID: 5846436}
   transform_: {fileID: 427124}
   sprite: {fileID: 21217468}
+  id_: -1
   hpBarOffset_: {x: 0, y: 0, z: 0}
   hpBar_: {fileID: 0}
+  pickupType: 2
   Type: 1
 --- !u!212 &21217468
 SpriteRenderer:

@@ -82,12 +82,12 @@ namespace arena.helpers
             return new Vector2(other.x - other2.x, other.y - other2.y);
         }
 
-        public static implicit operator Box2DX.Common.Vec2(Vector2 toConvert)
+        public static implicit operator Box2CS.Vec2(Vector2 toConvert)
         {
-            return new Box2DX.Common.Vec2(toConvert.x, toConvert.y);
+            return new Box2CS.Vec2(toConvert.x, toConvert.y);
         }
 
-        public static implicit operator Vector2(Box2DX.Common.Vec2 toConvert)
+        public static implicit operator Vector2(Box2CS.Vec2 toConvert)
         {
             return new Vector2(toConvert.X, toConvert.Y);
         }

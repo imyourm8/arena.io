@@ -35,26 +35,14 @@ namespace arena.battle
                 while (spawn.Count < spawn.MaxCount) 
                 {
                     var type = helpers.Extensions.PickRandom<proto_game.MobType>(spawn.Probabilities, spawn.TotalWeight);
-                    Mob mob = new Mob();
+                    Mob mob = Mob.Create(type);
                     float x, y;
                     spawn.Area.RandomPoint(out x, out y);
-                    mob.Game = Game;
-                    mob.MobType = type;
+                    Game.Add(mob);
+                    //save to track spawn spot
                     mob.SpawnPoint = spawn;
-                    mob.AssignStats();
-                    mob.InitPhysics();
                     mob.SetPosition(x, y);
                     spawn.Count++;
-
-                    MobAI.BaseAI ai = null;
-                    switch (mob.Entry.AI)
-                    {
-                        case MobAI.TypesOfAI.Chasing:
-                            ai = new MobAI.ChasingAI();
-                            break;
-                    }
-                    mob.AI = ai;
-                    Game.Add(mob);
                     break;
                 }
                 i += spawn.Count;

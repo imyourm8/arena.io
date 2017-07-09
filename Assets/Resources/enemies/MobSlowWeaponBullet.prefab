@@ -60,10 +60,12 @@ MonoBehaviour:
   collider: {fileID: 5802464}
   transform_: {fileID: 407876}
   sprite: {fileID: 21228428}
+  id_: -1
   bulletType: 3
-  moveSpeed: 1.5
+  moveSpeed: 2.3
   timeAlive: 5
   penetrate: 0
+  predictable: 1
 --- !u!212 &21228428
 SpriteRenderer:
   m_ObjectHideFlags: 1

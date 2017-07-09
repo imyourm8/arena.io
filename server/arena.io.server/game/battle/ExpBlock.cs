@@ -11,6 +11,8 @@ namespace arena.battle
         public ExpBlock()
         {
             Category = PhysicsDefs.Category.EXP_BLOCK;
+            ReplicateOnClients = true;
+            additionalCollisionMask_ = (ushort)PhysicsDefs.Category.BULLET;
         }
 
         public proto_game.ExpBlocks BlockType
@@ -34,10 +36,9 @@ namespace arena.battle
             return packet;
         }
 
-        public override void InitPhysics(bool dynamicBody = true, bool isSensor = false)
+        public override void InitPhysics()
         {
-            base.InitPhysics(dynamicBody, isSensor);
-            AddToCollisionMask((ushort)PhysicsDefs.Category.BULLET);
+            base.InitPhysics();
         }
     }
 }

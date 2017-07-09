@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace arena.battle
 {
-    class PowerUp : Entity
+    class PowerUp : PickUp
     {
         public PowerUp()
         {
-            Category = PhysicsDefs.Category.PICKUPS;
-            TrackSpatially = false;
+            additionalCollisionMask_ = (ushort)PhysicsDefs.Category.PLAYER;
         }
 
         public proto_game.PowerUpType Type
@@ -23,7 +22,7 @@ namespace arena.battle
         public Player Holder
         { get; set; }
 
-        public proto_game.PowerUpAppeared GetPowerUpPacket()
+        public override Net.EventPacket GetAppearedPacket()
         {
             var powerUpPacket = new proto_game.PowerUpAppeared();
             powerUpPacket.id = ID;
@@ -34,16 +33,16 @@ namespace arena.battle
             powerUpPacket.type = Type;
             powerUpPacket.lifetime = Lifetime;
 
-            return powerUpPacket;
+            return ConstructPacket(proto_common.Events.POWER_UP_APPEARED, powerUpPacket);
         }
 
-        public override void InitPhysics(bool dynamicBody = true, bool isSensor = false)
+        public override void InitPhysics()
         {
-            base.InitPhysics(dynamicBody, true);
-            AddToCollisionMask((ushort)PhysicsDefs.Category.PLAYER);
+            sensorBody_ = true;
+            base.InitPhysics();
         }
 
-        public void OnPickUpBy(Player player)
+        public override void OnPickUpBy(Player player)
         {
             Game.TryGrabPowerUp(ID, player);
         }

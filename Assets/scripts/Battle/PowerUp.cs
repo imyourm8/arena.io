@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PowerUp : Entity 
+public class PowerUp : PickUp 
 {
     [SerializeField]
     private proto_game.PowerUpType Type;

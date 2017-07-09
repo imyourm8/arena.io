@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Status : arena.common.battle.Status
+class Status : arena.common.battle.Status
 {
     private GameObject statusObject_ = null;
 

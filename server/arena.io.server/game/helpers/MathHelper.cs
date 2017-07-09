@@ -52,5 +52,15 @@ namespace arena.helpers
             val = val > max ? max : val;
             return val;
         }
+
+        public static Vector2 RandomPointInsideCircle(Vector2 pos, float radius)
+        {
+            Vector2 point = pos;
+            float angle = Range(0, 360) * Deg2Rad;
+            radius = Range(0, radius);
+            point.x = (float)Math.Cos(angle) + pos.x;
+            point.y = (float)Math.Sin(angle) + pos.y;
+            return point;
+        }
     }
 }

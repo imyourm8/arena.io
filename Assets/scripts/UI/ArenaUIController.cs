@@ -22,6 +22,9 @@ namespace ui
         [SerializeField]
         private StatsPanel upgradePanel = null;
 
+        [SerializeField]
+        private Text coinsValue_ = null;
+
         public StatsPanel StatsPanel
         { get { return upgradePanel; }}
 
@@ -40,6 +43,11 @@ namespace ui
         public void ShowUpgradePanel(int points)
         {
             upgradePanel.AddPoints(points);
+        }
+
+        public void UpdateCoins(int coinsCount)
+        {
+            coinsValue_.text = coinsCount.ToString();
         }
 
         public void DrawLevelData(PlayerExperience exp)

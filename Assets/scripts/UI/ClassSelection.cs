@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 public class ClassSelection : MonoBehaviour 
 {
     public static string UlockEvent = "evt_unlock_class";
+
+    public Action OnClassChange
+    { get; set; }
 
     [SerializeField]
     private List<ClassHolder> classes = null;
@@ -41,6 +45,7 @@ public class ClassSelection : MonoBehaviour
     private void HandleSelect(proto_profile.PlayerClasses cl)
     {
         User.Instance.ClassSelected = cl;
+        OnClassChange();
     }
 
     private void HandleUnlock(proto_profile.PlayerClasses cl, ClassHolder callee)

@@ -11,13 +11,23 @@ public class StateInterpolator
     struct StateData
     {
         public float time;
+        public int tick;
         public proto_game.UnitState state;
     }
+
+    private readonly float DefaultInterpolationSmoothValue = 0.01f;
 
     private Entity owner_;
     private CircularBuffer<StateData> states_;
     private StateData fromState_ = new StateData();
     private StateData toState_ = new StateData();
+    private float timeWhenExtrapolationStarted_ = 0.0f;
+    private float interpolationExtension_ = 0.0f;
+    private float prevUpdateTime_ = 0.0f;
+    private float interpolationSmoothValue_ = 0.0f;
+    private float latestUpdateTime_ = 0.0f;
+    private bool newPacketReceived_ = false;
+
     #if USE_HERMIT
     private StateData prevState_ = new StateData();
     #endif
@@ -26,8 +36,13 @@ public class StateInterpolator
     public StateInterpolator(Entity owner)
     {
         owner_ = owner;
-        states_ = new CircularBuffer<StateData>(BufferSize);
+        Reset();
     }
+
+    private float DefaultInterpolationValue
+    {
+        get { return (float)GameApp.Instance.MovementInterpolationTime/1000.0f; }
+    } 
 
     public void PushState(proto_game.UnitState state, int tick)
     {
@@ -35,8 +50,11 @@ public class StateInterpolator
 
         var stateData = new StateData();
         stateData.state = state;
+        stateData.tick = tick;
         stateData.time = owner_.Controller.TickToFloatTime(tick);
         states_.PushBack(stateData);
+
+        newPacketReceived_ = true;
         #if LOG
         Debug.LogErrorFormat("Push state at time diff {0} Position {3} {4} Interpolatin Time {1} Latency {2}", 
             stateData.time - GetRenderTime(), 
@@ -46,11 +64,13 @@ public class StateInterpolator
 
         Debug.LogErrorFormat("GameTime: {0} State time {1}", owner_.Controller.GameTime, stateData.time);
         #endif
+        //Debug.LogWarningFormat("Push new state with tick {0}", tick);
+        interpolationSmoothValue_ += (DefaultInterpolationSmoothValue - interpolationSmoothValue_) * 0.1f;
     }
 
     private void UpdateInterpolationStates()
     {
-        if (states_.Size < 2)
+        if (updateCount_ < 2)
         {
             return;
         }
@@ -64,7 +84,7 @@ public class StateInterpolator
             #if LOG
             //Debug.LogWarningFormat("State index {0} diff {1}", i, state.time - renderTime);
             #endif
-            if (state.time > renderTime)
+            if (state.time > renderTime && state.time >= latestUpdateTime_)
             {
                 var toIndex = Mathf.Max(0, i-1);
                 toState_ = state;
@@ -76,16 +96,32 @@ public class StateInterpolator
             }
         }
 
-        if (i == size)
+        //Debug.LogFormat("latestUpdateTime_ {0} picked time with {1}", latestUpdateTime_, fromState_.time);
+
+        if (toState_.tick == fromState_.tick && interpolationExtension_ < 1.0f)
         {
-            toState_ = states_.Back();
-            fromState_ = toState_;
+            if (newPacketReceived_)
+            {
+                //we offset time back in past to extend future interpolations
+                timeWhenExtrapolationStarted_ = owner_.Controller.GameTime - DefaultInterpolationValue * 0.25f;
+                newPacketReceived_ = false;
+            }
+            //so we have packet delay, lets try to push interpolation window for this entity
+            interpolationExtension_ = (owner_.Controller.GameTime - timeWhenExtrapolationStarted_);
+
+            //also low down smoothing value
+            interpolationSmoothValue_ *= 0.5f;
+            //Debug.LogErrorFormat("GameTime: {0} saved time {1}", owner_.Controller.GameTime, timeWhenExtrapolationStarted_);
+            //Debug.LogErrorFormat("Push lerp window to {0} and smoothing to {1} on tick {2}", interpolationExtension_, interpolationSmoothValue_, toState_.tick);
         }
+
+
+        latestUpdateTime_ = toState_.time;
    }
 
     private float GetRenderTime()
     {
-        return (float)owner_.Controller.GameTime - (float)GameApp.Instance.MovementInterpolationTime/1000.0f;
+        return (float)owner_.Controller.GameTime - DefaultInterpolationValue - interpolationExtension_;
     }
 
     public Vector2 GetRecentPosition()
@@ -98,6 +134,10 @@ public class StateInterpolator
     public void Reset()
     {
         updateCount_ = 0;
+        interpolationExtension_ = 0;
+        interpolationSmoothValue_ = DefaultInterpolationSmoothValue;
+        latestUpdateTime_ = -1.0f;
+        states_ = new CircularBuffer<StateData>(BufferSize);
     }
 
     private Vector2 HermitSpline(float t, Vector2 p0, Vector2 p1, Vector2 p2)
@@ -126,10 +166,13 @@ public class StateInterpolator
             return;
         }
 
+        //we can't move in the past, only to present or future
+        var currentRenderTime = Mathf.Max(GetRenderTime(), prevUpdateTime_);
+
         if (toState_.state == fromState_.state && GameApp.Instance.ExtrapolateNetworkedEntitiesTime > 0.01f && false)
         {
             fromState_ = states_[states_.Size - 2];
-            var alpha = Mathf.Min(GetRenderTime() - toState_.time, GameApp.Instance.ExtrapolateNetworkedEntitiesTime);
+            var alpha = Mathf.Min(currentRenderTime - toState_.time, GameApp.Instance.ExtrapolateNetworkedEntitiesTime);
             var totalFrameTime = toState_.time - fromState_.time;
             alpha /= totalFrameTime;
             var x = Mathf.Lerp(fromState_.state.x, toState_.state.x, 1.0f + alpha);
@@ -145,7 +188,7 @@ public class StateInterpolator
         else
         {
             var totalFrameTime = toState_.time - fromState_.time;
-            var advancedFrameTime = GetRenderTime() - fromState_.time;
+            var advancedFrameTime = currentRenderTime - fromState_.time;
             var alpha = totalFrameTime == 0.0f ? 0.0f : advancedFrameTime / totalFrameTime;
             alpha = Mathf.Min(alpha, 1.0f);
             #if USE_HERMIT
@@ -164,5 +207,10 @@ public class StateInterpolator
             owner_.Position = pos;
             owner_.Rotation = rotation;
         }
+
+        prevUpdateTime_ = currentRenderTime;
+        //smooth down interpolation extension back to normal
+        interpolationExtension_ += -interpolationExtension_ * interpolationSmoothValue_;
+        //Debug.LogFormat("Smooth lerp window to {0}", interpolationExtension_);
     }
 }

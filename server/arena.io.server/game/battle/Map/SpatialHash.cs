@@ -15,6 +15,7 @@ namespace arena.battle
         {
             Vector2 Position { get; }
             Vector2 PrevPosition { get; }
+            PhysicsDefs.Category Category { get; }
             int ID { get; }
         }
 

@@ -8,20 +8,20 @@ namespace arena.battle
 {
     class Room
     {
-        private List<Player> players_ = new List<Player>();  
-        private Game game_;
-        private bool closed_ = false;  
+        private List<Player> players_ = new List<Player>();           
+        private Game game_;    
+        private bool closed_ = false;    
 
-        public Room() 
+        public Room()  
         {
-            game_ = new Game(new GameModes.FFA(), this);   
+            game_ = new Game(new GameModes.FFA(), this);                                                
         }
 
-        public bool Closed { get { return closed_; } }
+        public bool Closed { get { return closed_; } }   
 
         public int PlayersCount
         {
-            get { return players_.Count; }
+            get { return players_.Count; }  
         }
 
         public void Add(Player player)

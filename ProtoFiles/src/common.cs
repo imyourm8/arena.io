@@ -139,8 +139,8 @@ namespace proto_common
       [global::ProtoBuf.ProtoEnum(Name=@"ENTER_AREA", Value=2001)]
       ENTER_AREA = 2001,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"TURN", Value=2009)]
-      TURN = 2009,
+      [global::ProtoBuf.ProtoEnum(Name=@"LEAVE_GAME", Value=2009)]
+      LEAVE_GAME = 2009,
             
       [global::ProtoBuf.ProtoEnum(Name=@"PLAYER_UPGRADE", Value=2010)]
       PLAYER_UPGRADE = 2010,
@@ -177,8 +177,8 @@ namespace proto_common
       [global::ProtoBuf.ProtoEnum(Name=@"BLOCK_APPEARED", Value=2001)]
       BLOCK_APPEARED = 2001,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"UNIT_DIE", Value=2003)]
-      UNIT_DIE = 2003,
+      [global::ProtoBuf.ProtoEnum(Name=@"ENTITY_REMOVED", Value=2003)]
+      ENTITY_REMOVED = 2003,
             
       [global::ProtoBuf.ProtoEnum(Name=@"UNIT_STATE_UPDATE", Value=2004)]
       UNIT_STATE_UPDATE = 2004,
@@ -189,8 +189,8 @@ namespace proto_common
       [global::ProtoBuf.ProtoEnum(Name=@"UNIT_ATTACK", Value=2006)]
       UNIT_ATTACK = 2006,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"PLAYER_DISCONNECTED", Value=2007)]
-      PLAYER_DISCONNECTED = 2007,
+      [global::ProtoBuf.ProtoEnum(Name=@"PLAYER_COINS", Value=2007)]
+      PLAYER_COINS = 2007,
             
       [global::ProtoBuf.ProtoEnum(Name=@"DAMAGE_DONE", Value=2008)]
       DAMAGE_DONE = 2008,
@@ -222,8 +222,8 @@ namespace proto_common
       [global::ProtoBuf.ProtoEnum(Name=@"POWER_UP_GRABBED", Value=2017)]
       POWER_UP_GRABBED = 2017,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"SPAWN_GOLD_COIN", Value=2018)]
-      SPAWN_GOLD_COIN = 2018,
+      [global::ProtoBuf.ProtoEnum(Name=@"SPAWN_PICK_UP", Value=2018)]
+      SPAWN_PICK_UP = 2018,
             
       [global::ProtoBuf.ProtoEnum(Name=@"SKILL_CASTED", Value=2019)]
       SKILL_CASTED = 2019,
@@ -232,7 +232,13 @@ namespace proto_common
       MOB_APPEARED = 2020,
             
       [global::ProtoBuf.ProtoEnum(Name=@"BULLET_DESTROYED", Value=2021)]
-      BULLET_DESTROYED = 2021
+      BULLET_DESTROYED = 2021,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SYNC_ATTACK", Value=2022)]
+      SYNC_ATTACK = 2022,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SPAWN_BULLETS", Value=2023)]
+      SPAWN_BULLETS = 2023
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"PacketFlags")]

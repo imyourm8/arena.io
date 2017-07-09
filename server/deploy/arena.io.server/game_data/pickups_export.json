@@ -1,0 +1,1 @@
+[ {"radius":"0.32", "type":"SmallGoldCoin"}, {"radius":"0.65", "type":"RegenerationPickup"}, {"radius":"0.65", "type":"QuadDamagePickup"}, {"radius":"0.65", "type":"HugeBulletsPickUp"}, {"radius":"0", "type":"InvisibilityPickup"} ]

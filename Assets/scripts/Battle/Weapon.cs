@@ -55,8 +55,6 @@ public class Weapon : MonoBehaviour
         foreach(var p in bulletSpawnPoints)
         {
             var bullet = BulletPrefabs.Instance.Get(p.Bullet).GetComponent<Bullet>();
-            if (bullet == null) 
-                continue;
 
             var spawnPoint = p.transform.localPosition;
             var x = spawnPoint.x * cos - spawnPoint.y * sin;
@@ -69,10 +67,9 @@ public class Weapon : MonoBehaviour
 
             if (alpha < 0.9f)
             {
-                bullet.ID = firstBulletID++;
                 bullet.Init(owner_.Controller);
+                bullet.ID = firstBulletID++;
                 bullet.SetOwner(owner_);
-                bullet.TickOfCreation = owner_.Controller.Tick;
                 bullet.SetStartPoint(spawnPoint);
                 bullet.SetDirection(new Vector3(ownerAttRot.x, ownerAttRot.y, 0) + p.transform.localRotation.eulerAngles);
 
@@ -90,9 +87,11 @@ public class Weapon : MonoBehaviour
 
                 if (ownerIsLocalPlayer)
                 {
+                    bullet.TickOfCreation = owner_.Controller.InputID;
                     //save bullet to start movement after
                     (owner_ as Player).OnBulletShoot(bullet);
                 }
+                owner_.RegisterBullet(bullet);
             }
             owner_.ApplyRecoil(recoil);
         }

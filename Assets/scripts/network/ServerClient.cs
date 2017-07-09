@@ -77,6 +77,9 @@ public class ServerClient  : IPhotonPeerListener {
         return result;
 	}
 
+    public int NextRequestID
+    { get { return reqId_; } }
+
     //returns request id
     public int Send(object msg, proto_common.Commands cmd)
     {

@@ -7,9 +7,6 @@ using System.Threading.Tasks;
 using ExitGames.Logging;
 using ExitGames.Logging.Log4Net;
 
-using Box2DX.Common;
-using Box2DX.Dynamics;
-
 using Nito;
 
 using arena.common.battle;
@@ -21,31 +18,42 @@ namespace arena.battle
         private static readonly int MaxStoredInputs = 100;
         private static ILogger log = LogManager.GetCurrentClassLogger();
 
-        private HashSet<Entity> visibleEntities_ = new HashSet<Entity>();
+        public class RemoteInputData
+        {
+            public proto_game.PlayerInput.Request data = null;
+            public int attackSyncID = -1;
+        }
+
+        //private HashSet<Entity> visibleEntities_ = new HashSet<Entity>();
         private PlayerExperience exp_;
-        private Deque<proto_game.PlayerInput.Request> inputs_ = new Deque<proto_game.PlayerInput.Request>();
-        private StatusManager statusManager_;
+        private Deque<RemoteInputData> inputs_ = new Deque<RemoteInputData>();
         private bool castSkill_ = false;
         private bool shoot_ = false;
 
         public Player(player.PlayerController controller, player.Profile profile)
         {
             Controller = controller;
-            statusManager_ = new StatusManager(this); 
             Category = PhysicsDefs.Category.PLAYER; 
             Level = 1;
             Profile = profile;
             exp_ = new PlayerExperience(this);
             BattleStats = new PlayerBattleStats();
+            Input = new RemoteInputData();
+            UpgradePointsLeft = 0;
+            exp_.OnLevelUp = (int lvl) => UpgradePointsLeft++;
+            additionalCollisionMask_ = (ushort)PhysicsDefs.Category.PICKUPS;
         }
 
-        public proto_game.PlayerInput.Request Input
+        public RemoteInputData Input
         { get; set; }
 
         public player.Profile Profile
         { get; private set; }
 
         public proto_profile.PlayerClasses SelectedClass
+        { get; set; }
+
+        public int UpgradePointsLeft
         { get; set; }
 
         public int Level
@@ -86,15 +94,20 @@ namespace arena.battle
             Weapon = Factories.WeaponFactory.Instance.GetEntry(entry.Weapon);
 
             Stats.SetValue(proto_game.Stats.SkillCooldown, 0.1f);
+            UpgradePointsLeft = Level - 1;
         }
 
-        public override void InitPhysics(bool dynamicBody = true, bool isSensor = false)
+        public void ResetLevel()
         {
-            base.InitPhysics(dynamicBody, isSensor);
-            AddToCollisionMask((ushort)PhysicsDefs.Category.PICKUPS);
+            Level = 1;
         }
 
-        public proto_game.PlayerAppeared GetAppearedPacket()
+        public override void InitPhysics()
+        {
+            base.InitPhysics();
+        }
+
+        public override Net.EventPacket GetAppearedPacket()
         {
             var appearData = new proto_game.PlayerAppeared(); 
 
@@ -111,21 +124,13 @@ namespace arena.battle
             appearData.@class = SelectedClass;
             appearData.skill = Skill.Entry.Type;
 
-            return appearData;
-        }
-
-        public proto_game.PlayerDisconnected GetDisconnectedPacket()
-        {
-            var disconnectPacket = new proto_game.PlayerDisconnected();
-            disconnectPacket.who = ID;
-            return disconnectPacket;
+            return ConstructPacket(proto_common.Events.PLAYER_APPEARED, appearData);
         }
 
         public override void Update(float dt)
         {
             base.Update(dt);
-            
-            statusManager_.Update(dt);
+
             HP = System.Math.Min(HP + Stats.GetFinValue(proto_game.Stats.HealthRegen) * dt * 0.2f, Stats.GetFinValue(proto_game.Stats.MaxHealth));
         }
 
@@ -142,31 +147,24 @@ namespace arena.battle
             exp_.AddExperience(value);
         }
 
-        public void AddStatus(proto_game.PowerUpType powerUp, float lifetime)
-        {
-            var status = new Status.Status(powerUp, lifetime);
-            statusManager_.Add(status);
-        }
-
         protected override void OnWeaponAttack(AttackData attData)
         {
             base.OnWeaponAttack(attData);     
 
-            Game.SyncAttackWithRemotePlayer(this, attData, Input.tick);
+            Game.SyncAttackWithRemotePlayer(this, attData.FirstBulletID, Input.attackSyncID);
         }
 
         public override void PostUpdate()
         {
             base.PostUpdate();
 
-            proto_game.PlayerInput.Request input = null;
-            //process only one tick at time
+            RemoteInputData input = null;
+            //process only one input input at time
             if (inputs_.Count > 0)
             {
                 input = inputs_[0];
                 inputs_.RemoveFromFront();
             }
-
             Input = input;
         }
 
@@ -176,8 +174,10 @@ namespace arena.battle
         }
 
         public void ProcessInput(float dt)
-        { 
-            var input = Input;
+        {
+            if (Input == null) 
+                return;
+            var input = Input.data;
             if (input != null)
             {
                 var force = new helpers.Vector2(input.force_x, input.force_y);
@@ -200,7 +200,7 @@ namespace arena.battle
 
                 ApplyDumping();
 
-                Body.SetLinearVelocity(Velocity + RecoilVelocity);
+                Body.LinearVelocity = Velocity + RecoilVelocity;
             }
         }
 
@@ -219,14 +219,14 @@ namespace arena.battle
             } 
         }
 
-        public void AddInput(proto_game.PlayerInput.Request input)
+        public void AddInput(proto_game.PlayerInput.Request input, int attSyncID)
         {
             if (inputs_.Count == MaxStoredInputs) 
                 inputs_.RemoveFromFront();
 
             if (IsInputValid(input))
             {
-                inputs_.AddToBack(input);
+                inputs_.AddToBack(new RemoteInputData() { data = input, attackSyncID = attSyncID });
             }
         }
 

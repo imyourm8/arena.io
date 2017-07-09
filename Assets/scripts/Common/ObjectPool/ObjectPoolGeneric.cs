@@ -1,9 +1,13 @@
-﻿//#define TRACK_ALL
+﻿#define TRACK_ALL
+
 #if UNITY_5
 #define TRACK_ALL
 using UnityEngine;
+#else
+using System.Diagnostics;
 #endif
 using System;
+
 using System.Collections;
 using System.Collections.Generic;
 
@@ -77,11 +81,17 @@ namespace ObjectPool
                 throw new Exception("Object is not from pool");
             #endif
 			}
-            pooledObjects_.Remove(obj);
+            pooledObjects_.Remove(obj); 
 		#endif
-		
+
+#if !UNITY_5
+            Debug.Assert(pool_.Count > nextIndex_-1, "nextIndex_ is out of range!");
+#endif
 			OnObjectGetReturned(obj);
 			pool_ [--nextIndex_] = obj;
+#if !UNITY_5
+            Debug.Assert(nextIndex_ >= 0, "nextIndex_ < 0 in Return()");
+#endif
 		}
 
         public void Reset()
@@ -91,6 +101,9 @@ namespace ObjectPool
                 nextIndex_--;
                 OnObjectGetReturned(pool_[nextIndex_]);
             }
+#if !UNITY_5
+           Debug.Assert(nextIndex_ == 0, "nextIndex_ != 0 in Reset()");
+#endif
         }
 
 		public T Get()
@@ -121,8 +134,12 @@ namespace ObjectPool
 				return null;
 			}
 			
-			T obj = pool_[nextIndex_++];
-			OnObjectGetPoped(obj);
+			T obj = pool_[nextIndex_];
+            nextIndex_++;
+#if !UNITY_5
+            Debug.Assert(nextIndex_ >= 0, "nextIndex_ < 0 in Get()");
+#endif
+            OnObjectGetPoped(obj);
 			
 			#if TRACK_ALL
 			pooledObjects_.Add(obj);

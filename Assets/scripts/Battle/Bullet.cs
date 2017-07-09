@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 using DG.Tweening;
 
@@ -21,6 +22,9 @@ public class Bullet : ArenaObject
 
     [SerializeField]
     protected bool penetrate = false;
+
+    [SerializeField]
+    protected bool predictable = true;
 
     protected Unit owner_;
     private float speed_;
@@ -46,7 +50,7 @@ public class Bullet : ArenaObject
     public int TickOfCreation
     { get; set; }
 
-    public Entity Target
+    public List<int> Targets
     { get; set; }
 
     public float Radius
@@ -71,9 +75,11 @@ public class Bullet : ArenaObject
         get { return bulletType; }
     }
 
+
+    #endif
+
     public float TimeAlive
     { get { return timeAlive; } }
-    #endif
 
     public bool Penetrate
     { get { return penetrate; } }
@@ -116,10 +122,20 @@ public class Bullet : ArenaObject
         DesiredPosition = pos;
     }
 
+    public void SetDirection(float dir)
+    {
+        float rad = dir;
+        float x = Vector2.right.x * Mathf.Cos(rad) - Vector2.right.y * Mathf.Sin(rad);
+        float y = Vector2.right.x * Mathf.Sin(rad) + Vector2.right.y * Mathf.Cos(rad);
+        SetDirection(new Vector2(x, y));
+        sprite.transform.eulerAngles = new Vector3(0,0,dir*Mathf.Rad2Deg + 90.0f);
+    }
+
     public void SetDirection(Vector2 dir)
     {
         dir.Normalize();
         serverDirection_ = direction_ = dir;
+        //sprite.transform.Rotate(Vector3.forward, Vector2.Angle(Position, dir));
     }
 
     public void AdjustPositionToServerTime(float timeAlpha)
@@ -137,6 +153,7 @@ public class Bullet : ArenaObject
             DesiredPosition += new Vector2(advance.x, advance.y);
             ServerPosition = DesiredPosition;
             tightness_ = SmoothTightness;
+            lifetimeLeft_ = correctedLifeTime;
         }
     }
 
@@ -150,6 +167,11 @@ public class Bullet : ArenaObject
         base.Init(controller);
         lifetimeLeft_ = timeAlive;
 
+        if (Targets == null)
+        {
+            Targets = new List<int>();
+        }
+
         if (Mathf.Approximately(speed_, 0.0f))
         {
             speed_ = moveSpeed;
@@ -161,7 +183,6 @@ public class Bullet : ArenaObject
         DisableVelocityMovement = true;
         TriggerDamageOnSync = false;
         noCollision_ = false;
-        Target = null;
         ID = -1;
     }
 
@@ -200,13 +221,18 @@ public class Bullet : ArenaObject
         }
     }
 
-    private void OnExpired()
+    public void OnExpired()
     {
-        owner_.Controller.OnBulletExpired(this);
+        noCollision_ = true;
 
-        if (owner_.Controller.IsLocalPlayer(owner_))
+        if (owner_.Controller.IsLocalPlayer(owner_) && predictable)
         {
             (owner_ as Player).BulletExpired(this);
+        }
+        else 
+        {
+            owner_.Controller.OnBulletExpired(this);
+            owner_.UnregisterBullet(this);
         }
     }
 
@@ -215,7 +241,7 @@ public class Bullet : ArenaObject
 
     public virtual void Prepare()
     {
-        penetrate = false;
+        Targets.Clear();
         Velocity = serverDirection_ * speed_;
         serverVelocity_ = Velocity;
 
@@ -232,24 +258,24 @@ public class Bullet : ArenaObject
 
     protected virtual void HandleCollision(Entity target)
     {
-        var localPlayer = owner_.Controller.IsLocalPlayer(owner_);
+        var delayedSync = owner_.Controller.IsLocalPlayer(owner_) && !(Owner as Player).IsSyncedWithServer(this) && predictable;
+
+        if (delayedSync)
+        {
+            //delay damage done packet till bullet will be synced with server
+            TriggerDamageOnSync |= true;
+        }
 
         if (!Penetrate)
         {
-            if (localPlayer && !(Owner as Player).IsSyncedWithServer(this))
-            {
-                //delay damage done packet till bullet will be synced with server
-                TriggerDamageOnSync = true;
-                Target = target;
-                noCollision_ = true;
-            }
-            else 
-            {
-                OnExpired();
-            }
+            noCollision_ = true;
+            PlayDestroyAnimation(false);
         }
 
-        owner_.Controller.OnBulletCollision(target, this);
+        Targets.Add(target.ID);
+
+        if (!delayedSync)
+            owner_.Controller.OnBulletCollision(target.ID, this);
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -289,7 +315,6 @@ public class Bullet : ArenaObject
     protected override void OnRemove()
     {
         base.OnRemove();
-
         //safe to use owner here, in case owner already pooled back
         if (ghost_ != null)
             ghost_.ReturnPooled();

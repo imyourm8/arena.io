@@ -4,7 +4,7 @@ SET mypath=%~dp0
 CD %mypath%
 
 echo Starting Photon service at: 
-WMIC service "Photon Socket Server: LoadBalancing" get Pathname
+WMIC service "Photon Socket Server: arena" get Pathname
 
-SC start "Photon Socket Server: LoadBalancing"
+SC start "Photon Socket Server: arena"
 pause

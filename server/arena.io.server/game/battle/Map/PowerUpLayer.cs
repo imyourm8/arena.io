@@ -44,11 +44,12 @@ namespace arena.battle
                 point.Area.RandomPoint(out x, out y);
                 powerUp.SetPosition(x, y);
                 powerUp.Type = helpers.Extensions.PickRandom<proto_game.PowerUpType>(point.Probabilities, point.TotalWeight);
-                powerUp.Radius = Factories.PowerUpFactory.Instance.GetEntry(powerUp.Type).CollisionRadius;
+                var entry = Factories.PowerUpFactory.Instance.GetEntry(powerUp.Type);
+                powerUp.PickupType = entry.PickUpType;
+                powerUp.Radius = entry.CollisionRadius;
                 powerUp.Lifetime = point.Durations[powerUp.Type];
                 powerUp.Game = Game;
                 Game.AddPowerUp(powerUp);
-                powerUp.InitPhysics(true, true);
 
                 currentPowerUp_ = powerUp;
                 prevSpawnTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;

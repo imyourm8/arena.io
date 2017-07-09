@@ -35,8 +35,12 @@ namespace arena.battle
             AttackRange = (float)data["attack_range"];
             AI = helpers.Parsing.ParseEnum<MobAI.TypesOfAI>((string)data["ai"]);
             Weapon = helpers.Parsing.ParseEnum<proto_game.Weapons>((string)data["weapon"]);
-            BulletSize = (float)data["bullet_size"]; 
+            BulletSize = (float)data["bullet_size"];
+            Behaviour = helpers.Parsing.ParseEnum<proto_game.MobScriptType>((string)data["behaviour"]);
         }
+
+        public proto_game.MobScriptType Behaviour
+        { get; private set; }
 
         public proto_game.MobType MobType
         { get; private set; }

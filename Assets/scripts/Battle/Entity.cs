@@ -14,6 +14,7 @@ public class Entity : ArenaObject
     protected StateInterpolator stateInterpolator_;
     private Tween rotationTweener_;
     private Vector2 moveImpulse_;
+    private Tween colorTween_;
 
     #region getter & setters
     private Attributes.UnitAttributes stats_ = new Attributes.UnitAttributes();
@@ -56,6 +57,7 @@ public class Entity : ArenaObject
                 rotationTweener_.Kill(false);
 
             rotationTweener_ = transform_.DORotate(new Vector3(0,0,rotation_), forceRotation_?0.0f:0.1f, RotateMode.Fast);
+
             forceRotation_ = false;
             SetAttackDirection(rotation_);
         }
@@ -99,6 +101,24 @@ public class Entity : ArenaObject
         set { hpBar_ = value; }
     }
     #endregion
+
+    public void ApplyDamage(float damage)
+    {
+        Health -= damage;
+        OnDamageApplied();
+    }
+
+    private void OnDamageApplied()
+    {
+        if (colorTween_ != null)
+            colorTween_.Kill(true);
+
+        Sequence colorTween = DOTween.Sequence();
+        colorTween.Append(sprite.DOColor(Color.red, 0.06f));
+        colorTween.Append(sprite.DOColor(initialColor_, 0.06f));
+        colorTween.OnComplete(()=>colorTween_ = null);
+        colorTween_ = colorTween;
+    }
 
     public void SetRotation(Vector2 rot)
     {
@@ -149,6 +169,11 @@ public class Entity : ArenaObject
     {
         base.OnRemove();
 
+        if (colorTween_ != null)
+        {
+            colorTween_.Kill();
+        }
+
         if (hpBar_ != null)
         {
             hpBar_.gameObject.ReturnPooled();
@@ -166,7 +191,7 @@ public class Entity : ArenaObject
         foreach(var s in stats)
         {
             stats_.Get(s.stat).SetStep(s.step).SetValue(s.value);
-            stats_.Get(s.stat).RawValue = 0;
+            stats_.Get(s.stat).ResetSteps();
         }
     }
 }

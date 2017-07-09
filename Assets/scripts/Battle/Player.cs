@@ -38,6 +38,7 @@ public class Player : Unit, PlayerExperience.IExpProvider
         playerExp_ = new PlayerExperience(this);
         statusManager_ = new StatusManager(this);
         Input = new proto_game.PlayerInput.Request();
+        IsNetworked = true;
 	}
 
     public float InterpolationBaseValue
@@ -116,23 +117,26 @@ public class Player : Unit, PlayerExperience.IExpProvider
     {
         statusManager_.Update(dt);
 
-        posAlpha_ = InterpolationBaseValue / GameApp.Instance.MovementUpdateDT;
-
-        Position = Position + (desiredPosition_ - Position) * tightness_;
-        tightness_ += (DefaulTightness - tightness_) * 0.01666f;
-
-        if (!Smoothed)
+        if (Local)
         {
-            Position = Vector2.Lerp(previousPos_, desiredPosition_, posAlpha_);
-        }
-        else
-        {
+            posAlpha_ = InterpolationBaseValue / GameApp.Instance.MovementUpdateDT;
+
             Position = Position + (desiredPosition_ - Position) * tightness_;
             tightness_ += (DefaulTightness - tightness_) * 0.01666f;
 
-            if ((desiredPosition_-Position).magnitude < 0.3f)
+            if (!Smoothed)
             {
-                Smoothed = false;
+                Position = Vector2.Lerp(previousPos_, desiredPosition_, posAlpha_);
+            }
+            else
+            {
+                Position = Position + (desiredPosition_ - Position) * tightness_;
+                tightness_ += (DefaulTightness - tightness_) * 0.01666f;
+
+                if ((desiredPosition_-Position).magnitude < 0.3f)
+                {
+                    Smoothed = false;
+                }
             }
         }
 
@@ -268,18 +272,15 @@ public class Player : Unit, PlayerExperience.IExpProvider
             nicknameText_ = null;
         }
 
-        foreach(var p in bulletsHistory_)
-        {
-            foreach(var bullet in p.Value)
-            {
-                bullet.gameObject.ReturnPooled();
-            }
-            ListPool<Bullet>.Release(p.Value);
-        }
-
         if (serverGhost_ != null)
         {
             serverGhost_.ReturnPooled();
+            serverGhost_ = null;
+        }
+
+        foreach(var p in bulletsHistory_)
+        {
+            ListPool<Bullet>.Release(p.Value);
         }
 
         bulletsHistory_.Clear();
@@ -291,44 +292,52 @@ public class Player : Unit, PlayerExperience.IExpProvider
         statusManager_.Add(statusEffect);
     }
 
-    public void PreInputActions(int tick)
+    public void PreInputActions(int inputID)
     {
         bulletsFired_ = ListPool<Bullet>.Get();
-        bulletsHistory_.Add(tick, bulletsFired_);
+        bulletsHistory_.Add(inputID, bulletsFired_);
     }
 
-    public void PostInputActions(int tick)
+    public void PostInputActions(int inputID)
     {
         if (bulletsFired_.Count == 0)
         {
-            ListPool<Bullet>.Release(bulletsHistory_[tick]);
-            bulletsHistory_.Remove(tick);
+            ListPool<Bullet>.Release(bulletsHistory_[inputID]);
+            bulletsHistory_.Remove(inputID);
         }
     }
 
     public void OnBulletShoot(Bullet bullet)
     {
+        //Debug.LogFormat("OnBulletShoot {0} {1}", bullet.ID, bullet.TickOfCreation);
         bulletsFired_.Add(bullet);
+        bullet.ID = -1;
     }
 
-    public void SyncBulletsWithServer(int tick, int firstBulletId)
+    public void SyncBulletsWithServer(int inputID, int firstBulletId)
     {
         List<Bullet> bullets = null;
-        bulletsHistory_.TryGetValue(tick, out bullets);
+        //Debug.LogFormat("SyncBulletsWithServer inputID {0}", inputID);
+        bulletsHistory_.TryGetValue(inputID, out bullets);
         if (bullets != null)
         {
+            bulletsHistory_.Remove(inputID);
             foreach(var blt in bullets)
             {
                 blt.ID = firstBulletId++;
-                controller_.Add(blt);
                 if (blt.TriggerDamageOnSync)
                 {
                     //damage was delayed
-                    Controller.OnBulletCollision(blt.Target, blt);
-                    Controller.OnBulletExpired(blt);
+                    foreach(var target in blt.Targets)
+                        Controller.OnBulletCollision(target, blt);
+                    blt.OnExpired();
+                    //Debug.LogFormat("SyncBulletsWithServer {0} {1}", blt.ID, blt.TickOfCreation);
+                }
+                else 
+                {
+                    controller_.Add(blt);
                 }
             }
-            bulletsHistory_.Remove(tick);
             ListPool<Bullet>.Release(bullets);
         }
     }
@@ -343,6 +352,9 @@ public class Player : Unit, PlayerExperience.IExpProvider
         if (!IsSyncedWithServer(bullet)) 
             return;
 
+        Controller.OnBulletExpired(bullet);
+        UnregisterBullet(bullet);
+
         List<Bullet> bullets = null;
         bulletsHistory_.TryGetValue(bullet.TickOfCreation, out bullets);
         if (bullets != null)
@@ -351,6 +363,7 @@ public class Player : Unit, PlayerExperience.IExpProvider
             if (bullets.Count == 0)
             {
                 bulletsHistory_.Remove(bullet.TickOfCreation);
+                //Debug.LogFormat("BulletExpired {0} {1}", bullet.ID, bullet.TickOfCreation);
                 ListPool<Bullet>.Release(bullets);
             }
         }
@@ -358,17 +371,20 @@ public class Player : Unit, PlayerExperience.IExpProvider
 
     public void RemoveBulletsLinkedWithTarget(Entity target)
     {
+        /*
         foreach(var pair in bulletsHistory_)
         {
             var bullets = pair.Value;
             var length = bullets.Count;
             for(int i = 0; i < length; ++i)
             {
-                if (bullets[i].Target == target)
+                int total = bullets[i].Targets.Count;
+                if (bullets[i].Targets.Count == 1 && bullets[i].Targets[i] == target)
                 {
                     bullets[i].TriggerDamageOnSync = false;
                 }
             }
         }
+        */
     }
 }

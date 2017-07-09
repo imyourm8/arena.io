@@ -17,11 +17,15 @@ public class ArenaObject : MonoBehaviour
     [SerializeField]
     protected SpriteRenderer sprite = null;
 
+    [SerializeField]
+    private int id_ = -1;
+
     protected arena.ArenaController controller_;
     private bool destroyed_ = false;
     protected Color initialColor_;
     protected Vector3 initialScale_;
     private bool firstInit_ = true;
+    private Sequence tweenSeq_ = null;
 
     protected bool Destroyed
     {
@@ -96,6 +100,7 @@ public class ArenaObject : MonoBehaviour
 
     public virtual void OnUpdate(float dt)
     {
+        id_ = ID;
         if (!DisableVelocityMovement)
         {
             var newPosition = Position;
@@ -105,7 +110,7 @@ public class ArenaObject : MonoBehaviour
         }
     }
 
-    public void Remove(bool animated)
+    public void Remove(bool animated, bool destroy = true)
     {   
         if (destroyed_) 
             return;
@@ -113,21 +118,9 @@ public class ArenaObject : MonoBehaviour
         destroyed_ = true;
         OnBeforeRemove();
 
-        if (animated)
+        if (tweenSeq_ == null && animated)
         {
-            Sequence tweenSeq = DOTween.Sequence();
-
-            var scale = transform_.localScale;
-            scale.x *= 1.4f;
-            scale.y *= 1.4f;
-
-            tweenSeq.Append(sprite.DOFade(0.0f, 0.2f));
-            tweenSeq.Join(transform_.DOScale(scale, 0.2f));
-
-            tweenSeq.OnComplete(()=>
-            {   
-                HandleRemove();
-            });
+            PlayDestroyAnimation(destroy);
         } 
         else
         {
@@ -145,8 +138,33 @@ public class ArenaObject : MonoBehaviour
         Collider.enabled = false;
     }
 
+    public void PlayDestroyAnimation(bool destroyAfter)
+    {
+        Sequence tweenSeq = DOTween.Sequence();
+
+        var scale = transform_.localScale;
+        scale.x *= 1.4f;
+        scale.y *= 1.4f;
+
+        tweenSeq.Append(sprite.DOFade(0.0f, 0.2f));
+        tweenSeq.Join(transform_.DOScale(scale, 0.2f));
+
+        tweenSeq.OnComplete(()=>
+        {   
+            if (destroyAfter)
+                HandleRemove();
+        });
+
+        tweenSeq_ = tweenSeq;
+    }
+
     protected virtual void OnRemove()
     {
+        if (tweenSeq_ != null)
+        {
+            tweenSeq_.Kill(true);
+            tweenSeq_ = null;
+        }
         gameObject.ReturnPooled();
 
         transform_.localScale = initialScale_;

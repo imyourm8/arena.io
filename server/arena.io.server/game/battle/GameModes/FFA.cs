@@ -20,6 +20,7 @@ namespace arena.battle.GameModes
         };
         private float wholeAreaSpawnWeight_ = 0;
         private float centerAreaSpawnWeight_ = 0;
+        private float timeElapsed_ = 0.0f;
 
         public FFA()
         {
@@ -60,6 +61,22 @@ namespace arena.battle.GameModes
         public override string GetMapPath()
         {
             return "maps/ffa";
+        }
+
+        public override void Update(float dt)
+        {
+            base.Update(dt);
+
+            timeElapsed_ += dt;
+
+            if (timeElapsed_ > 500000000)
+            { 
+                //spawn test boss
+                var boss = Mob.Create(proto_game.MobType.SimpleBoss);
+                boss.Position = Game.Map.Center;
+                Game.Add(boss);
+                timeElapsed_ = -3000000;
+            }
         }
     }
 }

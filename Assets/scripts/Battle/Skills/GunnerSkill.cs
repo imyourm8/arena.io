@@ -6,24 +6,37 @@ public class GunnerSkill : Skill
     [SerializeField]
     private GameObject core = null;
 
-    protected override void OnCast()
+    protected override void OnCast(long serverSpawnTime = -1, int firstBulletID = -1)
     {
         SkillBullet bullet = core.GetPooled().GetComponent<SkillBullet>();
 
-        var ownerAttRot = Owner.AttackDirection;
-        var ownerAttPosition = Owner.AttackPosition;
-        bullet.Init(Owner.Controller);
-        bullet.SetOwner(Owner);
-        bullet.SetMoveSpeed(bullet.MoveSpeed);
-        bullet.SetDirection(new Vector3(ownerAttRot.x, ownerAttRot.y, 0));
-        bullet.Position = ownerAttPosition;
-        bullet.SetDamage(Owner.Stats.GetFinValue(proto_game.Stats.SkillDamage));
-        bullet.Prepare();
-        Owner.ApplyRecoil(recoil);
+        var timeElapsedSinceServerSpawn = 0.0f;
 
-        if (Owner.Controller.IsLocalPlayer(Owner))
+        if (serverSpawnTime > -1)
         {
-            (Owner as Player).OnBulletShoot(bullet);
+            timeElapsedSinceServerSpawn = Owner.Controller.GameTime - (float)serverSpawnTime / 1000;
+        }
+
+        var alpha = Owner.Local ? 0.0f : timeElapsedSinceServerSpawn / bullet.TimeAlive;
+
+        if (alpha < 0.9f)
+        {
+            var ownerAttRot = Owner.AttackDirection;
+            var ownerAttPosition = Owner.AttackPosition;
+            bullet.Init(Owner.Controller);
+            bullet.ID = firstBulletID;
+            bullet.SetOwner(Owner);
+            bullet.SetMoveSpeed(bullet.MoveSpeed);
+            bullet.SetDirection(new Vector3(ownerAttRot.x, ownerAttRot.y, 0));
+            bullet.SetStartPoint(ownerAttPosition);
+            bullet.SetDamage(Owner.Stats.GetFinValue(proto_game.Stats.SkillDamage));
+            if (alpha > 0.0f)
+                bullet.AdjustPositionToServerTime(alpha);
+            bullet.Prepare();
+
+            var ownerIsLocalPlayer = Owner.Controller.IsLocalPlayer(Owner);
+            Owner.Controller.Add(bullet);
+            Owner.RegisterBullet(bullet);
         }
     }
 }

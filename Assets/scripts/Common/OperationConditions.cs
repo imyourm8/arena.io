@@ -38,7 +38,7 @@ namespace TapCommon
         public static readonly Dictionary<int, OperationCondition> conditionList = new Dictionary<int, OperationCondition>
 		{
 			{(int)proto_common.Commands.AUTH, new OperationCondition(ClientState.Unlogged, 1, ExecutionMethod.Queued)},
-            {(int)proto_common.Commands.TURN, new OperationCondition(ClientState.Logged|ClientState.InBattle, 1, ExecutionMethod.Queued)},
+            {(int)proto_common.Commands.LEAVE_GAME, new OperationCondition(ClientState.Logged|ClientState.InBattle, 1, ExecutionMethod.Queued)},
             {(int)proto_common.Commands.PING, new OperationCondition(ClientState.Logged, 1, ExecutionMethod.AlwaysExecute)},
             {(int)proto_common.Commands.JOIN_GAME, new OperationCondition(ClientState.Logged|ClientState.SwitchGameServer, 1, ExecutionMethod.Queued)},
             {(int)proto_common.Commands.CHANGE_NICKNAME, new OperationCondition(ClientState.Logged, 1, ExecutionMethod.AlwaysExecute)},

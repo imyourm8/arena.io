@@ -18,7 +18,6 @@ namespace arena.battle
 
             foreach (var r in rooms_)
             {
-                break;
                 if (!r.Closed && r.PlayersCount < MaxPlayersPerRoom)
                 {
                     room = r;

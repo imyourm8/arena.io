@@ -128,6 +128,8 @@ namespace Attributes
         public void ResetSteps()
         {
             steps_ = 0;
+            rawValue_ = 0;
+            CalculateValue();
         }
 
         public void IncreaseByStep()

@@ -50,7 +50,9 @@ namespace arena
             Factories.BulletFactory.Instance.Init();
             Factories.ExpBlockFactory.Instance.Init();
             Factories.PowerUpFactory.Instance.Init();
-            Factories.SkillFactory.Instance.Init(); 
+            Factories.SkillFactory.Instance.Init();
+            Factories.MobScriptsFactory.Instance.Init();
+            Factories.PickUpFactory.Instance.Init();
         }
 
         protected override void TearDown()

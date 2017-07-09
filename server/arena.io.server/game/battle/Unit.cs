@@ -6,14 +6,18 @@ using System.Threading.Tasks;
 
 using arena.helpers;
 
-using Box2DX.Collision;
-using Box2DX.Dynamics;
-
 namespace arena.battle
 {
     class Unit : Entity
     {
         private float weaponCooldown_;
+        private Dictionary<int, Bullet> firedBullets_ = new Dictionary<int, Bullet>();
+
+        public Unit()
+        {
+            ReplicateOnClients = true;
+            additionalCollisionMask_ = (ushort)PhysicsDefs.Category.BULLET;
+        }
 
         public WeaponEntry Weapon
         { get; set; }
@@ -24,6 +28,27 @@ namespace arena.battle
         public Vector2 RecoilVelocity
         { get; set; }
 
+        public void RegisterBullet(Bullet bullet)
+        {
+            firedBullets_.Add(bullet.ID, bullet);
+        }
+
+        public void UnRegisterBullet(Bullet bullet)
+        {
+            firedBullets_.Remove(bullet.ID);
+        }
+
+        public proto_game.UnitState GetSerializedState()
+        {
+            var unitStatePacket = new proto_game.UnitState();
+            var pos = Position;
+            unitStatePacket.guid = ID;
+            unitStatePacket.x = pos.x;
+            unitStatePacket.y = pos.y;
+            unitStatePacket.rotation = Rotation;
+            return unitStatePacket;
+        }
+
         public void PerformAttackAtDirection(float attRotation) 
         {
             if (!IsWeaponAttackAvailable())
@@ -32,14 +57,8 @@ namespace arena.battle
             var attData = new AttackData();
             attData.Direction = attRotation;
             attData.FirstBulletID = Game.GetCurrentEntityID();
-
-            foreach (var sp in Weapon.SpawnPoints) 
-            {
-                Game.GenerateID();
-            }
-            
             double angleInRadians = attRotation;
-            /*
+            
             float cosTheta = (float)Math.Cos(angleInRadians);
             float sinTheta = (float)Math.Sin(angleInRadians);
 
@@ -62,10 +81,11 @@ namespace arena.battle
                 bullet.Position = pos;
                 bullet.Rotation = rot;
                 bullet.MoveInDirection(bullet.RotationVec);
+                RegisterBullet(bullet);
             }
-            */
+            
             ApplyRecoil(Weapon.Recoil, (float)angleInRadians);
-            Game.OnUnitAttack(this, attData);
+            Game.OnUnitWeaponAttack(this, attData);
             SetWeaponCooldown();
             OnWeaponAttack(attData);
         }
@@ -91,9 +111,9 @@ namespace arena.battle
 
         public void CastSkill()
         {
-            if (Skill != null && Skill.Cast())
+            if (Skill != null)
             {
-                Game.OnSkillCast(this);
+                Skill.Cast();
             }
         }
 
@@ -101,25 +121,26 @@ namespace arena.battle
         {
             base.PostUpdate();
 
-            Body.SetLinearVelocity(Vector2.zero); 
+            Body.LinearVelocity = Vector2.zero; 
         }
 
         public void ApplyRecoil(float recoil, float attRotation)
         {
-            return;
+            /*
             if (Body != null)
             {
                 recoil *= -1.0f; 
                 float x = (float)Math.Cos(attRotation) * recoil;
-                float y = (float)Math.Sin(attRotation) * recoil;
+                float y = (float)Math.Sin(attRotation) * recoil; 
                 RecoilVelocity = new Vector2(x, y);
             }
+            */
         }
 
-        public override void InitPhysics(bool dynamicBody = true, bool isSensor = false)
+        public override void InitPhysics()
         {
-            base.InitPhysics(dynamicBody, isSensor);
-            AddToCollisionMask((ushort)PhysicsDefs.Category.BULLET);
+            firedBullets_.Clear();
+            base.InitPhysics();
         }
 
         public override void Update(float dt)
@@ -127,6 +148,11 @@ namespace arena.battle
             base.Update(dt);
             
             weaponCooldown_ += dt;
+        }
+
+        public bool IsOwnerOf(int bullet)
+        {
+            return firedBullets_.ContainsKey(bullet);
         }
     }
 }

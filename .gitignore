@@ -33,3 +33,9 @@ ehthumbs.db
 
 
 server/arena.io.server/arena.io.server.opensdf
+server/box2c/Box2C/x64/
+server/box2c/x64/
+server/box2c/Box2CS/bin/x64/Release/Box2CS.pdb
+server/deploy/arena.io.server/bin/Cache/
+.svn
+*.pdb

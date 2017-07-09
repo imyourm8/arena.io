@@ -7,6 +7,12 @@ package proto_game;
 
 /* DATA TYPES */
 
+enum MobScriptType
+{ 
+  SimpleShooterMobScript = 1;
+  SimpleBossScript = 2;
+}
+
 enum Weapons
 {
   MachineGun = 1;
@@ -19,19 +25,31 @@ enum Weapons
 enum Pickups
 {
   SmallGoldCoin = 1;
+  InvisibilityPickup = 2;
+  RegenerationPickup = 3;
+  QuadDamagePickup = 4;
+  HugeBulletsPickUp = 5;
 }
 
 enum Bullets
 {
+  //Player Bullets
   Common = 1;
   CanonCore = 2;
   
+  //Mob Bullets
   MonSlowBullet = 3;
+  
+  //Boss Bullets
+  SimpleBossProjectile1 = 4;
+  SimpleBoosProjectile2 = 5;
+  SimpleBoosProjectile3 = 6;
 }
 
 enum MobType
 {
   Basic = 1;
+  SimpleBoss = 2;
 }
 
 enum PowerUpType
@@ -128,6 +146,7 @@ message Ping
 
 message PlayerInput
 {
+  //TODO make bool fields as 1 int with flags
   message Request
   {
     required float force_x = 1;
@@ -328,13 +347,13 @@ message BlockAppeared
 	}
 }
 
-message UnitDie
+message EntityRemoved
 {
   required int32 guid = 1;
   
   extend proto_common.Event 
   {
-    optional proto_game.UnitDie unit_die_evt = 2003;
+    optional proto_game.EntityRemoved entity_removed_evt = 2003;
   }
 }
 
@@ -348,15 +367,16 @@ message BulletsRemoved
   }
 }
 
-message SpawnGoldCoin
+message SpawnPickUp
 {
   required float x = 1;
   required float y = 2;
-  required int32 value = 3;
+  required Pickups type = 3;
+  required int32 guid = 4;
   
   extend proto_common.Event 
   {
-    optional proto_game.SpawnGoldCoin gold_coin_evt = 2018;
+    optional proto_game.SpawnPickUp pick_up_evt = 2018;
   }
 }
 
@@ -380,19 +400,16 @@ message UnitStatesUpdate
 	}
 }
 
-message PlayerTurn
+message LeaveGame
 {
-  required float angle = 1;
-  optional int32 guid = 2;
-  
-  extend proto_common.Event 
-	{
-	  optional proto_game.PlayerTurn turn_evt = 2009;
-	}
-  
   extend proto_common.Request 
 	{
-	  optional proto_game.PlayerTurn turn_req = 2009;
+	  optional proto_game.LeaveGame leave_req = 2009;
+	}
+  
+  extend proto_common.Response 
+	{
+	  optional proto_game.LeaveGame leave_res = 2009;
 	}
 }
 
@@ -417,6 +434,16 @@ message PlayerLevelUp
 	}
 }
 
+message PlayerCoinsChange
+{
+  required int32 coins = 1;
+  
+  extend proto_common.Event
+  {
+    optional proto_game.PlayerCoinsChange plr_coins_evt = 2007;
+  }
+}
+
 message PlayerStatusChange
 {
   required int32 guid = 1;
@@ -425,6 +452,36 @@ message PlayerStatusChange
   extend proto_common.Event 
 	{
 	  optional proto_game.PlayerStatusChange plr_status_evt = 2011;
+	}
+}
+
+message SyncAttack
+{
+  required int32 sync_id = 1;
+  required int32 first_bullet_id = 2;
+  
+  extend proto_common.Event
+  {
+    optional proto_game.SyncAttack sync_att_evt = 2022;
+  }
+}
+
+message SpawnBullets
+{
+  required float direction = 1;
+  required float angleStep = 2;
+  required int32 startId = 3;
+  required float damage = 4;
+  required int32 count = 5;
+  required float x = 6;
+  required float y = 7;
+  required int32 owner = 8; 
+  required Bullets type = 9;
+  required int32 tick = 10;
+  
+  extend proto_common.Event 
+	{
+	  optional proto_game.SpawnBullets spwn_proj_evt = 2023;
 	}
 }
 
@@ -437,7 +494,6 @@ message UnitAttack
   required int32 time_advance = 5;
   required int32 first_bullet_id = 6;
   required int32 tick = 7;
-  required bool local = 8;
   
   extend proto_common.Event 
 	{
@@ -463,6 +519,7 @@ message PlayerAppeared
 	}
 }
 
+/*
 message PlayerDisconnected
 {
   required int32 who = 1;
@@ -472,6 +529,7 @@ message PlayerDisconnected
     optional proto_game.PlayerDisconnected plr_disc_evt = 2007; 
   }
 }
+*/
 
 message ScoreChanged
 {
@@ -512,6 +570,8 @@ message SkillCasted
   required float direction = 2;
   required float x = 3;
   required float y = 4;
+  required int32 tick = 5;
+  required int32 first_bullet_id = 6;
   
   extend proto_common.Event
   {

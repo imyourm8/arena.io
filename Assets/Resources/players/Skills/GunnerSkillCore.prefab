@@ -73,8 +73,9 @@ MonoBehaviour:
   sprite: {fileID: 212000013828500604}
   bulletType: 2
   moveSpeed: 25
-  timeAlive: 1
+  timeAlive: 0.65
   penetrate: 1
+  predictable: 0
 --- !u!212 &212000013828500604
 SpriteRenderer:
   m_ObjectHideFlags: 1

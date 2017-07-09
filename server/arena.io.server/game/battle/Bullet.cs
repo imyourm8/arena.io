@@ -4,9 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Box2DX.Dynamics;
-using Box2DX.Common;
-
 using arena.helpers;
 
 namespace arena.battle
@@ -27,10 +24,10 @@ namespace arena.battle
         public BulletEntry Entry
         { get; set; }
 
-        public override void InitPhysics(bool dynamicBody = true, bool isSensor = false)
+        public override void InitPhysics()
         {
-            return; //TODO trying client side hit detection
-            base.InitPhysics(dynamicBody, isSensor);
+            /*
+            base.InitPhysics();
             ushort mask = (ushort)PhysicsDefs.Category.PLAYER;
             switch ((ushort)Owner.Category)
             {
@@ -39,6 +36,7 @@ namespace arena.battle
                     break;
             }
             AddToCollisionMask(mask);
+             * */
             timeElapsed_ = 0;
         }
 
@@ -70,6 +68,7 @@ namespace arena.battle
         private void SelfDestroy()
         {
             Game.Remove(this);
+            Owner.UnRegisterBullet(this);
         }
     }
 }

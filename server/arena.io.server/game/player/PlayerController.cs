@@ -20,7 +20,7 @@ namespace arena.player
         private static ILogger log = LogManager.GetCurrentClassLogger(); 
         private TapCommon.ClientState state_ = TapCommon.ClientState.Unlogged;
         private battle.Player player_;
-        private PoolFiber fiber_ = new PoolFiber(new ExitGames.Concurrency.Core.DefaultExecutor());
+        private PoolFiber fiber_ = new PoolFiber(new DebugExecutor());
         private bool loginInProcess_ = false;
         private AuthEntry currentAuthEntry_ = null;
 
@@ -28,7 +28,7 @@ namespace arena.player
         {
             AddOperationHandler(proto_common.Commands.AUTH, new OperationHandler(HandleAuth));
             AddOperationHandler(proto_common.Commands.PING, new OperationHandler(HandlePing));
-            AddOperationHandler(proto_common.Commands.TURN, new OperationHandler(HandlePlayerTurn));
+            AddOperationHandler(proto_common.Commands.LEAVE_GAME, new OperationHandler(HandleLeaveGame));
             AddOperationHandler(proto_common.Commands.CHANGE_NICKNAME, new OperationHandler(HandleChangeNickname));
             AddOperationHandler(proto_common.Commands.JOIN_GAME, new OperationHandler(HandleJoinGame));
             AddOperationHandler(proto_common.Commands.FIND_ROOM, new OperationHandler(HandleFindRoom));
@@ -71,6 +71,12 @@ namespace arena.player
             connection_.Send(response);
         }
 
+        public void SendEvent(battle.Net.EventPacket eventPacket)
+        {
+            if (eventPacket.IsValid)
+                SendEvent(eventPacket.EventID, eventPacket.Packet);
+        }
+
         public void SendEvent(proto_common.Events evtCode, object data)
         {
             var evt = new proto_common.Event();
@@ -85,10 +91,7 @@ namespace arena.player
         {
             base.HandleDisconnect();
 
-            if (player_ != null)
-            {
-                battle.RoomManager.Instance.RemovePlayer(player_);
-            }
+            LeaveGame();
 
             state_ &= ~TapCommon.ClientState.InBattle;
             fiber_.Stop();
@@ -112,8 +115,8 @@ namespace arena.player
 
         #region Request Handlers
         public override bool FilterRequest(proto_common.Request request)
-        {
-            bool filtered = false;
+        { 
+            bool filtered =  false; 
             bool alwaysExecute = false;
             TapCommon.OperationCondition condition;
             if (TapCommon.OperationCondition.conditionList.TryGetValue((int)request.type, out condition))
@@ -143,6 +146,8 @@ namespace arena.player
 
         private void HandleStatUpgrade(proto_common.Request request)
         {
+            if (player_.UpgradePointsLeft <= 0)   
+                return;
             var statReq = request.Extract<proto_game.StatUpgrade.Request>(proto_common.Commands.STAT_UPGRADE);
             var stat = player_.Stats.Get(statReq.stat);
             var response = new proto_game.StatUpgrade.Response();
@@ -155,6 +160,7 @@ namespace arena.player
             {
                 stat.IncreaseByStep();
             }
+            player_.UpgradePointsLeft--;
             SendResponse(proto_common.Commands.STAT_UPGRADE, response, request.id, error);
         }
 
@@ -312,16 +318,26 @@ namespace arena.player
             }
         }
 
-        private void HandlePlayerTurn(proto_common.Request request)
+        private void LeaveGame()
         {
-            var turnRequest = request.Extract<proto_game.PlayerTurn>(proto_common.Commands.TURN);
-            player_.Game.PlayerTurned(player_, turnRequest);
+            if (player_ != null)
+            {
+                battle.RoomManager.Instance.RemovePlayer(player_);
+                state_ &= ~TapCommon.ClientState.InBattle;
+            }
+        }
+
+        private void HandleLeaveGame(proto_common.Request request) 
+        {
+            LeaveGame();
+            SendResponse(proto_common.Commands.LEAVE_GAME, request.Extract<proto_game.LeaveGame>(proto_common.Commands.LEAVE_GAME), request.id);
         }
 
         private void HandleUserInput(proto_common.Request request)
         {
             var req = request.Extract<proto_game.PlayerInput.Request>(proto_common.Commands.PLAYER_INPUT);
-            player_.AddInput(req);
+            //we use request id as way to syncronize out attack, because client's ticks is unreliable to be used as unique id
+            player_.AddInput(req, request.id);
         }
 
         private void HandleDamageApply(proto_common.Request request)

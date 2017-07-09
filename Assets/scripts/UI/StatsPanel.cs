@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 using System;
 using System.Collections;
@@ -22,6 +23,9 @@ public class StatsPanel : MonoBehaviour
 
     [SerializeField]
     private CanvasGroup canvasGroup = null;
+
+    [SerializeField]
+    private Text pointsAvailable_ = null;
 
     private Tweener hideTweener_;
     private int statsPointsLeft_ = 0;
@@ -112,5 +116,7 @@ public class StatsPanel : MonoBehaviour
         {
             control.HandleStatPointsCount(statsPointsLeft_);
         }
+
+        pointsAvailable_.text = statsPointsLeft_.ToString();
     }
 }

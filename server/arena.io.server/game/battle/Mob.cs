@@ -32,6 +32,15 @@ namespace arena.battle
         public MobSpawnPoint SpawnPoint
         { get; set; }
 
+        public static Mob Create(proto_game.MobType type)
+        {
+            var mob = new Mob();
+            mob.MobType = type;
+            mob.AssignStats();
+            mob.SetRootState(Factories.MobScriptsFactory.Instance.Get(mob.Entry.Behaviour));
+            return mob;
+        }
+
         public void AssignStats()
         {
             var entry = Factories.MobsFactory.Instance.GetEntry(MobType);
@@ -76,7 +85,7 @@ namespace arena.battle
         public override void Update(float dt)
         {
  	        base.Update(dt);
-            ai_.Update(dt);
+            //ai_.Update(dt);
         }
     }
 }
