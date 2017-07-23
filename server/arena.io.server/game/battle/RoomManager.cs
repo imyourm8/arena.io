@@ -11,6 +11,7 @@ namespace arena.battle
         private const int MaxPlayersPerRoom = 10;
 
         private List<Room> rooms_ = new List<Room>();
+        private Room debugRoom_;
 
         public void AssignPlayerToRandomRoom(Player player)
         {
@@ -40,6 +41,11 @@ namespace arena.battle
             {
                 player.Room.Remove(player);
             }
+        }
+
+        public void CreateDebugRoom()
+        {
+            debugRoom_ = CreateRoom();
         }
 
         private Room CreateRoom()

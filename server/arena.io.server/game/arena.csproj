@@ -128,6 +128,10 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Triangle, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\deploy\arena.io.server\bin\Triangle.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\Assets\scripts\Common\AbstractFactory.cs">
@@ -198,6 +202,9 @@
     </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\SingletonFactory.cs">
       <Link>Common\SingletonFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\..\clipper_library\clipper.cs">
+      <Link>helpers\clipper.cs</Link>
     </Compile>
     <Compile Include="..\Database\Database.cs">
       <Link>Database\Database.cs</Link>
@@ -273,6 +280,7 @@
     <Compile Include="battle\Logic\Transitions\PlayerInAttackRange.cs" />
     <Compile Include="battle\Logic\Transitions\TimedTransition.cs" />
     <Compile Include="battle\Logic\Transitions\Transition.cs" />
+    <Compile Include="battle\Map\TiledParser.cs" />
     <Compile Include="battle\Net\NetworkEntity.cs" />
     <Compile Include="battle\PickUp.cs" />
     <Compile Include="battle\Map\BlockSpawner.cs" />
@@ -342,6 +350,7 @@
     <Compile Include="player\RequestHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -9,6 +9,7 @@ using ExitGames.Logging.Log4Net;
 
 using Nito;
 
+using arena.helpers;
 using arena.common.battle;
 
 namespace arena.battle
@@ -154,9 +155,9 @@ namespace arena.battle
             Game.SyncAttackWithRemotePlayer(this, attData.FirstBulletID, Input.attackSyncID);
         }
 
-        public override void PostUpdate()
+        public void PostUpdate()
         {
-            base.PostUpdate();
+            Body.LinearVelocity = Vector2.zero; 
 
             RemoteInputData input = null;
             //process only one input input at time

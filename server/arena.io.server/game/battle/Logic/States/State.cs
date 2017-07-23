@@ -92,7 +92,7 @@ namespace arena.battle.Logic.States
             Dictionary<string, State> states = new Dictionary<string, State>();
             //recursively get all states as Name => State pairs
             FillStates(states);
-            //now give this info to beahviours and transitions recursively too
+            //now give this info to behaviours and transitions recursively too
             ResolveTransitions(states);
         }
 

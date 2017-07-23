@@ -60,7 +60,6 @@ namespace arena.battle.GameModes
             { 
                 //spawn test boss
                 var boss = Mob.Create(proto_game.MobType.SimpleBoss);
-                boss.Position = Game.Map.Center;
                 Game.Add(boss);
                 timeElapsed_ = -3000000;
             }

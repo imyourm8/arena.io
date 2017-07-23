@@ -64,11 +64,11 @@ namespace arena.battle
                 SelfDestroy();
             }
         }
-
+            
         private void SelfDestroy()
         {
             Game.Remove(this);
-            Owner.UnRegisterBullet(this);
+            Owner.UnregisterBullet(this);
         }
     }
 }

@@ -53,6 +53,8 @@ namespace arena
             Factories.SkillFactory.Instance.Init();
             Factories.MobScriptsFactory.Instance.Init();
             Factories.PickUpFactory.Instance.Init();
+
+            battle.RoomManager.Instance.CreateDebugRoom();
         }
 
         protected override void TearDown()

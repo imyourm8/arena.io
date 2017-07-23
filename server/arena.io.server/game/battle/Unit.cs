@@ -33,7 +33,7 @@ namespace arena.battle
             firedBullets_.Add(bullet.ID, bullet);
         }
 
-        public void UnRegisterBullet(Bullet bullet)
+        public void UnregisterBullet(Bullet bullet)
         {
             firedBullets_.Remove(bullet.ID);
         }
@@ -115,13 +115,6 @@ namespace arena.battle
             {
                 Skill.Cast();
             }
-        }
-
-        public override void PostUpdate()
-        {
-            base.PostUpdate();
-
-            Body.LinearVelocity = Vector2.zero; 
         }
 
         public void ApplyRecoil(float recoil, float attRotation)

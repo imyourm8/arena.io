@@ -24,8 +24,7 @@ namespace arena.battle
             List<PowerUpSpawnPoint> powerUpSpawnPoints = new List<PowerUpSpawnPoint>();
             PowerUpLayer powerUpLayer = new PowerUpLayer(powerUpSpawnPoints);
 
-            List<ExpArea> expAreas = new List<ExpArea>();
-            ExpLayer expLayer = new ExpLayer(expAreas);
+            ExpLayer expLayer = new ExpLayer();
 
             List<MobSpawnPoint> mobSpawnPoints = new List<MobSpawnPoint>();
             MobLayer mobLayer = new MobLayer(mobSpawnPoints);
@@ -80,49 +79,11 @@ namespace arena.battle
                 }
                 else if (layerName == "Exp")
                 {
-                    var properties = layer.SelectToken("properties");
-                    expLayer.TileHeight = properties.SelectToken("Height").Value<int>();
-                    expLayer.TileWidth = properties.SelectToken("Width").Value<int>();
-                    expLayer.MaxBlocks = properties.SelectToken("MaxBlocks").Value<int>();
-                    
-                    foreach (var obj in layer.SelectToken("objects"))
-                    {
-                        var expArea = new ExpArea();
-                        expArea.Area = ParseArea(obj);
-                        expArea.Priority = obj.SelectToken("name").Value<int>(); 
-
-                        if (obj.SelectToken("type").Value<string>() == "Area")
-                        {
-                            expLayer.Area = expArea.Area;
-                        }
-
-                        var probabilities = new Dictionary<proto_game.ExpBlocks, float>();
-                        properties = obj.SelectToken("properties");
-                        foreach (JProperty prop in properties)
-                        {
-                            probabilities.Add(
-                                helpers.Parsing.ParseEnum<proto_game.ExpBlocks>(prop.Name),
-                                prop.Value.Value<float>()
-                            );
-                        }
-
-                        expArea.Probabilities = probabilities;
-                        expAreas.Add(expArea);
-                    }
+                    expLayer.Load(layer);
                 }
                 else if (layerName == "Map")
                 {
-                    var properties = layer.SelectToken("properties");
-                    navLayer.TileHeight = properties.SelectToken("HashHeight").Value<int>();
-                    navLayer.TileWidth = properties.SelectToken("HashWidth").Value<int>();
-
-                    foreach (var obj in layer.SelectToken("objects"))
-                    {
-                        if (obj.SelectToken("name").Value<string>() == "OuterBorder")
-                        {
-                            navLayer.OuterBorder = ParseArea(obj); 
-                        }
-                    }
+                    navLayer.Load(layer);
                 }
                 else if (layerName == "PlayerSpawns")
                 {

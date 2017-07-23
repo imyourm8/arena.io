@@ -237,7 +237,7 @@ namespace arena.battle
             def.FixedRotation = true;
             def.BodyType = dynamicBody_ ? BodyType.Dynamic : BodyType.Static;
             
-            Body body = Game.CreateBody(def);
+            Body body = Game.Map.CreateBody(def);
 
             CircleShape shape = new CircleShape();
             shape.Radius = Radius;
@@ -257,9 +257,6 @@ namespace arena.battle
             Position = pos;
             PrevPosition = pos;   
         }
-
-        public virtual void PostUpdate()
-        { }
 
         public void AddStatus(GameStatus status)
         {

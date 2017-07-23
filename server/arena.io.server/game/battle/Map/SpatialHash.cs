@@ -59,9 +59,13 @@ namespace arena.battle
         public IEnumerable<IEntity> HitTest(Vector2 pos, float radius)
         {
             int xl = (int)(pos.x - radius) / width_;
+            xl = xl < 0 ? 0 : xl;
             int xh = (int)(pos.x + radius) / width_;
+            xh = xh < 0 ? 0 : xh;
             int yl = (int)(pos.y - radius) / height_;
+            yl = yl < 0 ? 0 : yl;
             int yh = (int)(pos.y + radius) / height_;
+            yh = yh < 0 ? 0 : yh;
             for (var x_ = xl; x_ <= xh; x_++)
                 for (var y_ = yl; y_ <= yh; y_++)
                 {

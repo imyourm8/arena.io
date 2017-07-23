@@ -13,8 +13,6 @@ using arena.Common;
 using arena.helpers;
 using arena.battle.Logic;
 
-using Box2CS;
-
 namespace arena.battle
 {
     class Game : 
@@ -39,7 +37,6 @@ namespace arena.battle
         private long gameFinishAt_;
         private Room room_;
         private Map map_;
-        private World world_;
         private DetermenisticScheduler scheduler_ = new DetermenisticScheduler();
         private long prevUpdateTime_ = 0;
         private long startUpTime_ = 0;
@@ -69,16 +66,6 @@ namespace arena.battle
             var mapLoader = new MapLoader(mode_.GetMapPath(), this);    
             map_ = mapLoader.Load();
 
-            var worldAABB = new AABB();
-            var mapArea = map_.GetOuterBorder();
-            worldAABB.LowerBound = new Vec2(mapArea[0], mapArea[1]); 
-            worldAABB.UpperBound = new Vec2(mapArea[2], mapArea[3]);
-            world_ = new World(Vec2.Empty, true);
-            //CreateWallsAroundWorld(worldAABB);
-
-            world_.ContactListener = new GameContactListener();
-            world_.ContactFilter = new GameContactFilter();
-
             scheduler_.SetStep(GlobalDefs.EventPoolInterval);      
             scheduler_.ScheduleOnInterval(HandleMainUpdate, GlobalDefs.MainTickInterval);
             scheduler_.ScheduleOnInterval(HandleAIUpdate, GlobalDefs.AITickInterval);
@@ -93,45 +80,6 @@ namespace arena.battle
             fiber_.Schedule(FinishGame, mode.GetMatchDuration());
 
             fiber_.Start();
-        }
-
-        private void CreateWallsAroundWorld(AABB worldAABB)
-        {
-            var bodyDef = new BodyDef(); 
-            var body = CreateBody(bodyDef);
-
-            var edgeShape = new PolygonShape();
-            var edge = new FixtureDef(edgeShape); 
-            edge.Density = 0.0f;
-            edge.Filter.CategoryBits = (ushort)PhysicsDefs.Category.WALLS;
-            edge.Filter.MaskBits = 
-                (ushort)PhysicsDefs.Category.EXP_BLOCK|(ushort)PhysicsDefs.Category.PLAYER|(ushort)PhysicsDefs.Category.MOB;
-
-            //shrink need to prevent physics object to be stucked in world's bounds, dunno why it happens
-            float shrinkAABB = 0.1f;
-            edgeShape.Vertices = new Vec2[] { 
-                new Vec2(worldAABB.LowerBound.X + shrinkAABB, worldAABB.UpperBound.Y - shrinkAABB),
-                new Vec2(worldAABB.UpperBound.X - shrinkAABB, worldAABB.UpperBound.Y - shrinkAABB)
-            };
-            body.CreateFixture(edge);
-
-            edgeShape.Vertices = new Vec2[] { 
-                new Vec2(worldAABB.UpperBound.X - shrinkAABB, worldAABB.UpperBound.Y - shrinkAABB),
-                new Vec2(worldAABB.UpperBound.X + shrinkAABB, worldAABB.LowerBound.Y - shrinkAABB)
-            };
-            body.CreateFixture(edge);
-
-            edgeShape.Vertices = new Vec2[] { 
-                new Vec2(worldAABB.UpperBound.X + shrinkAABB, worldAABB.LowerBound.Y - shrinkAABB),
-                new Vec2(worldAABB.LowerBound.X + shrinkAABB, worldAABB.LowerBound.Y + shrinkAABB)
-            };
-            body.CreateFixture(edge);
-
-            edgeShape.Vertices = new Vec2[] { 
-                new Vec2(worldAABB.LowerBound.X + shrinkAABB, worldAABB.LowerBound.Y + shrinkAABB),
-                new Vec2(worldAABB.LowerBound.X + shrinkAABB, worldAABB.UpperBound.Y - shrinkAABB)
-            };
-            body.CreateFixture(edge);
         }
 
         private void BroadcastEntities()
@@ -154,11 +102,11 @@ namespace arena.battle
                 pair.Value.Update(dt); 
             }
 
-            world_.Step(dt, 1, 1);
+            //world_.Step(dt, 1, 1);
 
             foreach (var pair in mobs_)
             {
-                pair.Value.PostUpdate();
+                //pair.Value.PostUpdate();
             }
         }
 
@@ -269,20 +217,15 @@ namespace arena.battle
 
                 //send join game packet
                 var joinPacket = new proto_game.JoinGame.Response();
-                var outerBorder = map_.GetOuterBorder();
+                /*var outerBorder = map_.GetOuterBorder();
                 foreach (var coord in outerBorder)
                 {
                     joinPacket.outer_border.Add(coord); 
-                }
+                }*/
                 joinPacket.tick = Tick;
                 joinPacket.time_left = (int)(gameFinishAt_ - Time);
                 player.Controller.SendResponse(proto_common.Commands.JOIN_GAME, joinPacket); 
             });
-        }
-
-        public Body CreateBody(BodyDef def) 
-        {
-            return world_.CreateBody(def);
         }
 
         public Bullet SpawnBullet(proto_game.Bullets bulletId, Unit owner)
@@ -542,12 +485,6 @@ namespace arena.battle
 
             Execute(() =>
                 {
-                    if (entity.Body != null)
-                    {
-                        world_.DestroyBody(entity.Body);
-                        entity.Body = null;
-                    }
-
                     if (entity.ReplicateOnClients)
                     {
                         var removePacket = new proto_game.EntityRemoved();
@@ -602,86 +539,72 @@ namespace arena.battle
             }
         }
 
-        private bool HasInputs()
-        {
-            bool hasInput = false;
-            foreach (var plr in joinedPlayers_)
-            {
-                hasInput |= plr.HasInput();
-            }
-            return hasInput;
-        }
-
         private void HandleMainUpdate()
         {
             float dt = GlobalDefs.GetUpdateInterval();
 
-            while (HasInputs())
+            foreach (var plr in joinedPlayers_)
             {
-                foreach (var plr in joinedPlayers_)
-                {
-                    plr.Update(dt);
-                    plr.ProcessInput(dt);
-                }
+                plr.Update(dt);
+                plr.ProcessInput(dt);
+            }
 
-                world_.Step(dt, 2, 2);
+            map_.StepPhysics(dt);
 
-                var playerMoveResponse = new proto_game.PlayerInput.Response();
+            var playerMoveResponse = new proto_game.PlayerInput.Response();
+            foreach (var plr in joinedPlayers_)
+            {
+                plr.PostUpdate();
 
-                foreach (var plr in joinedPlayers_)
-                {
-                    plr.PostUpdate();
+                if (plr.Input == null)
+                    continue;
 
-                    if (plr.Input == null)
-                        continue;
+                //send sync packet
+                var input = plr.Input.data;
+                playerMoveResponse.tick = input.tick;
+                playerMoveResponse.force_x = input.force_x;
+                playerMoveResponse.force_y = input.force_y;
+                playerMoveResponse.x = plr.Body.Position.X;
+                playerMoveResponse.y = plr.Body.Position.Y;
+                playerMoveResponse.shoot = input.shoot;
+                playerMoveResponse.skill = input.skill;
 
-                    //send sync packet
-                    var input = plr.Input.data;
-                    playerMoveResponse.tick = input.tick;
-                    playerMoveResponse.force_x = input.force_x;
-                    playerMoveResponse.force_y = input.force_y;
-                    playerMoveResponse.x = plr.Body.Position.X;
-                    playerMoveResponse.y = plr.Body.Position.Y;
-                    playerMoveResponse.shoot = input.shoot;
-                    playerMoveResponse.skill = input.skill;
+                plr.Controller.SendResponse(proto_common.Commands.PLAYER_INPUT, playerMoveResponse);
+            }
 
-                    plr.Controller.SendResponse(proto_common.Commands.PLAYER_INPUT, playerMoveResponse);
-                }
+            foreach (var bullet in bullets_)
+            {
+                bullet.Value.Update(dt);
+            }
 
-                foreach (var bullet in bullets_)
-                {
-                    bullet.Value.Update(dt);
-                }
-
-                foreach (var bullet in bulletsToRemove_)
-                {
-                    bullets_.Remove(bullet.ID);
-                    Remove((Entity)bullet);
-                }
-                bulletsToRemove_.Clear();
+            foreach (var bullet in bulletsToRemove_)
+            {
+                bullets_.Remove(bullet.ID);
+                Remove((Entity)bullet);
+            }
+            bulletsToRemove_.Clear();
                 
-                List<PowerUp> toRemove = ListPool<PowerUp>.Get();
-                foreach (var pwr in powerUps_)
+            List<PowerUp> toRemove = ListPool<PowerUp>.Get();
+            foreach (var pwr in powerUps_)
+            {
+                if (pwr.Holder != null)
                 {
-                    if (pwr.Holder != null)
+                    pwr.Lifetime -= (int)GlobalDefs.MainTickInterval;
+                    if (pwr.Lifetime <= 0)
                     {
-                        pwr.Lifetime -= (int)GlobalDefs.MainTickInterval;
-                        if (pwr.Lifetime <= 0)
-                        {
-                            toRemove.Add(pwr);
-                        }
+                        toRemove.Add(pwr);
                     }
                 }
+            }
 
-                foreach (var pwr in toRemove)
-                {
-                    powerUps_.Remove(pwr);
-                    Remove(pwr);
-                }
-                ListPool<PowerUp>.Release(toRemove);
+            foreach (var pwr in toRemove)
+            {
+                powerUps_.Remove(pwr);
+                Remove(pwr);
+            }
+            ListPool<PowerUp>.Release(toRemove);
 
-                ProcessDeathList();
-            };
+            ProcessDeathList();
 
             mode_.Update(dt);
             Tick++;

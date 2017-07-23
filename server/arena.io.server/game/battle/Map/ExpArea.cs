@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TriangleNet;
+
 namespace arena.battle
 {
     class ExpArea
@@ -28,7 +30,7 @@ namespace arena.battle
             }
         }
 
-        public helpers.Area Area
+        public Mesh Area
         { get; set; }
 
         public int Priority

@@ -4,7 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Box2CS;
+
 using arena.helpers;
+
 
 namespace arena.battle
 {
@@ -17,6 +20,8 @@ namespace arena.battle
         private PlayerSpawnsLayer playerSpawns_;
         private NavigationLayer navLayer_;
         private MobLayer mobLayer_;
+        private World world_;
+        private Game game_;
 
         public Map(
             Game game, 
@@ -36,23 +41,22 @@ namespace arena.battle
 
             powerUps_.Game = game;
             mobLayer_.Game = game;
+            game_ = game;
+
+            world_ = navLayer.World;  
+            world_.ContactListener = new GameContactListener();
+            world_.ContactFilter = new GameContactFilter();
+        }
+
+        public Body CreateBody(BodyDef def)
+        {
+            return world_.CreateBody(def);
         }
 
         public void SpawnPlayer(Player player)
         {
             var spawnPoint = playerSpawns_.GetSpawnPoint();
             player.SetPosition(spawnPoint.Item1, spawnPoint.Item2);
-        }
-
-        public List<float> GetOuterBorder()
-        {
-            List<float> points = new List<float>();
-            var area = navLayer_.OuterBorder;
-            points.Add(area.minX);
-            points.Add(area.minY);
-            points.Add(area.maxX);
-            points.Add(area.maxY);
-            return points;
         }
 
         public void Update()
@@ -68,26 +72,29 @@ namespace arena.battle
                 entityHash_.Add(entity);
         }
 
+        public void StepPhysics(float dt)
+        {
+            world_.Step(dt, 2, 2);
+        }
+
         public void Remove(Entity entity)
         {
             if (entity.TrackSpatially)
                 entityHash_.Remove(entity);
+
+            game_.Execute(() => 
+            {
+                if (entity.Body != null)
+                {
+                    world_.DestroyBody(entity.Body);
+                    entity.Body = null;
+                }
+            });
         }
 
         public void Clear()
         {
             entityHash_.Clear();
-        }
-
-        public Vector2 Center
-        {
-            get
-            {
-                return new Vector2(
-                   navLayer_.OuterBorder.minX + navLayer_.OuterBorder.Width / 2,
-                   navLayer_.OuterBorder.minY + navLayer_.OuterBorder.Height / 2
-                );
-            }
         }
 
         public void RefreshHashPosition(Entity entity)

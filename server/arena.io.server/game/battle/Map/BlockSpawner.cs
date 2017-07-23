@@ -38,14 +38,6 @@ namespace arena.battle
             unitsPerCell_ = (int)Math.Ceiling((float)maxBlocks_ / (float)(width_ * height_));
             cellWidth_ = spawnArea_.Width / (float)width_;
             cellHeight_ = spawnArea_.Height / (float)height_;
-
-            for (int i = 0; i < width_; ++i)
-            {
-                var bucket = new ConcurrentDictionary<int, int>();
-                buckets_.TryAdd(i, bucket);
-                for (int j = 0; j < height_; ++j)
-                    bucket.TryAdd(j, 0);
-            }
         }
 
         public void OnExpBlockRemoved(Entity entity)
@@ -103,6 +95,7 @@ namespace arena.battle
 
         private void SpawnBlock(float minX, float maxX, float minY, float maxY)
         {
+            /*
             var block = Common.ClassPool<ExpBlock>.Get();
             block.SetPosition(MathHelper.Range(minX, maxX), MathHelper.Range(minY, maxY));
 
@@ -117,7 +110,7 @@ namespace arena.battle
 
             control_.AddBlock(block);
 
-            block.InitPhysics();
+            block.InitPhysics();*/
         }
     }
 }
