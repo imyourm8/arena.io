@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using TriangleNet;
+using arena.helpers;
 
 namespace arena.battle
 {
@@ -30,7 +30,7 @@ namespace arena.battle
             }
         }
 
-        public Mesh Area
+        public TriangulatedPolygon Area
         { get; set; }
 
         public int Priority

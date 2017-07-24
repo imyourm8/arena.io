@@ -2,16 +2,11 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Desktop
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "arena", "game\arena.csproj", "{22EFBB27-2AE3-4705-A5F4-EA3EFA84F561}"
-	ProjectSection(ProjectDependencies) = postProject
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B} = {F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DebugAttacher", "DebugAttacher\DebugAttacher.vcxproj", "{D886CDF5-DC72-4E10-B1A9-638B85D0EF51}"
 	ProjectSection(ProjectDependencies) = postProject
 		{22EFBB27-2AE3-4705-A5F4-EA3EFA84F561} = {22EFBB27-2AE3-4705-A5F4-EA3EFA84F561}
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Triangle", "..\Triangle\Triangle.csproj", "{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibTessDotNet", "..\LibTessDotNet\LibTessDotNet.csproj", "{5EE39029-873A-45A0-9259-2198BF8729F4}"
 EndProject
@@ -110,34 +105,6 @@ Global
 		{D886CDF5-DC72-4E10-B1A9-638B85D0EF51}.ReleaseDouble|x64.ActiveCfg = Release|Win32
 		{D886CDF5-DC72-4E10-B1A9-638B85D0EF51}.ReleaseDouble|x86.ActiveCfg = Release|Win32
 		{D886CDF5-DC72-4E10-B1A9-638B85D0EF51}.ReleaseDouble|x86.Build.0 = Release|Win32
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Debug|Win32.ActiveCfg = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.DebugDouble|Any CPU.ActiveCfg = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.DebugDouble|Any CPU.Build.0 = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.DebugDouble|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.DebugDouble|Mixed Platforms.Build.0 = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.DebugDouble|Win32.ActiveCfg = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.DebugDouble|x64.ActiveCfg = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.DebugDouble|x86.ActiveCfg = Debug|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Release|Win32.ActiveCfg = Release|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Release|x64.ActiveCfg = Release|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.Release|x86.ActiveCfg = Release|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.ReleaseDouble|Any CPU.ActiveCfg = Release|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.ReleaseDouble|Any CPU.Build.0 = Release|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.ReleaseDouble|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.ReleaseDouble|Mixed Platforms.Build.0 = Release|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.ReleaseDouble|Win32.ActiveCfg = Release|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.ReleaseDouble|x64.ActiveCfg = Release|Any CPU
-		{F7907A0A-B75F-400B-9E78-BFAD00DB4D6B}.ReleaseDouble|x86.ActiveCfg = Release|Any CPU
 		{5EE39029-873A-45A0-9259-2198BF8729F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5EE39029-873A-45A0-9259-2198BF8729F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EE39029-873A-45A0-9259-2198BF8729F4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 using arena.battle.map;
+using arena.helpers;
 
 using ClipperLib;
 using Path = System.Collections.Generic.List<ClipperLib.IntPoint>;
@@ -24,10 +26,10 @@ namespace arena.battle
         public int TileHeight
         { get; private set; }
 
-        public List<ClipperLib.IntPoint> OuterBorder
+        public Contour OuterBorder
         { get; private set; }
 
-        public List<List<ClipperLib.IntPoint>> Obstacles
+        public PolygonContours Obstacles
         { get; private set; }
 
         public World World
@@ -39,20 +41,20 @@ namespace arena.battle
             TileHeight = properties.SelectToken("HashHeight").Value<int>();
             TileWidth = properties.SelectToken("HashWidth").Value<int>();
 
-            Obstacles = new Paths(20);
+            Obstacles = new PolygonContours(20);
 
             var objs = data.SelectToken(TiledParser.ObjectToken);
             foreach (var obj in objs)
             {
-                Path path = TiledParser.ParseObject(obj);
+                Contour contour = TiledParser.ParseObject(obj);
                 JToken nameToken = obj.SelectToken("name");
                 if (nameToken != null && nameToken.Value<string>() == "OuterBorder")
                 {
-                    OuterBorder = path;
+                    OuterBorder = contour;
                 }
                 else
                 {
-                    Obstacles.Add(path);
+                    Obstacles.Add(contour);
                 }
             }
 
@@ -75,11 +77,9 @@ namespace arena.battle
             int count = OuterBorder.Count;
             for (int i = 0; i < count; ++i)
             {
-                IntPoint start = OuterBorder[i];
-                IntPoint end = OuterBorder[(i+1)%count]; 
                 edgeShape.Vertices = new Vec2[] { 
-                    new Vec2(start.X, start.Y),
-                    new Vec2(end.X, end.Y)
+                    OuterBorder[i],
+                    OuterBorder[(i+1)%count]
                 };
 
                 body.CreateFixture(edge);

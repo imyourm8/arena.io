@@ -46,6 +46,12 @@ namespace arena.helpers
             this.y = y;
         }
 
+        public Vector2(double x, double y)
+        {
+            this.x = (float)x;
+            this.y = (float)y;
+        }
+
         public void Normilize()
         {
             float length = Length();

@@ -85,6 +85,10 @@
     <Reference Include="ExitGamesLibs">
       <HintPath>..\..\lib\ExitGamesLibs.dll</HintPath>
     </Reference>
+    <Reference Include="LibTessDotNet, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\deploy\arena.io.server\bin\LibTessDotNet.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\lib\log4net.dll</HintPath>
     </Reference>
@@ -128,10 +132,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Triangle, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\deploy\arena.io.server\bin\Triangle.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\..\Assets\scripts\Common\AbstractFactory.cs">
@@ -343,6 +343,8 @@
     <Compile Include="helpers\Geom.cs" />
     <Compile Include="helpers\MathHelper.cs" />
     <Compile Include="helpers\Parsing.cs" />
+    <Compile Include="helpers\Triangle.cs" />
+    <Compile Include="helpers\TriangulatedPolygon.cs" />
     <Compile Include="player\OperationHandler.cs" />
     <Compile Include="player\PlayerConnection.cs" />
     <Compile Include="player\PlayerController.cs" />
