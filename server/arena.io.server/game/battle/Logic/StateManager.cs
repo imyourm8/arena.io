@@ -1,27 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using arena.battle.logic.states;
 
-using arena.battle.Logic.States;
-
-namespace arena.battle.Logic
+namespace arena.battle.logic
 {
-    interface IStateManager
-    {
-        void SwitchTo(State state);
-        Entity Host { get; }
-    }
-
     class StateManager : IStateStorage, IStateManager, IDisposable
     {
         private State currenState_ = null;
         private State nextState_ = null;
         private Entity holder_ = null;
         private State currentStateCommonRoot_ = null;
-        private IDictionary<Logic.ILogicElement, object> StateStorage
-        { get; set; }
+        private IDictionary<logic.ILogicElement, object> StateStorage { get; set; }
 
         public StateManager(Entity holder, State initialState = null)
         {
@@ -31,7 +20,14 @@ namespace arena.battle.Logic
         }
 
         Entity IStateManager.Host
-        { get { return holder_; } }
+        {
+            get { return holder_; }
+        }
+
+        public IState CurrentState 
+        {
+            get { return currenState_; }
+        }
 
         public void SwitchTo(State state)
         {

@@ -18,7 +18,6 @@ enum Weapons
   MachineGun = 1;
   DualMachineGun = 2;
   Canon = 3;
-  
   MobGun = 4;
 }
 
@@ -29,6 +28,7 @@ enum Pickups
   RegenerationPickup = 3;
   QuadDamagePickup = 4;
   HugeBulletsPickUp = 5;
+  HeavyAmmo = 6;
 }
 
 enum Bullets
@@ -56,8 +56,17 @@ enum PowerUpType
 {
   DoubleDamage = 0;
   Invisibility = 1;
-  HugeBullets = 2;
+  WiderView = 2;
   Regeneration = 3;
+}
+
+enum BoosterType
+{
+  RefillHeavyAmmo = 1;
+  RestoreFullHealth = 2;
+  HealFollower = 3;
+  AttackFollower = 4;
+  TrueSight = 5;
 }
 
 enum Stats
@@ -149,8 +158,8 @@ message PlayerInput
   //TODO make bool fields as 1 int with flags
   message Request
   {
-    required float force_x = 1;
-    required float force_y = 2;
+    required float force_x = 1; // direction x [0..1]
+    required float force_y = 2; // direction y [0..1]
     required float rotation = 3;
     required int32 tick = 4;
     optional bool shoot = 5;
@@ -164,9 +173,9 @@ message PlayerInput
   
   message Response
   {
-    required float x = 1;
-    required float y = 2;
-    required float force_x = 3;
+    required float x = 1; // position x
+    required float y = 2; // position y
+    required float force_x = 3; 
     required float force_y = 4;
     required int32 tick = 5;
     required bool shoot = 6;
@@ -212,9 +221,7 @@ message JoinGame
   
   message Response
   {
-    required int32 time_left = 1;
-    repeated float outer_border = 2;
-    required int32 tick = 3;
+    required int32 map_id = 1;
   
     extend proto_common.Response
     {
@@ -223,6 +230,44 @@ message JoinGame
   }
 }
 
+/*
+  Polyline representation
+*/
+message Contour
+{
+  repeated float x = 1;
+  repeated float y = 2;
+}
+
+message Map
+{
+  required Contour border = 1; // outside border of game world
+  repeated Contour obstacles = 2; 
+}
+
+message DownloadMap
+{
+  message Request
+  {
+    extend proto_common.Request
+    {
+      optional proto_game.DownloadMap.Request download_map_req = 2018;
+    }
+  }
+  
+  message Response
+  {
+    required Map map = 1;
+    
+    extend proto_common.Response
+    {
+      optional proto_game.DownloadMap.Response download_map_res = 2018;
+    }
+  }
+}
+/*
+  Currently deprecated
+*/
 message StatUpgrade
 {
   message Request
@@ -243,7 +288,9 @@ message StatUpgrade
     }
   }
 }
-
+/*
+  Currently deprecated
+*/
 message PlayerUpgrade
 {
   required int32 guid = 1;
@@ -331,6 +378,17 @@ message PowerUpGrabbed
   {
     optional proto_game.PowerUpGrabbed pwrup_grb_evt = 2017;
   }
+}
+
+message StartGame
+{
+    required int32 tick = 1;
+    required int32 time_left = 2;
+    
+    extend proto_common.Event
+    {
+      optional proto_game.StartGame start_game_evt = 2024;
+    }
 }
 
 message BlockAppeared
@@ -518,18 +576,6 @@ message PlayerAppeared
 	  optional proto_game.PlayerAppeared player_appeared_evt = 2005;
 	}
 }
-
-/*
-message PlayerDisconnected
-{
-  required int32 who = 1;
-  
-  extend proto_common.Event
-  {
-    optional proto_game.PlayerDisconnected plr_disc_evt = 2007; 
-  }
-}
-*/
 
 message ScoreChanged
 {

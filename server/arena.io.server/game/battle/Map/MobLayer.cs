@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using shared.helpers;
+
 namespace arena.battle
 {
     class MobLayer
@@ -24,12 +26,12 @@ namespace arena.battle
 
         public void Update()
         {
-            if (helpers.CurrentTime.Instance.CurrentTimeInMs - prevSpawnTime_ < RespawnDelay)
+            if (CurrentTime.Instance.CurrentTimeInMs - prevSpawnTime_ < RespawnDelay)
             {
                 return; 
             }
             int i = 0;
-            prevSpawnTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
+            prevSpawnTime_ = CurrentTime.Instance.CurrentTimeInMs;
             foreach (var spawn in spawnPoints_)
             {
                 while (spawn.Count < spawn.MaxCount) 

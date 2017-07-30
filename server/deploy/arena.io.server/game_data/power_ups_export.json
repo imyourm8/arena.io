@@ -1,1 +1,1 @@
-[ {"radius":"0", "type":"Invisibility", "pickup_type":"InvisibilityPickup"}, {"radius":"0.65", "type":"Regeneration", "pickup_type":"RegenerationPickup"}, {"radius":"0.65", "type":"DoubleDamage", "pickup_type":"QuadDamagePickup"}, {"radius":"0.65", "type":"HugeBullets", "pickup_type":"HugeBulletsPickUp"} ]
+[ {"radius":"0", "type":"Invisibility", "pickup_type":"InvisibilityPickup"}, {"radius":"0.65", "type":"Regeneration", "pickup_type":"RegenerationPickup"}, {"radius":"0.65", "type":"DoubleDamage", "pickup_type":"QuadDamagePickup"} ]

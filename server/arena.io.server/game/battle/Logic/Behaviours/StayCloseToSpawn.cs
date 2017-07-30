@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using arena.helpers;
+using shared.helpers;
 
-namespace arena.battle.Logic.Behaviours
+namespace arena.battle.logic.behaviours
 {
     class StayCloseToSpawn : Behaviour
     {

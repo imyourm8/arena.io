@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace arena.battle.Logic.Statuses
+namespace arena.battle.logic.statuses
 {
     class GameStatusTimed : GameStatus
     {

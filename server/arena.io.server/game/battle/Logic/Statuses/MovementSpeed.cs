@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Attributes;
 
-namespace arena.battle.Logic.Statuses
+namespace arena.battle.logic.statuses
 {
     class MovementSpeed : GameStatusTimed
     {

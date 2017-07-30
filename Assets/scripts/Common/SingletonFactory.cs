@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 
-namespace TapCommon
+namespace shared
 {
     abstract public class SingletonAbstractFactory<KeyType, ClassType, DerivedClass> :
         Singleton<DerivedClass> where ClassType : class where DerivedClass : class, new()

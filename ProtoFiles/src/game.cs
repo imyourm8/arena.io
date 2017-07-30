@@ -346,26 +346,97 @@ namespace proto_game
   {
     public Response() {}
     
-    private int _time_left;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"time_left", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int time_left
+    private int _map_id;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"map_id", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int map_id
     {
-      get { return _time_left; }
-      set { _time_left = value; }
+      get { return _map_id; }
+      set { _map_id = value; }
     }
-    private readonly global::System.Collections.Generic.List<float> _outer_border = new global::System.Collections.Generic.List<float>();
-    [global::ProtoBuf.ProtoMember(2, Name=@"outer_border", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public global::System.Collections.Generic.List<float> outer_border
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Contour")]
+  public partial class Contour : global::ProtoBuf.IExtensible
+  {
+    public Contour() {}
+    
+    private readonly global::System.Collections.Generic.List<float> _x = new global::System.Collections.Generic.List<float>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"x", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public global::System.Collections.Generic.List<float> x
     {
-      get { return _outer_border; }
+      get { return _x; }
     }
   
-    private int _tick;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"tick", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int tick
+    private readonly global::System.Collections.Generic.List<float> _y = new global::System.Collections.Generic.List<float>();
+    [global::ProtoBuf.ProtoMember(2, Name=@"y", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public global::System.Collections.Generic.List<float> y
     {
-      get { return _tick; }
-      set { _tick = value; }
+      get { return _y; }
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Map")]
+  public partial class Map : global::ProtoBuf.IExtensible
+  {
+    public Map() {}
+    
+    private proto_game.Contour _border;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"border", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public proto_game.Contour border
+    {
+      get { return _border; }
+      set { _border = value; }
+    }
+    private readonly global::System.Collections.Generic.List<proto_game.Contour> _obstacles = new global::System.Collections.Generic.List<proto_game.Contour>();
+    [global::ProtoBuf.ProtoMember(2, Name=@"obstacles", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<proto_game.Contour> obstacles
+    {
+      get { return _obstacles; }
+    }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"DownloadMap")]
+  public partial class DownloadMap : global::ProtoBuf.IExtensible
+  {
+    public DownloadMap() {}
+    
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Request")]
+  public partial class Request : global::ProtoBuf.IExtensible
+  {
+    public Request() {}
+    
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Response")]
+  public partial class Response : global::ProtoBuf.IExtensible
+  {
+    public Response() {}
+    
+    private proto_game.Map _map;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"map", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public proto_game.Map map
+    {
+      get { return _map; }
+      set { _map = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -642,6 +713,30 @@ namespace proto_game
     {
       get { return _who_grabbed; }
       set { _who_grabbed = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"StartGame")]
+  public partial class StartGame : global::ProtoBuf.IExtensible
+  {
+    public StartGame() {}
+    
+    private int _tick;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"tick", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int tick
+    {
+      get { return _tick; }
+      set { _tick = value; }
+    }
+    private int _time_left;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"time_left", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int time_left
+    {
+      get { return _time_left; }
+      set { _time_left = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -1332,7 +1427,10 @@ namespace proto_game
       QuadDamagePickup = 4,
             
       [global::ProtoBuf.ProtoEnum(Name=@"HugeBulletsPickUp", Value=5)]
-      HugeBulletsPickUp = 5
+      HugeBulletsPickUp = 5,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"HeavyAmmo", Value=6)]
+      HeavyAmmo = 6
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"Bullets")]
@@ -1379,11 +1477,31 @@ namespace proto_game
       [global::ProtoBuf.ProtoEnum(Name=@"Invisibility", Value=1)]
       Invisibility = 1,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"HugeBullets", Value=2)]
-      HugeBullets = 2,
+      [global::ProtoBuf.ProtoEnum(Name=@"WiderView", Value=2)]
+      WiderView = 2,
             
       [global::ProtoBuf.ProtoEnum(Name=@"Regeneration", Value=3)]
       Regeneration = 3
+    }
+  
+    [global::ProtoBuf.ProtoContract(Name=@"BoosterType")]
+    public enum BoosterType
+    {
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"RefillHeavyAmmo", Value=1)]
+      RefillHeavyAmmo = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"RestoreFullHealth", Value=2)]
+      RestoreFullHealth = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"HealFollower", Value=3)]
+      HealFollower = 3,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"AttackFollower", Value=4)]
+      AttackFollower = 4,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TrueSight", Value=5)]
+      TrueSight = 5
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"Stats")]

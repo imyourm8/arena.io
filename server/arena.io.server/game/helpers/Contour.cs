@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using shared.helpers;
+
 using ClipperLib;
 using Path = System.Collections.Generic.List<ClipperLib.IntPoint>;
 

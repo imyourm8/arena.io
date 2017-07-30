@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using arena.helpers;
-using arena.battle.Logic;
+using shared.helpers;
+using arena.battle.logic;
 using arena.common.battle;
-using arena.battle.Logic.Statuses;
+using arena.battle.logic.statuses;
 using arena.battle.Net;
 
 using ExitGames.Logging;
@@ -75,7 +75,7 @@ namespace arena.battle
             private set { prevPosition_ = value; }
         }
 
-        public void SetRootState(Logic.States.State state)
+        public void SetRootState(logic.states.State state)
         {
             stateManager_.SwitchTo(state);
         }

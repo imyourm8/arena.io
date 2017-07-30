@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using shared.data;
+using shared.factories;
+
 namespace arena.battle
 {
     class Mob : Unit
@@ -37,13 +40,13 @@ namespace arena.battle
             var mob = new Mob();
             mob.MobType = type;
             mob.AssignStats();
-            mob.SetRootState(Factories.MobScriptsFactory.Instance.Get(mob.Entry.Behaviour));
+            mob.SetRootState(factories.MobScriptsFactory.Instance.Get(mob.Entry.Behaviour));
             return mob;
         }
 
         public void AssignStats()
         {
-            var entry = Factories.MobsFactory.Instance.GetEntry(MobType);
+            var entry = MobsFactory.Instance.GetEntry(MobType);
 
             Stats.SetValue(proto_game.Stats.MaxHealth, entry.Health).SetStep(entry.HealthStep).ResetSteps();
             Stats.SetValue(proto_game.Stats.BulletDamage, entry.BulletDamage).SetStep(entry.BulletDamageStep).ResetSteps();
@@ -61,7 +64,7 @@ namespace arena.battle
             Exp = entry.Exp;
             Skill = Skills.Skill.Create(entry.Skill);
             Radius = entry.CollisionRadius;
-            Weapon = Factories.WeaponFactory.Instance.GetEntry(entry.Weapon);
+            Weapon = WeaponFactory.Instance.GetEntry(entry.Weapon);
             Entry = entry;
         }
 

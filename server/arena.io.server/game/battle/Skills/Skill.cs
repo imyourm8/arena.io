@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using shared.data;
+using shared.factories;
+
 namespace arena.battle.Skills
 {
     class Skill
@@ -15,7 +18,7 @@ namespace arena.battle.Skills
             {
                 skill = new GunnerSkill();
             }
-            skill.Entry = Factories.SkillFactory.Instance.GetEntry(skillId);
+            skill.Entry = SkillFactory.Instance.GetEntry(skillId);
             return skill;
         }
 

@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using shared.helpers;
+
 namespace arena.battle
 {
     class MapLoader
@@ -16,10 +18,10 @@ namespace arena.battle
         public MapLoader(string path, Game game)
         {
             var maps = Directory.GetFiles(path);
-            var mapName = maps[helpers.MathHelper.Range(0, maps.Length - 1)]; 
+            var mapName = maps[MathHelper.Range(0, maps.Length - 1)]; 
 
             var jsonMap = JObject.Parse(File.ReadAllText(mapName));
-            var layers = jsonMap.SelectToken("layers");
+            var layers = jsonMap["layers"];
 
             List<PowerUpSpawnPoint> powerUpSpawnPoints = new List<PowerUpSpawnPoint>();
             PowerUpLayer powerUpLayer = new PowerUpLayer(powerUpSpawnPoints);
@@ -36,12 +38,12 @@ namespace arena.battle
 
             foreach (var layer in layers)
             {
-                var layerName = (string)layer.SelectToken("name");
+                var layerName = (string)layer["name"];
                 if (layerName == "PowerUps") 
                 {
                     Dictionary<proto_game.PowerUpType, int> durations = new Dictionary<proto_game.PowerUpType, int>();
                     //load durations of power ups
-                    foreach (JProperty prop in layer.SelectToken("properties"))
+                    foreach (JProperty prop in layer["properties"])
                     {
                         if (prop.Name == "RespawnDelay")
                         {
@@ -50,22 +52,22 @@ namespace arena.battle
                         else
                         {
                             durations.Add(
-                                    helpers.Parsing.ParseEnum<proto_game.PowerUpType>(prop.Name),
+                                    Parsing.ParseEnum<proto_game.PowerUpType>(prop.Name),
                                     prop.Value.Value<int>() * 1000
                                 );
                         }
                     }
 
-                    foreach (var obj in layer.SelectToken("objects"))
+                    foreach (var obj in layer["objects"])
                     {
                         var spawnPoint = new PowerUpSpawnPoint();
                         var probabilities = new Dictionary<proto_game.PowerUpType, float>();
 
-                        var properties = obj.SelectToken("properties"); 
+                        var properties = obj["properties"]; 
                         foreach (JProperty prop in properties)
                         {
                             probabilities.Add(
-                                helpers.Parsing.ParseEnum<proto_game.PowerUpType>(prop.Name),
+                                Parsing.ParseEnum<proto_game.PowerUpType>(prop.Name),
                                 prop.Value.Value<float>()
                             );
                         }
@@ -87,7 +89,7 @@ namespace arena.battle
                 }
                 else if (layerName == "PlayerSpawns")
                 {
-                    foreach (var obj in layer.SelectToken("objects"))
+                    foreach (var obj in layer["objects"])
                     {
                         var spawnPoint = new PlayerSpawnPoint();
                         spawnPoint.Area = ParseArea(obj);
@@ -97,17 +99,17 @@ namespace arena.battle
                 }
                 else if (layerName == "Mobs")
                 {
-                    var properties = layer.SelectToken("properties");
-                    mobLayer.RespawnDelay = properties.SelectToken("RespawnDelay").Value<int>();
+                    var properties = layer["properties"];
+                    mobLayer.RespawnDelay = properties["RespawnDelay"].Value<int>();
 
-                    foreach (var obj in layer.SelectToken("objects"))
+                    foreach (var obj in layer["objects"])
                     {
                         var spawnPoint = new MobSpawnPoint();
                         spawnPoint.Area = ParseArea(obj);
 
                         mobSpawnPoints.Add(spawnPoint);
 
-                        properties = obj.SelectToken("properties");
+                        properties = obj["properties"];
                         var probabilities = new Dictionary<proto_game.MobType, float>();
                         foreach (JProperty prop in properties)
                         {
@@ -118,7 +120,7 @@ namespace arena.battle
                             else
                             {
                                 probabilities.Add(
-                                    helpers.Parsing.ParseEnum<proto_game.MobType>(prop.Name),
+                                    Parsing.ParseEnum<proto_game.MobType>(prop.Name),
                                     prop.Value.Value<float>()
                                 );
                             }
@@ -131,13 +133,13 @@ namespace arena.battle
             map_ = new Map(game, powerUpLayer, expLayer, navLayer, playerSpawnsLayer, mobLayer);
         }
 
-        private helpers.Area ParseArea(JToken node)
+        private Area ParseArea(JToken node)
         {
-            var area = new helpers.Area();
-            area.minX = node.SelectToken("x").Value<float>();
-            area.minY = node.SelectToken("y").Value<float>();
-            area.maxX = area.minX + node.SelectToken("width").Value<float>();
-            area.maxY = area.minY + node.SelectToken("height").Value<float>();
+            var area = new Area();
+            area.minX = node["x"].Value<float>();
+            area.minY = node["y"].Value<float>();
+            area.maxX = area.minX + node["width"].Value<float>();
+            area.maxY = area.minY + node["height"].Value<float>();
 
             return area;
         }

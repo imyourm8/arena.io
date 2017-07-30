@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using arena.battle.Logic.Transitions;
-using arena.battle.Logic.Behaviours;
+using arena.battle.logic.transitions;
+using arena.battle.logic.behaviours;
 
-namespace arena.battle.Logic.States
+namespace arena.battle.logic.states
 {
     /*
         State can hold other states
@@ -17,12 +17,6 @@ namespace arena.battle.Logic.States
     {
         public static readonly State NullState = new State();
 
-        public string Name
-        { get; private set; }
-
-        public State Parent
-        { get; private set; }
-
         private List<State> ChildrenStates
         { get; set; }
 
@@ -31,6 +25,15 @@ namespace arena.battle.Logic.States
 
         private IList<Behaviour> Behaviours
         { get; set; }
+
+        private IList<IPersistent> PersistentLogic
+        { get; set; }
+
+        public string Name
+        { get; private set; }
+
+        public State Parent
+        { get; private set; }
 
         public IReadOnlyList<State> States
         { get { return ChildrenStates; } }
@@ -67,10 +70,15 @@ namespace arena.battle.Logic.States
             ChildrenStates = new List<State>();
             Transitions = new List<Transition>();
             Behaviours = new List<Behaviour>();
+            PersistentLogic = new List<IPersistent>();
 
             foreach (var child in children)
             {
-                if (child is State)
+                if (child is IPersistent)
+                {
+                    PersistentLogic.Add(child as IPersistent);
+                }
+                else if (child is State)
                 {
                     var state = child as State;
                     state.Parent = this;
@@ -87,6 +95,7 @@ namespace arena.battle.Logic.States
             }
         }
 
+#region Public methods
         public void Init()
         {
             Dictionary<string, State> states = new Dictionary<string, State>();
@@ -96,6 +105,29 @@ namespace arena.battle.Logic.States
             ResolveTransitions(states);
         }
 
+        public void FullUpdate(IStateManager manager, IStateStorage stateHolder, float dt)
+        {
+            foreach (var b in Behaviours)
+            {
+                b.Update(manager, stateHolder, dt);
+            }
+
+            foreach (var t in Transitions)
+            {
+                t.Update(manager, stateHolder, dt);
+            }
+        }
+
+        public void PersistenOnlyUpdate(IStateManager manager, IStateStorage stateHolder, float dt)
+        {
+            foreach (var p in PersistentLogic)
+            {
+                p.Update(manager, stateHolder, dt);
+            }
+        }
+#endregion
+
+#region Private methods
         private void ResolveTransitions(Dictionary<string, State> states)
         {
             foreach (var t in Transitions)
@@ -117,24 +149,14 @@ namespace arena.battle.Logic.States
                 s.FillStates(states);
             }
         }
+#endregion
 
 #region ILogicElement Implementation
         public void Update(IStateManager manager, IStateStorage stateHolder, float dt)
         {
-            var s = this;
-            while (s != null)
+            if (manager.CurrentState == this)
             {
-                foreach (var b in s.Behaviours)
-                {
-                    b.Update(manager, stateHolder, dt);
-                }
-
-                s = s.Parent;
-            }
-
-            foreach (var t in Transitions)
-            {
-                t.Update(manager, stateHolder, dt);
+                FullUpdate(manager, stateHolder, dt);
             }
         }
 

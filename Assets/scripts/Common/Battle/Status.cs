@@ -54,9 +54,6 @@ namespace arena.common.battle
                 case proto_game.PowerUpType.DoubleDamage:
                     HandleQuadDamage(apply);
                     break;
-                case proto_game.PowerUpType.HugeBullets:
-                    HandleHugeBullets(apply);
-                    break;
             }
         }
 
@@ -80,19 +77,5 @@ namespace arena.common.battle
 
         protected virtual void HandleHugeBulletsCustom(bool apply) 
         {}
-
-        private void HandleHugeBullets(bool apply)
-        {
-            var stat = Owner.Stats.Get(proto_game.Stats.BulletSize);
-            if (apply)
-            {
-                stat.SetMultiplier(2.0f);
-            }
-            else 
-            {
-                stat.SetMultiplier(0.0f);
-            }
-            HandleHugeBulletsCustom(apply);
-        }
     }
 }

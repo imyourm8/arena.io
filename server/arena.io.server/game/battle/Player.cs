@@ -9,7 +9,9 @@ using ExitGames.Logging.Log4Net;
 
 using Nito;
 
-using arena.helpers;
+using shared.factories;
+using shared.account;
+using shared.helpers;
 using arena.common.battle;
 
 namespace arena.battle
@@ -31,7 +33,7 @@ namespace arena.battle
         private bool castSkill_ = false;
         private bool shoot_ = false;
 
-        public Player(player.PlayerController controller, player.Profile profile)
+        public Player(net.PlayerController controller, Profile profile)
         {
             Controller = controller;
             Category = PhysicsDefs.Category.PLAYER; 
@@ -48,7 +50,7 @@ namespace arena.battle
         public RemoteInputData Input
         { get; set; }
 
-        public player.Profile Profile
+        public Profile Profile
         { get; private set; }
 
         public proto_profile.PlayerClasses SelectedClass
@@ -69,12 +71,12 @@ namespace arena.battle
         public int Ping
         { get; set; }
 
-        public player.PlayerController Controller
+        public net.PlayerController Controller
         { get; private set; }
 
         public void AssignStats() 
         {
-            var entry = Factories.PlayerClassFactory.Instance.GetEntry(SelectedClass);
+            var entry = PlayerClassFactory.Instance.GetEntry(SelectedClass);
 
             Stats.SetValue(proto_game.Stats.MaxHealth, entry.Health).SetStep(entry.HealthStep).ResetSteps();
             Stats.SetValue(proto_game.Stats.BulletDamage, entry.BulletDamage).SetStep(entry.BulletDamageStep).ResetSteps();
@@ -92,7 +94,7 @@ namespace arena.battle
             AddSkill(entry.Skill);
             Radius = entry.CollisionRadius;
             LinearDumping = entry.LinearDumping;
-            Weapon = Factories.WeaponFactory.Instance.GetEntry(entry.Weapon);
+            Weapon = WeaponFactory.Instance.GetEntry(entry.Weapon);
 
             Stats.SetValue(proto_game.Stats.SkillCooldown, 0.1f);
             UpgradePointsLeft = Level - 1;
@@ -181,10 +183,10 @@ namespace arena.battle
             var input = Input.data;
             if (input != null)
             {
-                var force = new helpers.Vector2(input.force_x, input.force_y);
+                var force = new Vector2(input.force_x, input.force_y);
                 MoveInDirection(force);
                 //convert angle to radians
-                Rotation = input.rotation * helpers.MathHelper.Deg2Rad;
+                Rotation = input.rotation * MathHelper.Deg2Rad;
 
                 shoot_ = input.shoot;
                 castSkill_ = input.skill;
@@ -207,16 +209,16 @@ namespace arena.battle
 
         private void ApplyDumping()
         {
-            var dumpingCoefficent = helpers.MathHelper.Clamp01(1.0f - GlobalDefs.GetUpdateInterval() * LinearDumping);
+            var dumpingCoefficent = MathHelper.Clamp01(1.0f - GlobalDefs.GetUpdateInterval() * LinearDumping);
             //Velocity *= dumpingCoefficent;
             RecoilVelocity *= dumpingCoefficent;
-            if (helpers.MathHelper.Approx(Velocity.Length(), 0.0f))
+            if (MathHelper.Approx(Velocity.Length(), 0.0f))
             {
-                Velocity = helpers.Vector2.zero;
+                Velocity = Vector2.zero;
             }
-            if (helpers.MathHelper.Approx(RecoilVelocity.Length(), 0.0f))
+            if (MathHelper.Approx(RecoilVelocity.Length(), 0.0f))
             {
-                RecoilVelocity = helpers.Vector2.zero;
+                RecoilVelocity = Vector2.zero;
             } 
         }
 

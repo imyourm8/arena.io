@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace arena.battle.Logic.Behaviours
+using shared.helpers;
+
+namespace arena.battle.logic.behaviours
 {
     class ShootWithWeapon : Behaviour
     {
@@ -20,7 +22,7 @@ namespace arena.battle.Logic.Behaviours
 
         public ShootWithWeapon(float radius, float delay = 0, float angle = -1, float predictive = 0)
         {
-            angle_ = angle * helpers.MathHelper.Deg2Rad;
+            angle_ = angle * MathHelper.Deg2Rad;
             delay_ = delay;
             radius_ = radius;
             predict_ = predictive;

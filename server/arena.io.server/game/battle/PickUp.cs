@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using shared.data;
+using shared.factories;
+
 namespace arena.battle
 {
     class PickUp : Entity
@@ -28,7 +31,7 @@ namespace arena.battle
 
         public override void InitPhysics()
         {
-            Entry = Factories.PickUpFactory.Instance.GetEntry(PickupType);
+            Entry = PickUpFactory.Instance.GetEntry(PickupType);
             Radius = Entry.CollisionRadius;
 
             base.InitPhysics();

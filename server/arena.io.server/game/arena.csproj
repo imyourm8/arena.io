@@ -126,6 +126,9 @@
     <Reference Include="ProtoLib">
       <HintPath>..\..\..\Assets\lib\Protobuf\Debug\ProtoLib.dll</HintPath>
     </Reference>
+    <Reference Include="SharedCode">
+      <HintPath>..\SharedCode\bin\SharedCode.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -155,17 +158,11 @@
     <Compile Include="..\..\..\Assets\scripts\Common\Battle\MapNavigation.cs">
       <Link>Common\Battle\MapNavigation.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\Assets\scripts\Common\Battle\PlayerExperience.cs">
-      <Link>Common\Battle\PlayerExperience.cs</Link>
-    </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\Battle\Status.cs">
       <Link>Common\Battle\Status.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\Battle\StatusManager.cs">
       <Link>Common\Battle\StatusManager.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\Assets\scripts\Common\ClientState.cs">
-      <Link>Common\ClientState.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\CooldownManager.cs">
       <Link>Common\CooldownManager.cs</Link>
@@ -185,171 +182,103 @@
     <Compile Include="..\..\..\Assets\scripts\Common\ObjectPool\ObjectPoolGeneric.cs">
       <Link>Common\ObjectPool\ObjectPoolGeneric.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\Assets\scripts\Common\OperationConditions.cs">
-      <Link>Common\OperationConditions.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\Assets\scripts\Common\OperationParameters.cs">
-      <Link>Common\OperationParameters.cs</Link>
-    </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\PlayerProfileExperience.cs">
       <Link>Common\PlayerProfileExperience.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\ProtoExtractor.cs">
       <Link>Common\ProtoExtractor.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\Assets\scripts\Common\Singleton.cs">
-      <Link>Common\Singleton.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\Assets\scripts\Common\SingletonFactory.cs">
-      <Link>Common\SingletonFactory.cs</Link>
-    </Compile>
     <Compile Include="..\..\clipper_library\clipper.cs">
       <Link>helpers\clipper.cs</Link>
     </Compile>
-    <Compile Include="..\Database\Database.cs">
-      <Link>Database\Database.cs</Link>
-    </Compile>
-    <Compile Include="..\Database\DatabaseConnectionDefines.cs">
-      <Link>Database\DatabaseConnectionDefines.cs</Link>
-    </Compile>
-    <Compile Include="..\Database\IAuthDB.cs">
-      <Link>Database\IAuthDB.cs</Link>
-    </Compile>
-    <Compile Include="..\Database\ICreatureDB.cs">
-      <Link>Database\ICreatureDB.cs</Link>
-    </Compile>
-    <Compile Include="..\Database\IDatabaseImpl.cs">
-      <Link>Database\IDatabaseImpl.cs</Link>
-    </Compile>
-    <Compile Include="..\Database\IDatabaseResultUser.cs">
-      <Link>Database\IDatabaseResultUser.cs</Link>
-    </Compile>
-    <Compile Include="..\Database\IDatabaseSerializable.cs">
-      <Link>Database\IDatabaseSerializable.cs</Link>
-    </Compile>
-    <Compile Include="..\Database\ILootDB.cs">
-      <Link>Database\ILootDB.cs</Link>
-    </Compile>
-    <Compile Include="..\Database\IPlayerDB.cs">
-      <Link>Database\IPlayerDB.cs</Link>
-    </Compile>
-    <Compile Include="..\Database\ISpellDB.cs">
-      <Link>Database\ISpellDB.cs</Link>
-    </Compile>
-    <Compile Include="..\Database\IWorldDB.cs">
-      <Link>Database\IWorldDB.cs</Link>
-    </Compile>
     <Compile Include="Application.cs" />
     <Compile Include="battle\AttackData.cs" />
+    <Compile Include="battle\boosters\Booster.cs" />
     <Compile Include="battle\Bullet.cs" />
+    <Compile Include="battle\factories\MobScriptsFactory.cs" />
+    <Compile Include="battle\factories\MobScriptsFactoryScripts\MobScriptsFactory.SimpleThings.cs" />
     <Compile Include="battle\GameContactFilter.cs" />
     <Compile Include="battle\DetermenisticScheduler.cs" />
     <Compile Include="battle\DetermenisticTimer.cs" />
     <Compile Include="battle\GameContactListener.cs" />
-    <Compile Include="battle\BulletEntry.cs" />
-    <Compile Include="battle\ExpBlockEntry.cs" />
     <Compile Include="battle\GameTime.cs" />
     <Compile Include="battle\GlobalDefs.cs" />
     <Compile Include="battle\GoldCoin.cs" />
-    <Compile Include="battle\Logic\Behaviours\AnyOf.cs" />
-    <Compile Include="battle\Logic\Behaviours\Behaviour.cs" />
-    <Compile Include="battle\Logic\Behaviours\Charge.cs" />
-    <Compile Include="battle\Logic\Behaviours\Follow.cs" />
-    <Compile Include="battle\Logic\Behaviours\RandomMove.cs" />
-    <Compile Include="battle\Logic\Behaviours\Shoot.cs" />
-    <Compile Include="battle\Logic\Behaviours\ShootSeries.cs" />
-    <Compile Include="battle\Logic\Behaviours\ShootWithWeapon.cs" />
-    <Compile Include="battle\Logic\Behaviours\StatusBehaviour.cs" />
-    <Compile Include="battle\Logic\Behaviours\StayAway.cs" />
-    <Compile Include="battle\Logic\Behaviours\StayCloseToSpawn.cs" />
-    <Compile Include="battle\Logic\IBehaviour.cs" />
-    <Compile Include="battle\Logic\ILogicElement.cs" />
-    <Compile Include="battle\Logic\IState.cs" />
-    <Compile Include="battle\Logic\IStateHolder.cs" />
-    <Compile Include="battle\Logic\ITransition.cs" />
-    <Compile Include="battle\Logic\StateManager.cs" />
-    <Compile Include="battle\Logic\States\State.cs" />
-    <Compile Include="battle\Logic\Statuses\GameStatus.cs" />
-    <Compile Include="battle\Logic\Statuses\GameStatusID.cs" />
-    <Compile Include="battle\Logic\Statuses\GameStatusTimed.cs" />
-    <Compile Include="battle\Logic\Statuses\MovementSpeed.cs" />
-    <Compile Include="battle\Logic\Transitions\AnyPlayerInRange.cs" />
-    <Compile Include="battle\Logic\Transitions\HpLess.cs" />
-    <Compile Include="battle\Logic\Transitions\MoveToState.cs" />
-    <Compile Include="battle\Logic\Transitions\NoPlayerInRange.cs" />
-    <Compile Include="battle\Logic\Transitions\PlayerInAttackRange.cs" />
-    <Compile Include="battle\Logic\Transitions\TimedTransition.cs" />
-    <Compile Include="battle\Logic\Transitions\Transition.cs" />
-    <Compile Include="battle\Map\TiledParser.cs" />
-    <Compile Include="battle\Net\NetworkEntity.cs" />
+    <Compile Include="battle\logic\behaviours\AnyOf.cs" />
+    <Compile Include="battle\logic\behaviours\Behaviour.cs" />
+    <Compile Include="battle\logic\behaviours\Charge.cs" />
+    <Compile Include="battle\logic\behaviours\Follow.cs" />
+    <Compile Include="battle\logic\behaviours\RandomMove.cs" />
+    <Compile Include="battle\logic\behaviours\Shoot.cs" />
+    <Compile Include="battle\logic\behaviours\ShootSeries.cs" />
+    <Compile Include="battle\logic\behaviours\ShootWithWeapon.cs" />
+    <Compile Include="battle\logic\behaviours\StatusBehaviour.cs" />
+    <Compile Include="battle\logic\behaviours\StayAway.cs" />
+    <Compile Include="battle\logic\behaviours\StayCloseToSpawn.cs" />
+    <Compile Include="battle\logic\interfaces\IBehaviour.cs" />
+    <Compile Include="battle\logic\interfaces\ILogicElement.cs" />
+    <Compile Include="battle\logic\interfaces\IPersistent.cs" />
+    <Compile Include="battle\logic\interfaces\IState.cs" />
+    <Compile Include="battle\logic\interfaces\IStateHolder.cs" />
+    <Compile Include="battle\logic\interfaces\IStateManager.cs" />
+    <Compile Include="battle\logic\interfaces\ITransition.cs" />
+    <Compile Include="battle\logic\PersistentProxy.cs" />
+    <Compile Include="battle\logic\StateManager.cs" />
+    <Compile Include="battle\logic\states\State.cs" />
+    <Compile Include="battle\logic\statuses\GameStatus.cs" />
+    <Compile Include="battle\logic\statuses\GameStatusID.cs" />
+    <Compile Include="battle\logic\statuses\GameStatusTimed.cs" />
+    <Compile Include="battle\logic\statuses\MovementSpeed.cs" />
+    <Compile Include="battle\logic\transitions\AnyPlayerInRange.cs" />
+    <Compile Include="battle\logic\transitions\HpLess.cs" />
+    <Compile Include="battle\logic\transitions\MoveToState.cs" />
+    <Compile Include="battle\logic\transitions\NoPlayerInRange.cs" />
+    <Compile Include="battle\logic\transitions\PlayerInAttackRange.cs" />
+    <Compile Include="battle\logic\transitions\TimedTransition.cs" />
+    <Compile Include="battle\logic\transitions\Transition.cs" />
+    <Compile Include="battle\map\MapIDs.cs" />
+    <Compile Include="battle\map\TiledParser.cs" />
+    <Compile Include="battle\net\NetworkEntity.cs" />
     <Compile Include="battle\PickUp.cs" />
-    <Compile Include="battle\Map\BlockSpawner.cs" />
+    <Compile Include="battle\map\BlockSpawner.cs" />
     <Compile Include="battle\Entity.cs" />
     <Compile Include="battle\ExpBlock.cs" />
     <Compile Include="battle\Game.cs" />
-    <Compile Include="battle\GameModes\FFA.cs" />
-    <Compile Include="battle\GameModes\GameMode.cs" />
-    <Compile Include="battle\Map\ExpArea.cs" />
-    <Compile Include="battle\Map\ExpLayer.cs" />
-    <Compile Include="battle\Map\Map.cs" />
-    <Compile Include="battle\Map\MapLoader.cs" />
-    <Compile Include="battle\Map\MobLayer.cs" />
-    <Compile Include="battle\Map\MobSpawnPoint.cs" />
-    <Compile Include="battle\Map\NavigationLayer.cs" />
-    <Compile Include="battle\Map\PlayerSpawnPoint.cs" />
-    <Compile Include="battle\Map\PlayerSpawnsLayer.cs" />
-    <Compile Include="battle\Map\PowerUpLayer.cs" />
-    <Compile Include="battle\Map\PowerUpSpawnPoint.cs" />
+    <Compile Include="battle\modes\FFA.cs" />
+    <Compile Include="battle\modes\GameMode.cs" />
+    <Compile Include="battle\map\ExpArea.cs" />
+    <Compile Include="battle\map\ExpLayer.cs" />
+    <Compile Include="battle\map\Map.cs" />
+    <Compile Include="battle\map\MapLoader.cs" />
+    <Compile Include="battle\map\MobLayer.cs" />
+    <Compile Include="battle\map\MobSpawnPoint.cs" />
+    <Compile Include="battle\map\NavigationLayer.cs" />
+    <Compile Include="battle\map\PlayerSpawnPoint.cs" />
+    <Compile Include="battle\map\PlayerSpawnsLayer.cs" />
+    <Compile Include="battle\map\PowerUpLayer.cs" />
+    <Compile Include="battle\map\PowerUpSpawnPoint.cs" />
     <Compile Include="battle\Mob.cs" />
-    <Compile Include="battle\MobAI\BaseAI.cs" />
-    <Compile Include="battle\MobAI\ChasingAI.cs" />
-    <Compile Include="battle\MobAI\TypesOfAI.cs" />
-    <Compile Include="battle\MobEntry.cs" />
+    <Compile Include="battle\ai\BaseAI.cs" />
+    <Compile Include="battle\ai\ChasingAI.cs" />
+    <Compile Include="battle\ai\TypesOfAI.cs" />
     <Compile Include="battle\PhysicsDefs.cs" />
-    <Compile Include="battle\PickUpEntry.cs" />
     <Compile Include="battle\Player.cs" />
-    <Compile Include="battle\PlayerClassEntry.cs" />
     <Compile Include="battle\PlayerBattleStats.cs" />
-    <Compile Include="battle\PlayerInput.cs" />
     <Compile Include="battle\PowerUp.cs" />
-    <Compile Include="battle\PowerUpEntry.cs" />
     <Compile Include="battle\Room.cs" />
     <Compile Include="battle\RoomManager.cs" />
-    <Compile Include="battle\Map\SpatialHash.cs" />
-    <Compile Include="battle\Skills\GunnerSkill.cs" />
-    <Compile Include="battle\Skills\Skill.cs" />
-    <Compile Include="battle\Skills\SkillEntry.cs" />
+    <Compile Include="battle\map\SpatialHash.cs" />
+    <Compile Include="battle\skills\GunnerSkill.cs" />
+    <Compile Include="battle\skills\Skill.cs" />
     <Compile Include="battle\Unit.cs" />
-    <Compile Include="battle\WeaponEntry.cs" />
-    <Compile Include="Common\ClassPool.cs" />
-    <Compile Include="Database\Postgres\AuthDB.cs" />
-    <Compile Include="Database\Postgres\CreatureDB.cs" />
-    <Compile Include="Database\Postgres\PlayerDB.cs" />
-    <Compile Include="Database\Postgres\PostgresImpl.cs" />
-    <Compile Include="Database\Postgres\WorldDB.cs" />
+    <Compile Include="common\ClassPool.cs" />
     <Compile Include="DebugExecutor.cs" />
-    <Compile Include="Factories\MobScriptsFactory.cs" />
-    <Compile Include="Factories\ExpBlockFactory.cs" />
-    <Compile Include="Factories\MobScriptsFactoryScripts\MobScriptsFactory.SimpleThings.cs" />
-    <Compile Include="Factories\MobsFactory.cs" />
-    <Compile Include="Factories\PickUpFactory.cs" />
-    <Compile Include="Factories\PlayerClassFactory.cs" />
-    <Compile Include="Factories\PowerUpFactory.cs" />
-    <Compile Include="Factories\SkillFactory.cs" />
-    <Compile Include="Factories\WeaponFactory.cs" />
-    <Compile Include="Factories\BulletFactory.cs" />
-    <Compile Include="helpers\CurrentTime.cs" />
     <Compile Include="helpers\Extensions.cs" />
-    <Compile Include="helpers\Geom.cs" />
-    <Compile Include="helpers\MathHelper.cs" />
-    <Compile Include="helpers\Parsing.cs" />
+    <Compile Include="helpers\Contour.cs" />
+    <Compile Include="helpers\PolygonContours.cs" />
     <Compile Include="helpers\Triangle.cs" />
     <Compile Include="helpers\TriangulatedPolygon.cs" />
-    <Compile Include="player\OperationHandler.cs" />
-    <Compile Include="player\PlayerConnection.cs" />
     <Compile Include="player\PlayerController.cs" />
-    <Compile Include="player\Profile.cs" />
-    <Compile Include="player\RequestHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

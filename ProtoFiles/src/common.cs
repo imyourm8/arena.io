@@ -136,6 +136,9 @@ namespace proto_common
       [global::ProtoBuf.ProtoEnum(Name=@"ADMIN_AUTH", Value=13)]
       ADMIN_AUTH = 13,
             
+      [global::ProtoBuf.ProtoEnum(Name=@"CONNECT_TO_LOBBY", Value=14)]
+      CONNECT_TO_LOBBY = 14,
+            
       [global::ProtoBuf.ProtoEnum(Name=@"ENTER_AREA", Value=2001)]
       ENTER_AREA = 2001,
             
@@ -164,7 +167,10 @@ namespace proto_common
       PLAYER_INPUT = 2016,
             
       [global::ProtoBuf.ProtoEnum(Name=@"DAMAGE_APPLY", Value=2017)]
-      DAMAGE_APPLY = 2017
+      DAMAGE_APPLY = 2017,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"DOWNLOAD_MAP", Value=2018)]
+      DOWNLOAD_MAP = 2018
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"Events")]
@@ -238,7 +244,10 @@ namespace proto_common
       SYNC_ATTACK = 2022,
             
       [global::ProtoBuf.ProtoEnum(Name=@"SPAWN_BULLETS", Value=2023)]
-      SPAWN_BULLETS = 2023
+      SPAWN_BULLETS = 2023,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"START_GAME", Value=2024)]
+      START_GAME = 2024
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"PacketFlags")]

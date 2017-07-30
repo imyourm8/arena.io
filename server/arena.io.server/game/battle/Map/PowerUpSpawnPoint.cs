@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using shared.helpers;
+
 namespace arena.battle
 {
     class PowerUpSpawnPoint
@@ -28,7 +30,7 @@ namespace arena.battle
             }
         }
 
-        public helpers.Area Area
+        public Area Area
         { get; set; }
 
         public Dictionary<proto_game.PowerUpType, int> Durations

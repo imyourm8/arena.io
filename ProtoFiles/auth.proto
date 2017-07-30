@@ -5,11 +5,13 @@ import "ProtoFiles/profile.proto";
 
 package proto_auth;
 
-message Auth {
+message Auth 
+{
   enum AuthType
   {
       OAuth = 2;
   }
+  
 	enum OAuthProvider
 	{
 		VK = 0;
@@ -36,11 +38,36 @@ message Auth {
 	
 	message Response 
 	{
-    required proto_profile.UserInfo info = 1;
+    required string login_token = 1;
+    optional string lobby_ip = 2;
   
 		extend proto_common.Response 
 		{
 			optional proto_auth.Auth.Response auth_res = 10;
+		}
+	}
+}
+
+message ConnectToLobby
+{
+  message Request 
+	{
+		required string login_token = 1;
+    required string uid = 2;
+    
+		extend proto_common.Request 
+		{
+			optional proto_auth.ConnectToLobby.Request auth_req = 14;
+		}
+	}
+	
+	message Response 
+	{
+    required proto_profile.UserInfo info = 1;
+  
+		extend proto_common.Response 
+		{
+			optional proto_auth.ConnectToLobby.Response auth_res = 14;
 		}
 	}
 }

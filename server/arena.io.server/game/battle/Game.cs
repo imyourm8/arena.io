@@ -10,13 +10,16 @@ using ExitGames.Logging;
 using ExitGames.Logging.Log4Net;
 
 using arena.Common;
-using arena.helpers;
-using arena.battle.Logic;
+using shared.net;
+using shared.helpers;
+using shared.database;
+using shared.factories;
+using arena.battle.logic;
 
 namespace arena.battle
 {
     class Game : 
-        player.IActionInvoker, 
+        IActionInvoker, 
         BlockSpawner.IBlockControl
     {
         private static ILogger log = LogManager.GetCurrentClassLogger();
@@ -57,7 +60,7 @@ namespace arena.battle
             room_ = room; 
             gameFinishAt_ = CurrentTime.Instance.CurrentTimeInMs + mode.GetMatchDuration();
 
-            startUpTime_ = helpers.CurrentTime.Instance.CurrentTimeInMs;
+            startUpTime_ = CurrentTime.Instance.CurrentTimeInMs;
             prevUpdateTime_ = startUpTime_;
 
             mode_ = mode;
@@ -215,15 +218,9 @@ namespace arena.battle
 
                 joinedPlayers_.Add(player);
 
-                //send join game packet
+                //send join game packet wit map id
                 var joinPacket = new proto_game.JoinGame.Response();
-                /*var outerBorder = map_.GetOuterBorder();
-                foreach (var coord in outerBorder)
-                {
-                    joinPacket.outer_border.Add(coord); 
-                }*/
-                joinPacket.tick = Tick;
-                joinPacket.time_left = (int)(gameFinishAt_ - Time);
+                joinPacket.map_id = mode_.GetMapID();
                 player.Controller.SendResponse(proto_common.Commands.JOIN_GAME, joinPacket); 
             });
         }
@@ -233,7 +230,7 @@ namespace arena.battle
             var bullet = new Bullet();
 
             bullet.Owner = owner;
-            bullet.Entry = Factories.BulletFactory.Instance.GetEntry(bulletId);
+            bullet.Entry = BulletFactory.Instance.GetEntry(bulletId);
             bullet.Stats.SetValue(proto_game.Stats.MovementSpeed, bullet.Entry.Speed);
             bullet.Radius = bullet.Entry.Radius;
 

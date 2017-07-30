@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3F1F5857-39DD-49D7-9181-CD372711B3FE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharedCode</RootNamespace>
+    <AssemblyName>SharedCode</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Box2CS">
+      <HintPath>..\..\deploy\arena.io.server\bin\Box2CS.dll</HintPath>
+    </Reference>
+    <Reference Include="ExitGames.Logging.Log4Net">
+      <HintPath>..\..\lib\ExitGames.Logging.Log4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="ExitGamesLibs">
+      <HintPath>..\..\lib\ExitGamesLibs.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\..\lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql">
+      <HintPath>..\..\lib\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql.EntityFramework">
+      <HintPath>..\..\lib\Npgsql.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql.EntityFrameworkLegacy">
+      <HintPath>..\..\lib\Npgsql.EntityFrameworkLegacy.dll</HintPath>
+    </Reference>
+    <Reference Include="Photon.SocketServer">
+      <HintPath>..\..\lib\Photon.SocketServer.dll</HintPath>
+    </Reference>
+    <Reference Include="PhotonHostRuntimeInterfaces">
+      <HintPath>..\..\lib\PhotonHostRuntimeInterfaces.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="PowerCollections">
+      <HintPath>..\..\lib\PowerCollections.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\lib\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoLib">
+      <HintPath>..\..\..\Assets\lib\Protobuf\Debug\ProtoLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\Assets\scripts\Common\Battle\PlayerExperience.cs">
+      <Link>common\PlayerExperience.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Experience.cs">
+      <Link>common\Experience.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\net\ClientState.cs">
+      <Link>common\ClientState.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\net\OperationConditions.cs">
+      <Link>common\OperationConditions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\net\OperationParameters.cs">
+      <Link>common\OperationParameters.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\net\Ports.cs">
+      <Link>common\Ports.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\PlayerProfileExperience.cs">
+      <Link>common\PlayerProfileExperience.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\Singleton.cs">
+      <Link>common\Singleton.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\Assets\scripts\Common\SingletonFactory.cs">
+      <Link>common\SingletonFactory.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="shared\account\Profile.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\Database.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\DatabaseConnectionDefines.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\IAuthDB.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\ICreatureDB.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\IDatabaseImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\IDatabaseResultUser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\IDatabaseSerializable.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\ILootDB.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\IPlayerDB.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\ISpellDB.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\IWorldDB.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\postgres\AuthDB.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\postgres\CreatureDB.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\postgres\PlayerDB.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\postgres\PostgresImpl.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\database\postgres\WorldDB.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\data\BoosterEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\data\BulletEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\data\ExpBlockEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\data\MobEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\data\PickUpEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\data\PlayerClassEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\data\PowerUpEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\data\SkillEntry.cs" />
+    <Compile Include="shared\data\WeaponEntry.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\factories\BoosterFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\factories\BulletFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\factories\ExpBlockFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\factories\MobsFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\factories\PickUpFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\factories\PlayerClassFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\factories\PowerUpFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\factories\SkillFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\factories\WeaponFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\helpers\CurrentTime.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\helpers\Geom.cs" />
+    <Compile Include="shared\helpers\MathHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\helpers\Parsing.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\net\OperationHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\net\PlayerConnection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="shared\net\RequestHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shared\database\arena_db_dump.backup" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="shared\database\UserEnumsShow.sql" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

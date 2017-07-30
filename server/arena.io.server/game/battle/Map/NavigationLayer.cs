@@ -20,6 +20,8 @@ namespace arena.battle
 {
     class NavigationLayer
     {
+        private proto_game.Map cachedMap_ = null;
+
         public int TileWidth
         { get; private set; }
 
@@ -60,6 +62,34 @@ namespace arena.battle
 
             World = new World(Vec2.Empty, true);
             CreateWallsAroundWorld();
+        }
+
+        public proto_game.Map Serialize()
+        {
+            if (cachedMap_ == null)
+            {
+                proto_game.Map map = new proto_game.Map();
+                map.border = new proto_game.Contour();
+                foreach (Vec2 p in OuterBorder)
+                {
+                    map.border.x.Add(p.X);
+                    map.border.y.Add(p.Y);
+                }
+                foreach (Contour c in Obstacles)
+                {
+                    var contour = new proto_game.Contour();
+                    foreach (Vec2 p in c)
+                    {
+                        contour.x.Add(p.X);
+                        contour.y.Add(p.Y);
+                    }
+                    map.obstacles.Add(contour);
+                }
+                
+                cachedMap_ = map;
+            }
+            
+            return cachedMap_;
         }
 
         private void CreateWallsAroundWorld()

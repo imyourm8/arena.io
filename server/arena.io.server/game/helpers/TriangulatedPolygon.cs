@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using shared.helpers;
+
 namespace arena.helpers
 {
     class TriangulatedPolygon : List<Triangle>

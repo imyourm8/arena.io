@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+
 using Photon.SocketServer;
 using Photon.SocketServer.Concurrency;
 using Photon.SocketServer.Operations;
 using Photon.SocketServer.ServerToServer;
 using Photon.SocketServer.Security;
 using Photon.SocketServer.Numeric;
-using System.IO;
 
 using ExitGames.Concurrency.Core;
 using ExitGames.Concurrency.Fibers;
@@ -18,11 +15,16 @@ using ExitGames.Logging;
 using ExitGames.Logging.Log4Net;
 
 using log4net.Config;
-using arena.player;
+
+using arena.net;
+using shared.database;
+using shared.database.Postgres;
+using shared.net;
+using shared.factories;
 
 namespace arena
 {
-    public class Application : Photon.SocketServer.ApplicationBase
+    public class Application : ApplicationBase
     {
         private static ILogger log = LogManager.GetCurrentClassLogger(); 
         protected override PeerBase CreatePeer(InitRequest initRequest)
@@ -42,17 +44,18 @@ namespace arena
                 XmlConfigurator.ConfigureAndWatch(configFileInfo); 
             }
 
-            Database.Database.Instance.SetDatabaseImplementation(new Database.Postgres.PostgresImpl());
+            Database.Instance.SetDatabaseImplementation(new PostgresImpl());
 
-            Factories.PlayerClassFactory.Instance.Init();
-            Factories.MobsFactory.Instance.Init();
-            Factories.WeaponFactory.Instance.Init();
-            Factories.BulletFactory.Instance.Init();
-            Factories.ExpBlockFactory.Instance.Init();
-            Factories.PowerUpFactory.Instance.Init();
-            Factories.SkillFactory.Instance.Init();
-            Factories.MobScriptsFactory.Instance.Init();
-            Factories.PickUpFactory.Instance.Init();
+            PlayerClassFactory.Instance.Init();
+            MobsFactory.Instance.Init();
+            WeaponFactory.Instance.Init();
+            BulletFactory.Instance.Init();
+            ExpBlockFactory.Instance.Init();
+            PowerUpFactory.Instance.Init();
+            SkillFactory.Instance.Init();
+            battle.factories.MobScriptsFactory.Instance.Init();
+            PickUpFactory.Instance.Init();
+            BoosterFactory.Instance.Init();
 
             battle.RoomManager.Instance.CreateDebugRoom();
         }

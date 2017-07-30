@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
+using shared.helpers;
+
 namespace arena.helpers
 {
     class Triangle

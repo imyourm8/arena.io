@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using arena.battle.Logic.States;
+using arena.battle.logic.states;
 
-namespace arena.battle.Logic.Transitions
+namespace arena.battle.logic.transitions
 {
     abstract class Transition : ITransition
     {

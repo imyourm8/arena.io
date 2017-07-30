@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using arena.helpers;
+using shared.helpers;
 
 namespace arena.battle
 {
@@ -21,7 +21,7 @@ namespace arena.battle
         private int width_, height_;
         private int maxBlocks_;
         private float cellWidth_, cellHeight_;
-        private helpers.Area spawnArea_;
+        private Area spawnArea_;
         private ConcurrentDictionary<int, ConcurrentDictionary<int, int>> buckets_ 
                 = new ConcurrentDictionary<int, ConcurrentDictionary<int, int>>();
         private int unitsPerCell_;

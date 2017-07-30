@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace arena.battle.Logic.Behaviours
+using shared.helpers;
+
+namespace arena.battle.logic.behaviours
 {
     class Shoot : Behaviour
     {
@@ -53,13 +55,13 @@ namespace arena.battle.Logic.Behaviours
             bulletType_ = bulletType;
             radius_ = radius;
             shootCount_ = shootCount;
-            angleStep_ = angleStep * helpers.MathHelper.Deg2Rad;
+            angleStep_ = angleStep * MathHelper.Deg2Rad;
             predictiveCoeff_ = predictive;
             cooldownOffset_ = cooldownOffset;
             cooldown_ = cooldown;
             damage_ = damage;
-            angleOffset_ = angleOffset != null ? angleOffset.Value * helpers.MathHelper.Deg2Rad : angleOffset;
-            fixedAngle_ = fixedAngle * helpers.MathHelper.Deg2Rad;
+            angleOffset_ = angleOffset != null ? angleOffset.Value * MathHelper.Deg2Rad : angleOffset;
+            fixedAngle_ = fixedAngle * MathHelper.Deg2Rad;
         }
 
         protected override void OnEnter(Entity holder, IStateStorage stateHolder, ref object behaviorState)

@@ -10,15 +10,18 @@ using ExitGames.Concurrency.Fibers;
 using ExitGames.Logging;
 using ExitGames.Logging.Log4Net;
 
-using arena.Database;
+using shared.net;
+using shared.factories;
+using shared.account;
+using shared.helpers;
+using shared.database;
 
-
-namespace arena.player
+namespace arena.net
 {
-    class PlayerController : RequestHandler, player.IActionInvoker
+    class PlayerController : RequestHandler, IActionInvoker
     {
         private static ILogger log = LogManager.GetCurrentClassLogger(); 
-        private TapCommon.ClientState state_ = TapCommon.ClientState.Unlogged;
+        private ClientState state_ = ClientState.Unlogged;
         private battle.Player player_;
         private PoolFiber fiber_ = new PoolFiber(new DebugExecutor());
         private bool loginInProcess_ = false;
@@ -37,6 +40,7 @@ namespace arena.player
             AddOperationHandler(proto_common.Commands.PLAYER_INPUT, new OperationHandler(HandleUserInput));
             AddOperationHandler(proto_common.Commands.SYNC_TICK, new OperationHandler(HandleSyncTick));
             AddOperationHandler(proto_common.Commands.DAMAGE_APPLY, new OperationHandler(HandleDamageApply));
+            AddOperationHandler(proto_common.Commands.DOWNLOAD_MAP, new OperationHandler(HandleDownloadMap));
 
             fiber_.Start();
         }
@@ -51,41 +55,10 @@ namespace arena.player
             return this;
         }
 
-        private void Send(proto_common.Event evt)
-        {
-            if (connection_ != null)
-            {
-                connection_.Send(evt);
-            }
-        }
-
-        public void SendResponse(proto_common.Commands cmd, object data, int id = 0, int error = 0)
-        {
-            var response = new proto_common.Response();
-            response.type = cmd;
-            response.id = id;
-            response.error = error;
-            response.timestamp = helpers.CurrentTime.Instance.CurrentTimeInMs;
-
-            ProtoBuf.Extensible.AppendValue(response, (int)cmd, data);
-            connection_.Send(response);
-        }
-
         public void SendEvent(battle.Net.EventPacket eventPacket)
         {
             if (eventPacket.IsValid)
                 SendEvent(eventPacket.EventID, eventPacket.Packet);
-        }
-
-        public void SendEvent(proto_common.Events evtCode, object data)
-        {
-            System.Diagnostics.Debug.Assert(data != null);
-            var evt = new proto_common.Event();
-            evt.type = evtCode;
-            evt.timestamp = helpers.CurrentTime.Instance.CurrentTimeInMs;
-
-            ProtoBuf.Extensible.AppendValue(evt, (int)evtCode, data);
-            Send(evt);
         }
 
         public override void HandleDisconnect()
@@ -94,36 +67,36 @@ namespace arena.player
 
             LeaveGame();
 
-            state_ &= ~TapCommon.ClientState.InBattle;
+            state_ &= ~ClientState.InBattle;
             fiber_.Stop();
         }
 
         public void OnGameFinished()
         {
-            state_ &= ~TapCommon.ClientState.InBattle;
+            state_ &= ~ClientState.InBattle;
         }
 
         public void SaveToDB()
         {
-            Database.Database.Instance.GetPLayerDB().SaveProfile(player_.Profile, (QueryResult result) =>
+            /*database.Database.Instance.GetPLayerDB().SaveProfile(player_.Profile, (QueryResult result) =>
+            {
+                if (result == QueryResult.Fail)
                 {
-                    if (result == QueryResult.Fail)
-                    {
-                        log.ErrorFormat("Failed saving of profile with id {0}", player_.Profile.UniqueID);
-                    }
-                });
+                    log.ErrorFormat("Failed saving of profile with id {0}", player_.Profile.UniqueID);
+                }
+            });*/
         }
 
-        #region Request Handlers
+#region Request Handlers
         public override bool FilterRequest(proto_common.Request request)
         { 
             bool filtered =  false; 
             bool alwaysExecute = false;
-            TapCommon.OperationCondition condition;
-            if (TapCommon.OperationCondition.conditionList.TryGetValue((int)request.type, out condition))
+            OperationCondition condition;
+            if (OperationCondition.conditionList.TryGetValue((int)request.type, out condition))
             {
                 //iterate through every possible state
-                foreach (TapCommon.ClientState state in Enum.GetValues(typeof(TapCommon.ClientState)))
+                foreach (ClientState state in Enum.GetValues(typeof(ClientState)))
                 {
                     //if state required in condition call 
                     if ((condition.State & state) != 0)
@@ -136,7 +109,7 @@ namespace arena.player
                     }
                 }
 
-                if (condition.Execution == TapCommon.OperationCondition.ExecutionMethod.AlwaysExecute)
+                if (condition.Execution == OperationCondition.ExecutionMethod.AlwaysExecute)
                 {
                     alwaysExecute = true;
                 }
@@ -162,7 +135,7 @@ namespace arena.player
                 stat.IncreaseByStep();
             }
             player_.UpgradePointsLeft--;
-            SendResponse(proto_common.Commands.STAT_UPGRADE, response, request.id, error);
+            SendResponse(request, response, error);
         }
 
         private void HandleChangeNickname(proto_common.Request request)
@@ -178,19 +151,19 @@ namespace arena.player
 
             if (name != player_.Profile.Name)
             {
-                Database.Database.Instance.GetPLayerDB().ChangeNickname(player_.Profile.UniqueID, name, (QueryResult result) =>
+                Database.Instance.GetPLayerDB().ChangeNickname(player_.Profile.UniqueID, name, (QueryResult result) =>
+                {
+                    if (result == QueryResult.Success)
                     {
-                        if (result == QueryResult.Success)
-                        {
-                            nickResponse.success = true;
-                            SendResponse(proto_common.Commands.CHANGE_NICKNAME, nickResponse);
-                        }
-                    });
+                        nickResponse.success = true;
+                        SendResponse(request, nickResponse);
+                    }
+                });
             }
             else
             {
                 nickResponse.success = false;
-                SendResponse(proto_common.Commands.CHANGE_NICKNAME, nickResponse);
+                SendResponse(request, nickResponse);
             }
         }
 
@@ -215,7 +188,7 @@ namespace arena.player
                 authEntry.authUserID = authReq.m_oauth.uid;
                 currentAuthEntry_ = authEntry;
 
-                Database.Database.Instance.GetAuthDB().LoginUser(authEntry, HandleDBLogin);
+                // database.Database.Instance.GetAuthDB().LoginUser(authEntry, HandleDBLogin);
                 loginInProcess_ = true;
             }
         }
@@ -228,14 +201,13 @@ namespace arena.player
             }
             else
             {
-                //create user if no one found
-                Database.Database.Instance.GetAuthDB().CreateUser(currentAuthEntry_, HandleCreateUser);
+                Connection.Disconnect();
             }
         }
 
         private void LoadUserFromDB(IDataReader data)
         {
-            var authRes = new proto_auth.Auth.Response();
+            var authRes = new proto_auth.ConnectToLobby.Response();
             loginInProcess_ = false;
 
             var profile = new Profile(data);
@@ -245,7 +217,7 @@ namespace arena.player
             authRes.info = info;
 
             var unlockedClasses = player_.Profile.GetUnlockedClasses();
-            foreach (var entry in Factories.PlayerClassFactory.Instance.GetAllClasses())
+            foreach (var entry in PlayerClassFactory.Instance.GetAllClasses())
             {
                 proto_profile.ClassInfo clInfo = new proto_profile.ClassInfo();
                 clInfo.@class = entry.Value.Class;
@@ -255,7 +227,7 @@ namespace arena.player
                 info.classesInfo.Add(clInfo);
             }
 
-            state_ = TapCommon.ClientState.Logged;
+            state_ = ClientState.Logged;
             SendResponse(proto_common.Commands.AUTH, authRes);
         }
 
@@ -268,19 +240,17 @@ namespace arena.player
             else
             {
                 //something gone wrong
-                var authRes = new proto_auth.Auth.Response();
-                SendResponse(proto_common.Commands.AUTH, authRes, 0, (int)proto_common.Common.CommonErrors.CE_ERROR);
+                SendResponse(proto_common.Commands.AUTH, null, 0, (int)proto_common.Common.CommonErrors.CE_ERROR);
             }
         }
 
         private void HandleFindRoom(proto_common.Request request)
         {
-            var response = new proto_game.FindRoom.Response();
-            SendResponse(proto_common.Commands.FIND_ROOM, response, request.id);
+            SendResponse(request);
 
             battle.RoomManager.Instance.AssignPlayerToRandomRoom(player_);
 
-            state_ |= TapCommon.ClientState.SwitchGameServer;
+            state_ |= ClientState.SwitchGameServer;
         }
 
         private void HandleJoinGame(proto_common.Request request)
@@ -290,8 +260,8 @@ namespace arena.player
             player_.SelectedClass = joinReq.@class;
             player_.Game.PlayerJoin(player_);
 
-            state_ &= ~TapCommon.ClientState.SwitchGameServer;
-            state_ |= TapCommon.ClientState.InBattle;
+            state_ &= ~ClientState.SwitchGameServer;
+            state_ |= ClientState.InBattle;
         }
 
         private void HandleSyncTick(proto_common.Request request)
@@ -300,7 +270,7 @@ namespace arena.player
 
             var syncPacket = new proto_game.SyncTick.Response();
             syncPacket.tick = player_.Game.Tick;
-            SendResponse(proto_common.Commands.SYNC_TICK, syncPacket, request.id);
+            SendResponse(request, syncPacket);
         }
 
         private void HandlePing(proto_common.Request request)
@@ -309,9 +279,9 @@ namespace arena.player
                ProtoBuf.Extensible.GetValue<proto_game.Ping.Request>(request, (int)proto_common.Commands.PING);
 
             var pong = new proto_game.Ping.Response();
-            pong.timestamp = helpers.CurrentTime.Instance.CurrentTimeInMs;
+            pong.timestamp = CurrentTime.Instance.CurrentTimeInMs;
 
-            SendResponse(proto_common.Commands.PING, pong, request.id);
+            SendResponse(request, pong);
 
             if (player_ != null)
             {
@@ -324,14 +294,14 @@ namespace arena.player
             if (player_ != null)
             {
                 battle.RoomManager.Instance.RemovePlayer(player_);
-                state_ &= ~TapCommon.ClientState.InBattle;
+                state_ &= ~ClientState.InBattle;
             }
         }
 
         private void HandleLeaveGame(proto_common.Request request) 
         {
             LeaveGame();
-            SendResponse(proto_common.Commands.LEAVE_GAME, request.Extract<proto_game.LeaveGame>(proto_common.Commands.LEAVE_GAME), request.id);
+            SendResponse(request, request.Extract<proto_game.LeaveGame>(proto_common.Commands.LEAVE_GAME));
         }
 
         private void HandleUserInput(proto_common.Request request)
@@ -347,9 +317,17 @@ namespace arena.player
             player_.Game.DamageApply(player_, req);
         }
 
-        #endregion
+        private void HandleDownloadMap(proto_common.Request request)
+        {
+            var req = request.Extract<proto_game.DownloadMap.Request>(proto_common.Commands.DOWNLOAD_MAP);
+            var res = new proto_game.DownloadMap.Response();
+            res.map = player_.Game.Map.Serialize();
+            SendResponse(request, res);
+        }
 
-        #region Admin Handlers
+#endregion
+
+#region Admin Handlers
         private void HandleAdminAuth(proto_common.Request request)
         {
             if (loginInProcess_)
@@ -364,7 +342,7 @@ namespace arena.player
             authEntry.authUserID = authReq.name;
             currentAuthEntry_ = authEntry;
 
-            Database.Database.Instance.GetAuthDB().LoginUserByNickname(authReq.name, HandleAdminDBLogin);
+            Database.Instance.GetAuthDB().LoginUserByNickname(authReq.name, HandleAdminDBLogin);
             loginInProcess_ = true;
         }
 
@@ -377,10 +355,10 @@ namespace arena.player
             else
             {
                 //create user if no one found
-                Database.Database.Instance.GetAuthDB().CreateUserWithNickname(currentAuthEntry_.authUserID, HandleCreateUser);
+                Database.Instance.GetAuthDB().CreateUserWithNickname(currentAuthEntry_.authUserID, HandleCreateUser);
             }
         }
-        #endregion
+#endregion
 
         void IActionInvoker.Execute(Action action)
         {

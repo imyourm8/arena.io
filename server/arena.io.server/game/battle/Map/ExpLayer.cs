@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using shared.helpers;
 using arena.helpers;
 using arena.battle.map;
 
@@ -34,7 +35,7 @@ namespace arena.battle
         public int TileHeight
         { get; set; }
 
-        public helpers.Area Area
+        public Area Area
         { get; set; }
 
         public void Load(JToken data)
@@ -57,7 +58,7 @@ namespace arena.battle
                 foreach (JProperty prop in properties)
                 {
                     probabilities.Add(
-                        helpers.Parsing.ParseEnum<proto_game.ExpBlocks>(prop.Name),
+                        Parsing.ParseEnum<proto_game.ExpBlocks>(prop.Name),
                         prop.Value.Value<float>()
                     );
                 }

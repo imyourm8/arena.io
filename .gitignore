@@ -39,3 +39,10 @@ server/box2c/Box2CS/bin/x64/Release/Box2CS.pdb
 server/deploy/arena.io.server/bin/Cache/
 .svn
 *.pdb
+server/arena.io.server/DarkRift Server - Free/Lib/DarkRift.xml
+server/deploy/arena.io.login/bin/
+server/arena.io.server/SharedCode/bin/
+server/deploy/arena.io.lobby/bin/Cache/LobbyServer/assembly/dl3/56e2056d/0026aeee_2260d101/__AssemblyInfo__.ini
+server/deploy/arena.io.lobby/bin/
+server/arena.io.server/DebugAttacher/Debug/
+server/arena.io.server/DebugAttacher/Release/

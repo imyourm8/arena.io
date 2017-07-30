@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using arena.helpers;
+using shared.data;
 
 namespace arena.battle
 {

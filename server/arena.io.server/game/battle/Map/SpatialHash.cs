@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 
-using arena.helpers;
+using shared.helpers;
 
 namespace arena.battle
 {

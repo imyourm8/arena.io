@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace arena.battle.Logic.Transitions
+namespace arena.battle.logic.transitions
 {
     class AnyPlayerInRange : Transition
     {

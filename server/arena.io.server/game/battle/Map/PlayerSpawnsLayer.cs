@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using shared.helpers;
+
 namespace arena.battle
 {
     class PlayerSpawnsLayer
@@ -17,7 +19,7 @@ namespace arena.battle
 
         public Tuple<float, float> GetSpawnPoint()
         {
-            var point = spawnPoints_[helpers.MathHelper.Range(0, spawnPoints_.Count - 1)];
+            var point = spawnPoints_[MathHelper.Range(0, spawnPoints_.Count - 1)];
             float x, y;
             point.Area.RandomPoint(out x, out y);
 

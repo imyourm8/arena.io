@@ -85,12 +85,20 @@ namespace proto_auth
   {
     public Response() {}
     
-    private proto_profile.UserInfo _info;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"info", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public proto_profile.UserInfo info
+    private string _login_token;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"login_token", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string login_token
     {
-      get { return _info; }
-      set { _info = value; }
+      get { return _login_token; }
+      set { _login_token = value; }
+    }
+    private string _lobby_ip = "";
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"lobby_ip", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string lobby_ip
+    {
+      get { return _lobby_ip; }
+      set { _lobby_ip = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -115,6 +123,57 @@ namespace proto_auth
       [global::ProtoBuf.ProtoEnum(Name=@"FB", Value=1)]
       FB = 1
     }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ConnectToLobby")]
+  public partial class ConnectToLobby : global::ProtoBuf.IExtensible
+  {
+    public ConnectToLobby() {}
+    
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Request")]
+  public partial class Request : global::ProtoBuf.IExtensible
+  {
+    public Request() {}
+    
+    private string _login_token;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"login_token", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string login_token
+    {
+      get { return _login_token; }
+      set { _login_token = value; }
+    }
+    private string _uid;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"uid", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string uid
+    {
+      get { return _uid; }
+      set { _uid = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Response")]
+  public partial class Response : global::ProtoBuf.IExtensible
+  {
+    public Response() {}
+    
+    private proto_profile.UserInfo _info;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"info", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public proto_profile.UserInfo info
+    {
+      get { return _info; }
+      set { _info = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
   
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)

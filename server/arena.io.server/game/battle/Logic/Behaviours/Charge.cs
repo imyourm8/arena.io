@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using arena.helpers;
-using arena.battle.Logic.Statuses;
+using shared.helpers;
+using arena.battle.logic.statuses;
 
-namespace arena.battle.Logic.Behaviours
+namespace arena.battle.logic.behaviours
 {
     class Charge : Behaviour
     {

@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using shared;
+
 namespace arena.battle
 {
-    class RoomManager : TapCommon.Singleton<RoomManager>
+    class RoomManager : Singleton<RoomManager>
     {
         private const int MaxPlayersPerRoom = 10;
 

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using arena.helpers;
+using shared.helpers;
 
-namespace arena.battle.Logic.Behaviours
+namespace arena.battle.logic.behaviours
 {
     /*
      * Choose random direction, moves by Random(minMove, maxMove), then repeat cycle

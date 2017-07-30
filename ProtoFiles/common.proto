@@ -17,6 +17,8 @@ enum Commands
   SIMULATE_BATTLE = 11;
   PING = 12;
   ADMIN_AUTH = 13;
+  CONNECT_TO_LOBBY = 14;
+  
   ENTER_AREA = 2001;
   
   LEAVE_GAME = 2009;
@@ -28,6 +30,7 @@ enum Commands
   SYNC_TICK = 2015;
   PLAYER_INPUT = 2016;
   DAMAGE_APPLY = 2017;
+  DOWNLOAD_MAP = 2018;
 };
 
 enum Events
@@ -55,6 +58,7 @@ enum Events
   BULLET_DESTROYED = 2021;
   SYNC_ATTACK = 2022;
   SPAWN_BULLETS = 2023;
+  START_GAME = 2024;
 };
 
 enum PacketFlags

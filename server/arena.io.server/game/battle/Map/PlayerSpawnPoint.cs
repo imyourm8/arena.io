@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using shared.helpers;
+
 namespace arena.battle
 {
     class PlayerSpawnPoint
     {
-        public helpers.Area Area
+        public Area Area
         { get; set; }
     }
 }

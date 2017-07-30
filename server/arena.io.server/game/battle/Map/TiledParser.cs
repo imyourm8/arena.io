@@ -20,27 +20,25 @@ namespace arena.battle.map
 
         static public Path ParseObject(JToken obj)
         {
-            int x = (int)Math.Round(obj.SelectToken("x").Value<float>());
-            int y = (int)Math.Round(obj.SelectToken("y").Value<float>());
+            int x = (int)Math.Round(obj["x"].Value<float>());
+            int y = (int)Math.Round(obj["y"].Value<float>());
 
-            Path path = null;
+            Path path = new Path(15);
             JToken polygon = obj.SelectToken("polygon");
             if (polygon != null)
             {
-                string[] pointTokens = polygon.SelectToken("points").Value<string>().Split(' ');
-                path = new Path(pointTokens.Length);
-                foreach (string pointToken in pointTokens)
+                foreach (JToken pointToken in polygon)
                 {
-                    float point = float.Parse(pointToken);
-                    path.Add(new IntPoint(point + x, point + y));
+                    float pointX = pointToken["x"].Value<float>();
+                    float pointY = pointToken["y"].Value<float>();
+                    path.Add(new IntPoint(pointX + x, pointY + y));
                 }
             }
             else
             {
-                int w = (int)Math.Round(obj.SelectToken("width").Value<float>());
-                int h = (int)Math.Round(obj.SelectToken("height").Value<float>());
+                int w = (int)Math.Round(obj["width"].Value<float>());
+                int h = (int)Math.Round(obj["height"].Value<float>());
 
-                path = new Path(4);
                 path.Add(new IntPoint(x, y));
                 path.Add(new IntPoint(x + w, y));
                 path.Add(new IntPoint(x + w, y + h));

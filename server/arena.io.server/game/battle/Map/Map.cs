@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 using Box2CS;
 
-using arena.helpers;
-
+using shared.helpers;
 
 namespace arena.battle
 {
@@ -111,7 +110,7 @@ namespace arena.battle
         {
             foreach (var e in HitTest(pos, radius))
             {
-                var newDist = helpers.MathHelper.Distance(pos, e.Position);
+                var newDist = MathHelper.Distance(pos, e.Position);
                 if (newDist < radius)
                 {
                     yield return e as Entity;
@@ -125,7 +124,7 @@ namespace arena.battle
             foreach (var e in HitTest(pos, radius))
             {
                 if (e.Category != category) continue;
-                if (helpers.MathHelper.Distance(pos, e.Position) < radius)
+                if (MathHelper.Distance(pos, e.Position) < radius)
                 {
                     yield return e as Entity;
                 }
@@ -141,6 +140,11 @@ namespace arena.battle
         public void OnMobDead(Mob mob)
         {
             mobLayer_.OnMobDead(mob);
+        }
+
+        public proto_game.Map Serialize()
+        {
+            return navLayer_.Serialize();
         }
     }
 }
