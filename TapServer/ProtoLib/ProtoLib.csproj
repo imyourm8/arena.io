@@ -47,6 +47,7 @@
     <Compile Include="common.cs" />
     <Compile Include="game.cs" />
     <Compile Include="profile.cs" />
+    <Compile Include="server.cs" />
     <Compile Include="simulation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

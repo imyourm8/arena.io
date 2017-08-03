@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace arena.battle.GameModes
+namespace arena.battle.modes
 {
     class GameMode
     {

@@ -16,16 +16,16 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\</OutputPath>
+    <OutputPath>..\..\lib\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>2</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\deploy\arena.io.login\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -221,6 +221,9 @@
     <Compile Include="shared\helpers\Parsing.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="shared\net\interfaces\IGameConnection.cs" />
+    <Compile Include="shared\net\interfaces\IRequestFilter.cs" />
+    <Compile Include="shared\net\interfaces\IActionInvoker.cs" />
     <Compile Include="shared\net\OperationHandler.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -230,6 +233,11 @@
     <Compile Include="shared\net\RequestHandler.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="shared\net\ServerApplication.cs" />
+    <Compile Include="shared\net\ServerConnection.cs" />
+    <Compile Include="shared\net\ServerController.cs" />
+    <Compile Include="shared\security\Token.cs" />
+    <Compile Include="shared\security\TokenGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shared\database\arena_db_dump.backup" />

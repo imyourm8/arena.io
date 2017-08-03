@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using shared;
+using arena.battle;
 
-namespace arena.battle
+namespace arena.matchmaking
 {
     class RoomManager : Singleton<RoomManager>
     {

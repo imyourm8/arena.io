@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace shared.net
 {
-    using RequestDataType = proto_common.Request;
-    using RequestCmdType = proto_common.Commands;
-    public class OperationHandler
+    public class OperationHandler<TRequest>
     {
-        public delegate void HandlerDelegate(RequestDataType request);
+        public delegate void HandlerDelegate(TRequest request);
 
         private HandlerDelegate delegate_;
 
@@ -19,7 +17,7 @@ namespace shared.net
             delegate_ = func;
         }
 
-        public void TryExecute(RequestDataType request)
+        public void TryExecute(TRequest request)
         {
             if (delegate_ != null)
             {

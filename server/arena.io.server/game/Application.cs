@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 
 using Photon.SocketServer;
 using Photon.SocketServer.Concurrency;
@@ -17,6 +18,8 @@ using ExitGames.Logging.Log4Net;
 using log4net.Config;
 
 using arena.net;
+using arena.serv;
+using arena.serv.load_balancing;
 using shared.database;
 using shared.database.Postgres;
 using shared.net;
@@ -24,9 +27,13 @@ using shared.factories;
 
 namespace arena
 {
-    public class Application : ApplicationBase
+    public class Application : ServerApplication
     {
-        private static ILogger log = LogManager.GetCurrentClassLogger(); 
+        private static ILogger log = LogManager.GetCurrentClassLogger();
+
+        private GameNodeController serverController_;
+
+#region ApplicationBase implementation
         protected override PeerBase CreatePeer(InitRequest initRequest)
         {
             PlayerConnection connection = new PlayerConnection(initRequest);
@@ -44,6 +51,21 @@ namespace arena
                 XmlConfigurator.ConfigureAndWatch(configFileInfo); 
             }
 
+            var loginServerIp = Path.Combine(this.ApplicationPath, "lobby_server_ip");
+            if (File.Exists(loginServerIp))
+            {
+                var ip = File.ReadAllText(loginServerIp);
+                var connection = new ServerConnection(this, ip, Ports.LobbyPort, 500);
+                serverController_ = new GameNodeController(connection);
+                connection.Connect();
+            }
+            else
+            {
+                log.FatalFormat("Can't connect to login server. File {0} is not exist.", loginServerIp);
+            }
+
+            WorkloadController = new WorkloadController(this, "GameNode", 1000, workLoadConfigFile: "");
+
             Database.Instance.SetDatabaseImplementation(new PostgresImpl());
 
             PlayerClassFactory.Instance.Init();
@@ -53,16 +75,24 @@ namespace arena
             ExpBlockFactory.Instance.Init();
             PowerUpFactory.Instance.Init();
             SkillFactory.Instance.Init();
-            battle.factories.MobScriptsFactory.Instance.Init();
             PickUpFactory.Instance.Init();
             BoosterFactory.Instance.Init();
 
-            battle.RoomManager.Instance.CreateDebugRoom();
+            battle.factories.MobScriptsFactory.Instance.Init();
+
+            matchmaking.RoomManager.Instance.CreateDebugRoom();
         }
 
         protected override void TearDown()
         {
-            
+
+        }
+#endregion
+
+        public WorkloadController WorkloadController
+        {
+            get;
+            set;
         }
     }
 }

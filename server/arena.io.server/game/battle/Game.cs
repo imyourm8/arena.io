@@ -10,11 +10,14 @@ using ExitGames.Logging;
 using ExitGames.Logging.Log4Net;
 
 using arena.Common;
+using arena.battle.logic;
+using arena.matchmaking;
+
 using shared.net;
+using shared.net.interfaces;
 using shared.helpers;
 using shared.database;
 using shared.factories;
-using arena.battle.logic;
 
 namespace arena.battle
 {
@@ -36,7 +39,7 @@ namespace arena.battle
         private List<KeyValuePair<Entity, Entity>> deathList_ = new List<KeyValuePair<Entity, Entity>>();
         private PoolFiber fiber_ = new PoolFiber(new DebugExecutor());
         private int id_ = 0;
-        private GameModes.GameMode mode_;
+        private modes.GameMode mode_;
         private long gameFinishAt_;
         private Room room_;
         private Map map_;
@@ -55,7 +58,7 @@ namespace arena.battle
             private set;
         }
 
-        public Game(GameModes.GameMode mode, Room room)    
+        public Game(modes.GameMode mode, Room room)    
         {
             room_ = room; 
             gameFinishAt_ = CurrentTime.Instance.CurrentTimeInMs + mode.GetMatchDuration();

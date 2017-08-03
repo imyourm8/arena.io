@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace arena.battle
+using arena.battle;
+using arena.battle.modes;
+
+namespace arena.matchmaking
 {
     class Room
     {
@@ -14,7 +14,7 @@ namespace arena.battle
 
         public Room()  
         {
-            game_ = new Game(new GameModes.FFA(), this);                                                
+            game_ = new Game(new FFA(), this);                                                
         }
 
         public bool Closed { get { return closed_; } }   

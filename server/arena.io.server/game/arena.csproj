@@ -265,8 +265,8 @@
     <Compile Include="battle\Player.cs" />
     <Compile Include="battle\PlayerBattleStats.cs" />
     <Compile Include="battle\PowerUp.cs" />
-    <Compile Include="battle\Room.cs" />
-    <Compile Include="battle\RoomManager.cs" />
+    <Compile Include="matchmaking\Room.cs" />
+    <Compile Include="matchmaking\RoomManager.cs" />
     <Compile Include="battle\map\SpatialHash.cs" />
     <Compile Include="battle\skills\GunnerSkill.cs" />
     <Compile Include="battle\skills\Skill.cs" />
@@ -280,6 +280,22 @@
     <Compile Include="helpers\TriangulatedPolygon.cs" />
     <Compile Include="player\PlayerController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="serv\GameNodeController.cs" />
+    <Compile Include="serv\load_balancing\configuration\Default.cs" />
+    <Compile Include="serv\load_balancing\FeedbackController.cs" />
+    <Compile Include="serv\load_balancing\FeedbackControllerCollection.cs" />
+    <Compile Include="serv\load_balancing\FeedbackControlSystem.cs" />
+    <Compile Include="serv\load_balancing\FeedbackLevel.cs" />
+    <Compile Include="serv\load_balancing\FeedbackLevelOrder.cs" />
+    <Compile Include="serv\load_balancing\FeedbackName.cs" />
+    <Compile Include="serv\load_balancing\IFeedbackControlSystem.cs" />
+    <Compile Include="serv\load_balancing\ServerState.cs" />
+    <Compile Include="serv\load_balancing\ValueHistory.cs" />
+    <Compile Include="serv\load_balancing\WorkloadController.cs" />
+    <Compile Include="serv\MasterServerConnection.cs" />
+    <Compile Include="serv\perfomance\AverageCounterReader.cs" />
+    <Compile Include="serv\perfomance\Counter.cs" />
+    <Compile Include="serv\perfomance\ValueHistory.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

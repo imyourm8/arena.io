@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LobbyServer", "LobbyServer\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedCode", "SharedCode\SharedCode.csproj", "{3F1F5857-39DD-49D7-9181-CD372711B3FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Box2CS", "..\box2c\Box2CS\Box2CS.csproj", "{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -229,6 +231,46 @@ Global
 		{3F1F5857-39DD-49D7-9181-CD372711B3FE}.ReleaseDouble|Win32.ActiveCfg = Release|Any CPU
 		{3F1F5857-39DD-49D7-9181-CD372711B3FE}.ReleaseDouble|x64.ActiveCfg = Release|Any CPU
 		{3F1F5857-39DD-49D7-9181-CD372711B3FE}.ReleaseDouble|x86.ActiveCfg = Release|Any CPU
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Debug|Win32.ActiveCfg = Debug|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Debug|Win32.Build.0 = Debug|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Debug|x64.ActiveCfg = Debug|x64
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Debug|x64.Build.0 = Debug|x64
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Debug|x86.ActiveCfg = Debug|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Debug|x86.Build.0 = Debug|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.DebugDouble|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.DebugDouble|Any CPU.Build.0 = Debug|Any CPU
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.DebugDouble|Mixed Platforms.ActiveCfg = Debug|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.DebugDouble|Mixed Platforms.Build.0 = Debug|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.DebugDouble|Win32.ActiveCfg = Debug|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.DebugDouble|Win32.Build.0 = Debug|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.DebugDouble|x64.ActiveCfg = Debug|x64
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.DebugDouble|x64.Build.0 = Debug|x64
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.DebugDouble|x86.ActiveCfg = Debug|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.DebugDouble|x86.Build.0 = Debug|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Release|Mixed Platforms.Build.0 = Release|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Release|Win32.ActiveCfg = Release|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Release|Win32.Build.0 = Release|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Release|x64.ActiveCfg = Release|x64
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Release|x64.Build.0 = Release|x64
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Release|x86.ActiveCfg = Release|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.Release|x86.Build.0 = Release|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.ReleaseDouble|Any CPU.ActiveCfg = Release|Any CPU
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.ReleaseDouble|Any CPU.Build.0 = Release|Any CPU
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.ReleaseDouble|Mixed Platforms.ActiveCfg = Release|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.ReleaseDouble|Mixed Platforms.Build.0 = Release|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.ReleaseDouble|Win32.ActiveCfg = Release|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.ReleaseDouble|Win32.Build.0 = Release|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.ReleaseDouble|x64.ActiveCfg = Release|x64
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.ReleaseDouble|x64.Build.0 = Release|x64
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.ReleaseDouble|x86.ActiveCfg = Release|x86
+		{CC0D251D-A2A2-49E1-8990-1BCB41AE1D16}.ReleaseDouble|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

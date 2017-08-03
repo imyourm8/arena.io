@@ -77,12 +77,6 @@ enum PacketFlags
 	*******************************
 */
 
-/*
-	auth 10 to 1000
-	profile 1001 to 2000
-	game 2001 to 3000
-*/
-
 message Request {
 	required int32 id = 1;
 	required Commands type = 2;

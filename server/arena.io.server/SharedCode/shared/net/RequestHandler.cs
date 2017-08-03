@@ -1,36 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using ExitGames.Concurrency.Fibers;
+
+using shared.net.interfaces;
+
+using Request = proto_common.Request;
+using Response = proto_common.Response;
+using Event = proto_common.Event;
+using Commands = proto_common.Commands;
+using Events = proto_common.Events;
 
 namespace shared.net
 {
-    using RequestDataType = proto_common.Request;
-    using RequestCommandType = proto_common.Commands;
-    using HandlerType = OperationHandler;
-    using HandlersArray = List<OperationHandler>;
-
-    public interface IActionInvoker
-    {
-        void Execute(Action action);
-    }
-
-    public interface IRequestFilter
-    {
-        bool FilterRequest(RequestDataType request);
-    }
+    using HandlerType = OperationHandler<Request>;
+    using HandlersArray = List<OperationHandler<Request>>;
 
     public class RequestHandler : IRequestFilter
     {
-        protected IGameConnection connection_;
-        //Stored current request id. Warning will work only if any callback based code will be called synced on calling thread!
+        // Store current request id. Warning will work only if any callback based code will be called synced on calling thread!
         protected int processedRequestId_ = -1;
+        protected IGameConnection connection_;
         private RequestHandler parent_ = null;
-        private Dictionary<RequestCommandType, HandlersArray> opHandlers_
-            = new Dictionary<RequestCommandType, HandlersArray>();
+        private Dictionary<Commands, HandlersArray> opHandlers_ = new Dictionary<Commands, HandlersArray>();
         private List<RequestHandler> nestedHandlers_ = new List<RequestHandler>();
+
+        public RequestHandler()
+        {
+            State = ClientState.NotLogged;
+        }
 
         public IGameConnection Connection
         {
@@ -38,15 +36,32 @@ namespace shared.net
             protected get { return connection_; }
         }
 
+        public ClientState State { get; private set; }
+
 #region Public Methods
-        public void SendResponse(proto_common.Request request, object data = null, int error = 0)
+        public void SetState(ClientState state)
+        {
+            State |= state;
+        }
+
+        public void RemoveState(ClientState state)
+        {
+            State &= ~state;
+        }
+
+        public void ResetState(ClientState state)
+        {
+            State = state;
+        }
+
+        public void SendResponse(Request request, object data = null, int error = 0)
         {
             SendResponse(request.type, data, request.id, error);
         }
 
-        public void SendResponse(proto_common.Commands cmd, object data = null, int id = 0, int error = 0)
+        public void SendResponse(Commands cmd, object data = null, int id = 0, int error = 0)
         {
-            var response = new proto_common.Response();
+            var response = new Response();
             response.type = cmd;
             response.id = id;
             response.error = error;
@@ -58,10 +73,10 @@ namespace shared.net
             connection_.Send(response);
         }
 
-        public void SendEvent(proto_common.Events evtCode, object data)
+        public void SendEvent(Events evtCode, object data)
         {
             System.Diagnostics.Debug.Assert(data != null);
-            var evt = new proto_common.Event();
+            var evt = new Event();
             evt.type = evtCode;
             evt.timestamp = helpers.CurrentTime.Instance.CurrentTimeInMs;
 
@@ -77,9 +92,34 @@ namespace shared.net
             }
         }
 
-        public virtual bool FilterRequest(RequestDataType request)
+        public virtual bool FilterRequest(Request request)
         {
-            return true;
+            bool filtered = false;
+            bool alwaysExecute = false;
+            OperationCondition condition;
+            if (OperationCondition.conditionList.TryGetValue((int)request.type, out condition))
+            {
+                //iterate through every possible state
+                foreach (ClientState state in Enum.GetValues(typeof(ClientState)))
+                {
+                    //if state required in condition call 
+                    if ((condition.State & state) != 0)
+                    {
+                        //and exists in current state
+                        if ((State & state) == 0)
+                        {
+                            filtered |= true;
+                        }
+                    }
+                }
+
+                if (condition.Execution == OperationCondition.ExecutionMethod.AlwaysExecute)
+                {
+                    alwaysExecute = true;
+                }
+            }
+
+            return filtered && !alwaysExecute;
         }
 
         public void AddNestedRequestHandler(RequestHandler requestHandler)
@@ -100,7 +140,7 @@ namespace shared.net
             }
         }
 
-        public void AddOperationHandler(RequestCommandType cmd, HandlerType handler)
+        public void AddOperationHandler(Commands cmd, HandlerType handler)
         {
             if (!opHandlers_.ContainsKey(cmd))
             {
@@ -113,7 +153,7 @@ namespace shared.net
             }
         }
 
-        public void HandleRequest(RequestDataType request)
+        public void HandleRequest(Request request)
         {
             GetActionInvoker().Execute(() =>
             {
@@ -123,7 +163,7 @@ namespace shared.net
 #endregion
 
 #region Public Methods
-        private bool HandleRequestInternal(RequestDataType request)
+        private bool HandleRequestInternal(Request request)
         {
             //If filtering successed, then discard this request
             if (FilterRequest(request))

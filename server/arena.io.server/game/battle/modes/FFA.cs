@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using arena.helpers;
 using arena.battle.map;
 
-namespace arena.battle.GameModes
+namespace arena.battle.modes
 {
     class FFA : GameMode
     {

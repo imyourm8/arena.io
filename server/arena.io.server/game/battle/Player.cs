@@ -13,6 +13,7 @@ using shared.factories;
 using shared.account;
 using shared.helpers;
 using arena.common.battle;
+using arena.matchmaking;
 
 namespace arena.battle
 {

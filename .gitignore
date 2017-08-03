@@ -44,6 +44,9 @@ server/deploy/arena.io.login/bin/
 server/arena.io.server/SharedCode/bin/
 server/deploy/arena.io.lobby/bin/Cache/LobbyServer/assembly/dl3/56e2056d/0026aeee_2260d101/__AssemblyInfo__.ini
 server/deploy/arena.io.lobby/bin/
+server/arena.io.server/Debug
 server/arena.io.server/DebugAttacher/Debug/
 server/arena.io.server/DebugAttacher/Release/
 Assets/lib/Protobuf/Debug/
+*.lastcodeanalysissucceeded
+server/lib/SharedCode.dll.CodeAnalysisLog.xml

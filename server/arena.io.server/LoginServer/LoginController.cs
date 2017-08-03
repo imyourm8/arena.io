@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Data;
 using System.Text;
-using System.Security.Cryptography;
 
 using shared.net;
 using shared.database;
 using shared.helpers;
+using shared.security;
+
+using Request = proto_common.Request;
+using Response = proto_common.Response;
+using Event = proto_common.Event;
+using Commands = proto_common.Commands;
+using Events = proto_common.Events;
+using OperationHandler = shared.net.OperationHandler<proto_common.Request>;
 
 namespace LoginServer
 {
@@ -22,6 +29,9 @@ namespace LoginServer
 
         private async void HandleAuth(proto_common.Request request)
         {
+            if (loginInProcess_)
+                return;
+
             var authReq =
                 ProtoBuf.Extensible.GetValue<proto_auth.Auth.Request>(request, (int)proto_common.Commands.AUTH);
 
@@ -64,30 +74,14 @@ namespace LoginServer
             // update login timestamp
             // send ip address of lobby server
             // send unique login token
-            var loginToken = GenerateLoginToken();
-            var loginExpiryDate = CurrentTime.Instance.CurrentTimeInMs + LoginTokenLifespanMs;
-            Database.Instance.GetAuthDB().SetLoginToken(authEntry.authUserID, loginToken, loginExpiryDate, (QueryResult result) =>
+            var loginToken = new TokenGenerator(LoginTokenLifespanMs).Generate(CurrentTime.Instance.CurrentTimeInMs);
+            Database.Instance.GetAuthDB().SetLoginToken(authEntry.authUserID, loginToken.Value, loginToken.ExpiryDateMs, (QueryResult result) =>
             {
                 // send everything to client
                 var response = new proto_auth.Auth.Response();
-                response.login_token = loginToken;
+                response.login_token = loginToken.Value;
                 SendResponse(proto_common.Commands.AUTH, response);
             });
-        }
-
-        private string GenerateLoginToken()
-        {
-            var localTime = CurrentTime.Instance.CurrentTimeInMs.ToString();
-            var token = localTime + Guid.NewGuid().ToString();
-
-            var crypt = new SHA256Managed();
-            StringBuilder hash = new StringBuilder();
-            byte[] crypto = crypt.ComputeHash(Encoding.UTF8.GetBytes(token), 0, Encoding.UTF8.GetByteCount(token));
-            foreach (byte theByte in crypto)
-            {
-                hash.Append(theByte.ToString("x2"));
-            }
-            return hash.ToString();
         }
 
         private void SendLoginFailed()

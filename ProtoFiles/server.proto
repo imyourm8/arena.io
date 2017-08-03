@@ -1,0 +1,73 @@
+option optimize_for = SPEED;
+
+package proto_server;
+
+enum Commands
+{
+  REGISTER_GAME_NODE = 11;
+}
+
+enum Events
+{
+  NODE_STATUS = 11;
+}
+
+message Request 
+{
+	required int32 id = 1;
+	required Commands type = 2;
+
+	extensions 10 to max;
+}
+
+message Response 
+{
+	required int32 id = 1;
+	required Commands type = 2;
+	required int32 error = 3 [default = 0];
+  required int64 timestamp = 4;
+  
+	extensions 10 to max;
+}
+
+message Event 
+{
+	required Events type = 1;
+  required int64 timestamp = 2;
+  
+	extensions 10 to max;
+}
+
+
+message RegisterGameNode
+{
+  message Request
+  {
+    required string ip = 1;
+    
+    extend proto_server.Request 
+    {
+      optional RegisterGameNode.Request register_game_node = 11;
+    }
+  }
+  
+  message Response
+  {
+    extend proto_server.Response 
+    {
+      optional RegisterGameNode.Response register_game_node = 11;
+    }
+  }
+}
+
+message GameNodeStatus
+{
+  required float cpu_load = 1;
+  required int32 active_rooms = 2;
+  required int32 players_connected = 3;
+  
+  extend proto_server.Event 
+  {
+    optional GameNodeStatus game_node_status = 11;
+  }
+}

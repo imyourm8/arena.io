@@ -11,17 +11,23 @@ using ExitGames.Logging;
 using ExitGames.Logging.Log4Net;
 
 using shared.net;
+using shared.net.interfaces;
 using shared.factories;
 using shared.account;
 using shared.helpers;
 using shared.database;
+using arena.matchmaking;
+
+using Commands = proto_common.Commands;
 
 namespace arena.net
 {
+    using OperationHandler = OperationHandler<proto_common.Request>;
+
     class PlayerController : RequestHandler, IActionInvoker
     {
-        private static ILogger log = LogManager.GetCurrentClassLogger(); 
-        private ClientState state_ = ClientState.Unlogged;
+        private static ILogger log = LogManager.GetCurrentClassLogger();
+ 
         private battle.Player player_;
         private PoolFiber fiber_ = new PoolFiber(new DebugExecutor());
         private bool loginInProcess_ = false;
@@ -29,18 +35,15 @@ namespace arena.net
 
         public PlayerController()
         {
-            AddOperationHandler(proto_common.Commands.AUTH, new OperationHandler(HandleAuth));
-            AddOperationHandler(proto_common.Commands.PING, new OperationHandler(HandlePing));
-            AddOperationHandler(proto_common.Commands.LEAVE_GAME, new OperationHandler(HandleLeaveGame));
-            AddOperationHandler(proto_common.Commands.CHANGE_NICKNAME, new OperationHandler(HandleChangeNickname));
-            AddOperationHandler(proto_common.Commands.JOIN_GAME, new OperationHandler(HandleJoinGame));
-            AddOperationHandler(proto_common.Commands.FIND_ROOM, new OperationHandler(HandleFindRoom));
-            AddOperationHandler(proto_common.Commands.ADMIN_AUTH, new OperationHandler(HandleAdminAuth));
-            AddOperationHandler(proto_common.Commands.STAT_UPGRADE, new OperationHandler(HandleStatUpgrade));
-            AddOperationHandler(proto_common.Commands.PLAYER_INPUT, new OperationHandler(HandleUserInput));
-            AddOperationHandler(proto_common.Commands.SYNC_TICK, new OperationHandler(HandleSyncTick));
-            AddOperationHandler(proto_common.Commands.DAMAGE_APPLY, new OperationHandler(HandleDamageApply));
-            AddOperationHandler(proto_common.Commands.DOWNLOAD_MAP, new OperationHandler(HandleDownloadMap));
+            AddOperationHandler(Commands.AUTH, new OperationHandler(HandleAuth));
+            AddOperationHandler(Commands.PING, new OperationHandler(HandlePing));
+            AddOperationHandler(Commands.LEAVE_GAME, new OperationHandler(HandleLeaveGame));
+            AddOperationHandler(Commands.ADMIN_AUTH, new OperationHandler(HandleAdminAuth));
+            AddOperationHandler(Commands.STAT_UPGRADE, new OperationHandler(HandleStatUpgrade));
+            AddOperationHandler(Commands.PLAYER_INPUT, new OperationHandler(HandleUserInput));
+            AddOperationHandler(Commands.SYNC_TICK, new OperationHandler(HandleSyncTick));
+            AddOperationHandler(Commands.DAMAGE_APPLY, new OperationHandler(HandleDamageApply));
+            AddOperationHandler(Commands.DOWNLOAD_MAP, new OperationHandler(HandleDownloadMap));
 
             fiber_.Start();
         }
@@ -67,13 +70,13 @@ namespace arena.net
 
             LeaveGame();
 
-            state_ &= ~ClientState.InBattle;
+            RemoveState(ClientState.InBattle);
             fiber_.Stop();
         }
 
         public void OnGameFinished()
         {
-            state_ &= ~ClientState.InBattle;
+            RemoveState(ClientState.InBattle);
         }
 
         public void SaveToDB()
@@ -88,36 +91,6 @@ namespace arena.net
         }
 
 #region Request Handlers
-        public override bool FilterRequest(proto_common.Request request)
-        { 
-            bool filtered =  false; 
-            bool alwaysExecute = false;
-            OperationCondition condition;
-            if (OperationCondition.conditionList.TryGetValue((int)request.type, out condition))
-            {
-                //iterate through every possible state
-                foreach (ClientState state in Enum.GetValues(typeof(ClientState)))
-                {
-                    //if state required in condition call 
-                    if ((condition.State & state) != 0)
-                    {
-                        //and exists in current state
-                        if ((state_ & state) == 0)
-                        {
-                            filtered |= true;
-                        }
-                    }
-                }
-
-                if (condition.Execution == OperationCondition.ExecutionMethod.AlwaysExecute)
-                {
-                    alwaysExecute = true;
-                }
-            }
-
-            return filtered && !alwaysExecute;
-        }
-
         private void HandleStatUpgrade(proto_common.Request request)
         {
             if (player_.UpgradePointsLeft <= 0)   
@@ -138,34 +111,7 @@ namespace arena.net
             SendResponse(request, response, error);
         }
 
-        private void HandleChangeNickname(proto_common.Request request)
-        {
-            if (player_ == null)
-            {
-                return;
-            }
-            var changeNickReq = request.Extract<proto_profile.ChangeNickname.Request>(proto_common.Commands.CHANGE_NICKNAME);
-
-            var name = changeNickReq.name.Trim();
-            var nickResponse = new proto_profile.ChangeNickname.Response();
-
-            if (name != player_.Profile.Name)
-            {
-                Database.Instance.GetPLayerDB().ChangeNickname(player_.Profile.UniqueID, name, (QueryResult result) =>
-                {
-                    if (result == QueryResult.Success)
-                    {
-                        nickResponse.success = true;
-                        SendResponse(request, nickResponse);
-                    }
-                });
-            }
-            else
-            {
-                nickResponse.success = false;
-                SendResponse(request, nickResponse);
-            }
-        }
+        
 
         private void HandleAuth(proto_common.Request request)
         {
@@ -227,7 +173,7 @@ namespace arena.net
                 info.classesInfo.Add(clInfo);
             }
 
-            state_ = ClientState.Logged;
+            ResetState(ClientState.Logged);
             SendResponse(proto_common.Commands.AUTH, authRes);
         }
 
@@ -248,9 +194,9 @@ namespace arena.net
         {
             SendResponse(request);
 
-            battle.RoomManager.Instance.AssignPlayerToRandomRoom(player_);
+            RoomManager.Instance.AssignPlayerToRandomRoom(player_);
 
-            state_ |= ClientState.SwitchGameServer;
+            SetState(ClientState.SwitchGameServer);
         }
 
         private void HandleJoinGame(proto_common.Request request)
@@ -260,8 +206,8 @@ namespace arena.net
             player_.SelectedClass = joinReq.@class;
             player_.Game.PlayerJoin(player_);
 
-            state_ &= ~ClientState.SwitchGameServer;
-            state_ |= ClientState.InBattle;
+            RemoveState(ClientState.SwitchGameServer);
+            SetState(ClientState.InBattle);
         }
 
         private void HandleSyncTick(proto_common.Request request)
@@ -293,8 +239,8 @@ namespace arena.net
         {
             if (player_ != null)
             {
-                battle.RoomManager.Instance.RemovePlayer(player_);
-                state_ &= ~ClientState.InBattle;
+                RoomManager.Instance.RemovePlayer(player_);
+                RemoveState(ClientState.InBattle);
             }
         }
 

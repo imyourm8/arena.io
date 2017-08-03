@@ -1,31 +1,21 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Photon.SocketServer;
 using PhotonHostRuntimeInterfaces;
 using ProtoBuf;
-using System.IO;
-
 using ExitGames.Concurrency.Core;
 using ExitGames.Concurrency.Fibers;
 using ExitGames.Logging;
 using ExitGames.Logging.Log4Net;
 using log4net.Config;
 
+using shared.net.interfaces;
+
 
 namespace shared.net
 {
-    public interface IGameConnection
-    {
-        void SetController(RequestHandler controller);
-        void Send(proto_common.Response response);
-        void Send(proto_common.Response response, SendParameters sendParameters);
-        void Send(proto_common.Event evt);
-        void Disconnect();
-    }
-
     public class PlayerConnection : ClientPeer, IGameConnection
     {
         private RequestHandler controller_;
@@ -111,6 +101,7 @@ namespace shared.net
             }
         }
 
+#region ClientPeer implementation
         protected override void OnDisconnect(DisconnectReason disconnectCode, string reasonDetail)
         {
             controller_.HandleDisconnect();
@@ -137,5 +128,6 @@ namespace shared.net
                 //Disconnect();
             }
         }
+#endregion
     }
 }

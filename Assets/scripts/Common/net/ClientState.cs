@@ -2,9 +2,9 @@
 
 namespace shared.net
 {
-	public enum ClientState 
+	public enum ClientState : int 
     {
-		Unlogged = 1,
+		NotLogged = 1,
 		Logged = 1<<1,
 		Banned = 1<<2,
 		SwitchGameServer = 1<<3,
