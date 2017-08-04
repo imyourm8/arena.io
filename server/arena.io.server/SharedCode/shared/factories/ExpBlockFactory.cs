@@ -14,15 +14,17 @@ namespace shared.factories
     public class ExpBlockFactory : Singleton<ExpBlockFactory>
     {
         private Dictionary<proto_game.ExpBlocks, ExpBlockEntry> blocks_ = new Dictionary<proto_game.ExpBlocks, ExpBlockEntry>();
+        private string dataDirectory_;
 
-        public void Init()
+        public void Init(string dataDirectory)
         {
+            dataDirectory_ = dataDirectory;
             database.Database.Instance.GetWorldDB().GetExpBlocks(LoadExpBlocks);
         }
 
         private void LoadExpBlocks(database.QueryResult result, IDataReader reader)
         {
-            var jsonBlocks = JArray.Parse(File.ReadAllText("game_data/exp_blocks_export.json"));
+            var jsonBlocks = JArray.Parse(File.ReadAllText(Path.Combine(dataDirectory_, "game_data/exp_blocks_export.json")));
             var dict = new Dictionary<proto_game.ExpBlocks, float>();
             foreach (JToken plr in jsonBlocks)
             {

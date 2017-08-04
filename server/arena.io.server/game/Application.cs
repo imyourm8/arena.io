@@ -51,7 +51,7 @@ namespace arena
                 XmlConfigurator.ConfigureAndWatch(configFileInfo); 
             }
 
-            var loginServerIp = Path.Combine(this.ApplicationPath, "lobby_server_ip");
+            var loginServerIp = Path.Combine(ApplicationPath, "lobby_server_ip");  
             if (File.Exists(loginServerIp))
             {
                 var ip = File.ReadAllText(loginServerIp);
@@ -68,14 +68,14 @@ namespace arena
 
             Database.Instance.SetDatabaseImplementation(new PostgresImpl());
 
-            PlayerClassFactory.Instance.Init();
-            MobsFactory.Instance.Init();
-            WeaponFactory.Instance.Init();
-            BulletFactory.Instance.Init();
-            ExpBlockFactory.Instance.Init();
-            PowerUpFactory.Instance.Init();
-            SkillFactory.Instance.Init();
-            PickUpFactory.Instance.Init();
+            PlayerClassFactory.Instance.Init(ApplicationPath);
+            MobsFactory.Instance.Init(ApplicationPath);
+            WeaponFactory.Instance.Init(ApplicationPath);
+            BulletFactory.Instance.Init(ApplicationPath);
+            ExpBlockFactory.Instance.Init(ApplicationPath);
+            PowerUpFactory.Instance.Init(ApplicationPath);
+            SkillFactory.Instance.Init(ApplicationPath);
+            PickUpFactory.Instance.Init(ApplicationPath);
             BoosterFactory.Instance.Init();
 
             battle.factories.MobScriptsFactory.Instance.Init();

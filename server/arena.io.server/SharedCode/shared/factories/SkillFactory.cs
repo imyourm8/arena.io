@@ -15,9 +15,9 @@ namespace shared.factories
     {
         private Dictionary<proto_game.Skills, SkillEntry> skills_ = new Dictionary<proto_game.Skills, SkillEntry>();
 
-        public void Init()
+        public void Init(string dataDirectory)
         {
-            var jsonSkills = JArray.Parse(File.ReadAllText("game_data/skills_export.json"));
+            var jsonSkills = JArray.Parse(File.ReadAllText(Path.Combine(dataDirectory, "game_data/skills_export.json")));
 
             foreach (var skillData in jsonSkills)
             {

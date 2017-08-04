@@ -15,9 +15,9 @@ namespace shared.factories
     {
         private Dictionary<proto_game.Pickups, PickUpEntry> pickUps_ = new Dictionary<proto_game.Pickups, PickUpEntry>();
 
-        public void Init()
+        public void Init(string dataDirectory)
         {
-            var jsonPickups = JArray.Parse(File.ReadAllText("game_data/pickups_export.json"));
+            var jsonPickups = JArray.Parse(File.ReadAllText(Path.Combine(dataDirectory, "game_data/pickups_export.json")));
             foreach (var pu in jsonPickups)
             {
                 var entry = new PickUpEntry(pu);

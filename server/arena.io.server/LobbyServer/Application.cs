@@ -28,6 +28,8 @@ namespace LobbyServer
     {
         private static ILogger log = LogManager.GetCurrentClassLogger();
 
+        #region ApplicationBase implementation
+
         protected override PeerBase CreatePeer(InitRequest initRequest)
         {
             PlayerConnection connection = new PlayerConnection(initRequest);
@@ -66,5 +68,7 @@ namespace LobbyServer
         {
             
         }
+
+        #endregion
     }
 }

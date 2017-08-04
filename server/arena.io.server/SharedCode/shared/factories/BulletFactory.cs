@@ -13,9 +13,9 @@ namespace shared.factories
     {
         private Dictionary<proto_game.Bullets, BulletEntry> bullets_ = new Dictionary<proto_game.Bullets, BulletEntry>();
 
-        public void Init()
+        public void Init(string dataDirectory)
         {
-            var jsonBullets = JArray.Parse(File.ReadAllText("game_data/bullets_export.json"));
+            var jsonBullets = JArray.Parse(File.ReadAllText(Path.Combine(dataDirectory, "game_data/bullets_export.json")));
 
             foreach (var bulData in jsonBullets)
             {

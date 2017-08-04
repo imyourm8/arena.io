@@ -16,9 +16,9 @@ namespace shared.factories
     {
         private Dictionary<proto_game.Weapons, WeaponEntry> weapons_ = new Dictionary<proto_game.Weapons, WeaponEntry>();
 
-        public void Init()  
-        { 
-            var jsonWeapons = JArray.Parse(File.ReadAllText("game_data/weapon_export.json"));
+        public void Init(string dataDirectory)  
+        {
+            var jsonWeapons = JArray.Parse(File.ReadAllText(Path.Combine(dataDirectory, "game_data/weapon_export.json")));
 
             foreach (JToken wepData in jsonWeapons)
             {

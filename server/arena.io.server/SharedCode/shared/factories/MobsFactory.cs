@@ -14,8 +14,11 @@ namespace shared.factories
     public class MobsFactory : Singleton<MobsFactory>
     {
         private Dictionary<proto_game.MobType, MobEntry> entries_ = new Dictionary<proto_game.MobType, MobEntry>();
-        public void Init()
+        private string dataDirectory_;
+
+        public void Init(string dataDirectory)
         {
+            dataDirectory_ = dataDirectory;
             database.Database.Instance.GetCreatureDB().GetAll(LoadMobs);
         }
 
@@ -26,7 +29,7 @@ namespace shared.factories
                 return;
             }
 
-            var jsonPlayers = JArray.Parse(File.ReadAllText("game_data/mobs_export.json"));
+            var jsonPlayers = JArray.Parse(File.ReadAllText(Path.Combine(dataDirectory_, "game_data/mobs_export.json")));
             var dict = new Dictionary<proto_game.MobType, float>();
             foreach (JToken plr in jsonPlayers)
             {

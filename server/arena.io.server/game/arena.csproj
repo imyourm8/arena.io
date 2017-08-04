@@ -239,6 +239,7 @@
     <Compile Include="battle\logic\transitions\Transition.cs" />
     <Compile Include="battle\map\MapIDs.cs" />
     <Compile Include="battle\map\TiledParser.cs" />
+    <Compile Include="battle\modes\GameModeFactory.cs" />
     <Compile Include="battle\net\NetworkEntity.cs" />
     <Compile Include="battle\PickUp.cs" />
     <Compile Include="battle\map\BlockSpawner.cs" />

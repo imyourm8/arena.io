@@ -15,9 +15,11 @@ namespace shared.factories
     public class PlayerClassFactory : Singleton<PlayerClassFactory>
     {
         private Dictionary<proto_profile.PlayerClasses, PlayerClassEntry> classes_ = new Dictionary<proto_profile.PlayerClasses, PlayerClassEntry>();
+        private string dataDirectory_;
 
-        public void Init()
+        public void Init(string dataDirectory)
         {
+            dataDirectory_ = dataDirectory;
             database.Database.Instance.GetPLayerDB().GetClasses(HandleClassesFromDB);
         }
 
@@ -28,7 +30,7 @@ namespace shared.factories
                 return;
             }
 
-            var jsonPlayers = JArray.Parse(File.ReadAllText("game_data/players_export.json"));
+            var jsonPlayers = JArray.Parse(File.ReadAllText(Path.Combine(dataDirectory_, "game_data/players_export.json")));
             var dict = new Dictionary<proto_profile.PlayerClasses, JToken>();
             foreach (JToken plr in jsonPlayers)
             {
