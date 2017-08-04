@@ -2,6 +2,8 @@
 
 namespace arena.serv.load_balancing.configuration
 {
+    using FeedbackLevel = proto_server.FeedbackLevel;
+
     internal class Default
     {
         internal static List<FeedbackController> GetDefaultControllers()

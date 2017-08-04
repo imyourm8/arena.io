@@ -16,7 +16,6 @@ using shared.factories;
 using shared.account;
 using shared.helpers;
 using shared.database;
-using arena.matchmaking;
 
 using Commands = proto_common.Commands;
 
@@ -44,6 +43,7 @@ namespace arena.net
             AddOperationHandler(Commands.SYNC_TICK, new OperationHandler(HandleSyncTick));
             AddOperationHandler(Commands.DAMAGE_APPLY, new OperationHandler(HandleDamageApply));
             AddOperationHandler(Commands.DOWNLOAD_MAP, new OperationHandler(HandleDownloadMap));
+            AddOperationHandler(Commands.JOIN_GAME, new OperationHandler(HandleJoinGame));
 
             fiber_.Start();
         }
@@ -190,15 +190,6 @@ namespace arena.net
             }
         }
 
-        private void HandleFindRoom(proto_common.Request request)
-        {
-            SendResponse(request);
-
-            RoomManager.Instance.AssignPlayerToRandomRoom(player_);
-
-            SetState(ClientState.SwitchGameServer);
-        }
-
         private void HandleJoinGame(proto_common.Request request)
         {
             var joinReq = request.Extract<proto_game.JoinGame.Request>(proto_common.Commands.JOIN_GAME);
@@ -239,7 +230,6 @@ namespace arena.net
         {
             if (player_ != null)
             {
-                RoomManager.Instance.RemovePlayer(player_);
                 RemoveState(ClientState.InBattle);
             }
         }

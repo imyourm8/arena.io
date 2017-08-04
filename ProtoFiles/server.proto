@@ -12,6 +12,15 @@ enum Events
   NODE_STATUS = 11;
 }
 
+enum FeedbackLevel
+{
+    Highest = 4; 
+    High = 3;
+    Normal = 2;
+    Low = 1;
+    Lowest = 0;
+}
+
 message Request 
 {
 	required int32 id = 1;
@@ -62,8 +71,8 @@ message RegisterGameNode
 
 message GameNodeStatus
 {
-  required float cpu_load = 1;
-  required int32 active_rooms = 2;
+  required FeedbackLevel workload_level = 1;
+  required int32 active_games = 2;
   required int32 players_connected = 3;
   
   extend proto_server.Event 

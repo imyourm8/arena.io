@@ -8,6 +8,8 @@ using arena.serv.perfomance;
 
 namespace arena.serv.load_balancing
 {
+    using FeedbackLevel = proto_server.FeedbackLevel;
+
     public class WorkloadController
     {
         #region Constants and Fields
@@ -127,7 +129,6 @@ namespace arena.serv.load_balancing
                     log.WarnFormat("Did not find counter {0}", this.tcpClientDisconnectsPerSecondCounter.Name);
                 }
 
-
                 this.tcpPeersCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: TCP", "TCP: Peers", instanceName);
                 if (!this.tcpPeersCounter.InstanceExists)
                 {
@@ -166,13 +167,14 @@ namespace arena.serv.load_balancing
 
         #region Events
 
-        public event EventHandler FeedbacklevelChanged;
+        public delegate void FeedbackLevelDelegate(FeedbackLevel level);
+        public event FeedbackLevelDelegate FeedbacklevelChanged;
 
         #endregion
 
         #region Properties
 
-        public FeedbackLevel FeedbackLevel { get; private set; }
+        public proto_server.FeedbackLevel FeedbackLevel { get; private set; }
 
         public ServerState ServerState
         {
@@ -314,8 +316,10 @@ namespace arena.serv.load_balancing
                         tcpDisconnectRate = 0;
                     }
 
+                    int peerCount = (int)tcpPeerCount;
                     Counter.TcpDisconnectRateAvg.RawValue = tcpDisconnectRate;
-
+                    Counter.PeerCount.RawValue = peerCount;
+                    feedbackControlSystem.SetPeerCount(peerCount);
                 }
                 catch (DivideByZeroException)
                 {
@@ -375,7 +379,7 @@ namespace arena.serv.load_balancing
             var e = this.FeedbacklevelChanged;
             if (e != null)
             {
-                e(this, EventArgs.Empty);
+                e(FeedbackLevel);
             }
         }
 

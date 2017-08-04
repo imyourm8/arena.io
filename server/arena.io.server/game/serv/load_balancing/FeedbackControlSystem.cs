@@ -7,6 +7,8 @@ using arena.serv.load_balancing.configuration;
 
 namespace arena.serv.load_balancing
 {
+    using FeedbackLevel = proto_server.FeedbackLevel;
+
     /// <summary>
     /// Calculates estimated usage level of server instance
     /// </summary>

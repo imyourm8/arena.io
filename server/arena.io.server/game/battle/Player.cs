@@ -13,7 +13,6 @@ using shared.factories;
 using shared.account;
 using shared.helpers;
 using arena.common.battle;
-using arena.matchmaking;
 
 namespace arena.battle
 {
@@ -64,9 +63,6 @@ namespace arena.battle
         { get; set; }
 
         public PlayerBattleStats BattleStats
-        { get; set; }
-
-        public Room Room
         { get; set; }
 
         public int Ping

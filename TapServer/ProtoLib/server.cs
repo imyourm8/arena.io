@@ -178,19 +178,19 @@ namespace proto_server
   {
     public GameNodeStatus() {}
     
-    private float _cpu_load;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"cpu_load", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
-    public float cpu_load
+    private proto_server.FeedbackLevel _workload_level;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"workload_level", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public proto_server.FeedbackLevel workload_level
     {
-      get { return _cpu_load; }
-      set { _cpu_load = value; }
+      get { return _workload_level; }
+      set { _workload_level = value; }
     }
-    private int _active_rooms;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"active_rooms", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int active_rooms
+    private int _active_games;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"active_games", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int active_games
     {
-      get { return _active_rooms; }
-      set { _active_rooms = value; }
+      get { return _active_games; }
+      set { _active_games = value; }
     }
     private int _players_connected;
     [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"players_connected", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
@@ -218,6 +218,26 @@ namespace proto_server
             
       [global::ProtoBuf.ProtoEnum(Name=@"NODE_STATUS", Value=11)]
       NODE_STATUS = 11
+    }
+  
+    [global::ProtoBuf.ProtoContract(Name=@"FeedbackLevel")]
+    public enum FeedbackLevel
+    {
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Highest", Value=4)]
+      Highest = 4,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"High", Value=3)]
+      High = 3,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Normal", Value=2)]
+      Normal = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Low", Value=1)]
+      Low = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"Lowest", Value=0)]
+      Lowest = 0
     }
   
 }

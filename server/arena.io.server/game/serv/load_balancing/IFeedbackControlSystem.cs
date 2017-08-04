@@ -2,7 +2,7 @@
 {
     internal interface IFeedbackControlSystem
     {
-        FeedbackLevel Output { get; }
+        proto_server.FeedbackLevel Output { get; }
 
         void SetPeerCount(int peerCount);
 

@@ -3,6 +3,8 @@ using System.Linq;
 
 namespace arena.serv.load_balancing
 {
+    using FeedbackLevel = proto_server.FeedbackLevel;
+
     internal sealed class FeedbackControllerCollection
     {
         private readonly Dictionary<FeedbackName, FeedbackController> values;

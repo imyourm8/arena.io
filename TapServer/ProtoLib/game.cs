@@ -1393,6 +1393,20 @@ namespace proto_game
       SimpleBossScript = 2
     }
   
+    [global::ProtoBuf.ProtoContract(Name=@"GameMode")]
+    public enum GameMode
+    {
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"FFA", Value=1)]
+      FFA = 1,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TeamDeathmatch", Value=2)]
+      TeamDeathmatch = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CaptureTheFlag", Value=3)]
+      CaptureTheFlag = 3
+    }
+  
     [global::ProtoBuf.ProtoContract(Name=@"Weapons")]
     public enum Weapons
     {

@@ -39,5 +39,8 @@ namespace arena.serv.perfomance
         // The number of disconnected UDP peers (per second) / number of total UDP peers
         [PublishCounter("UdpDisconnectRateAvg")]
         public static readonly NumericCounter UdpDisconnectRateAvg = new NumericCounter("UdpDisconnectRateAvg");
+
+        [PublishCounter("PeerCount")]
+        public static readonly NumericCounter PeerCount = new NumericCounter("PeerCount");
     }
 }

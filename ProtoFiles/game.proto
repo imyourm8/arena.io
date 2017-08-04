@@ -13,6 +13,13 @@ enum MobScriptType
   SimpleBossScript = 2;
 }
 
+enum GameMode
+{
+  FFA = 1;
+  TeamDeathmatch = 2;
+  CaptureTheFlag = 3;
+}
+
 enum Weapons
 {
   MachineGun = 1;

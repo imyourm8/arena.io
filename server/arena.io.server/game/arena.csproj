@@ -126,8 +126,9 @@
     <Reference Include="ProtoLib">
       <HintPath>..\..\..\Assets\lib\Protobuf\Debug\ProtoLib.dll</HintPath>
     </Reference>
-    <Reference Include="SharedCode">
-      <HintPath>..\SharedCode\bin\SharedCode.dll</HintPath>
+    <Reference Include="SharedCode, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\SharedCode.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -265,8 +266,6 @@
     <Compile Include="battle\Player.cs" />
     <Compile Include="battle\PlayerBattleStats.cs" />
     <Compile Include="battle\PowerUp.cs" />
-    <Compile Include="matchmaking\Room.cs" />
-    <Compile Include="matchmaking\RoomManager.cs" />
     <Compile Include="battle\map\SpatialHash.cs" />
     <Compile Include="battle\skills\GunnerSkill.cs" />
     <Compile Include="battle\skills\Skill.cs" />
@@ -280,12 +279,12 @@
     <Compile Include="helpers\TriangulatedPolygon.cs" />
     <Compile Include="player\PlayerController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="serv\GameManager.cs" />
     <Compile Include="serv\GameNodeController.cs" />
     <Compile Include="serv\load_balancing\configuration\Default.cs" />
     <Compile Include="serv\load_balancing\FeedbackController.cs" />
     <Compile Include="serv\load_balancing\FeedbackControllerCollection.cs" />
     <Compile Include="serv\load_balancing\FeedbackControlSystem.cs" />
-    <Compile Include="serv\load_balancing\FeedbackLevel.cs" />
     <Compile Include="serv\load_balancing\FeedbackLevelOrder.cs" />
     <Compile Include="serv\load_balancing\FeedbackName.cs" />
     <Compile Include="serv\load_balancing\IFeedbackControlSystem.cs" />

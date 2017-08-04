@@ -24,7 +24,6 @@ namespace LobbyServer.controller
         {
             AddOperationHandler(Commands.CONNECT_TO_LOBBY, new OperationHandler(HandleConnection));
             AddOperationHandler(Commands.CHANGE_NICKNAME, new OperationHandler(HandleChangeNickname));
-            AddOperationHandler(Commands.JOIN_GAME, new OperationHandler(HandleJoinGame));
             AddOperationHandler(Commands.FIND_ROOM, new OperationHandler(HandleFindRoom));
         }
 
@@ -93,6 +92,17 @@ namespace LobbyServer.controller
             ResetState(ClientState.Logged);
             SendResponse(proto_common.Commands.AUTH, authRes);
         }
+#region Lobby Handlers
+
+        private void HandleFindRoom(proto_common.Request request)
+        {
+            SendResponse(request);
+            //RoomManager.Instance.AssignPlayerToRandomRoom(player_);
+            SetState(ClientState.SwitchGameServer);
+        }
+
+        
+#endregion
 #endregion
     }
 }

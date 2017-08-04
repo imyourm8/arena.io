@@ -19,20 +19,22 @@ namespace shared.net
 
     public class ServerController
     {
-        protected ServerConnection connection_;
-        //Stored current request id. Warning will work only if any callback based code will be called synced on calling thread!
-        protected int processedRequestId_ = -1;
+        private ServerConnection connection_;
         private Dictionary<int, ResponseHandlerType> pendingRequests_ = new Dictionary<int, ResponseHandlerType>();
         private Dictionary<Commands, HandlersArray> opHandlers_ = new Dictionary<Commands, HandlersArray>();
         private Dictionary<Events, EventHandlerType> eventHandlers_ = new Dictionary<Events, EventHandlerType>();
 
-        public ServerController(ServerConnection conn)
+        public ServerController(ServerConnection connection)
         {
-            connection_ = conn;
+            connection_ = connection;
         }
 
         public ClientState State { get; private set; }
 
+        protected ServerConnection Connection 
+        {
+            get { return connection_; }
+        }
 #region Public Methods
         public void SendRequest(Request request, object data = null, int error = 0)
         {
@@ -164,7 +166,6 @@ namespace shared.net
             //if there is any operation handler then execute it, otherwise chain it to nested handlers
             if (opHandlers_.TryGetValue(request.type, out handlersForCmd))
             {
-                processedRequestId_ = request.id;
                 foreach (var handler in handlersForCmd)
                 {
                     handler.TryExecute(request);

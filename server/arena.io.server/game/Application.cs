@@ -56,7 +56,7 @@ namespace arena
             {
                 var ip = File.ReadAllText(loginServerIp);
                 var connection = new ServerConnection(this, ip, Ports.LobbyPort, 500);
-                serverController_ = new GameNodeController(connection);
+                serverController_ = new GameNodeController(this, connection);
                 connection.Connect();
             }
             else
@@ -79,8 +79,6 @@ namespace arena
             BoosterFactory.Instance.Init();
 
             battle.factories.MobScriptsFactory.Instance.Init();
-
-            matchmaking.RoomManager.Instance.CreateDebugRoom();
         }
 
         protected override void TearDown()

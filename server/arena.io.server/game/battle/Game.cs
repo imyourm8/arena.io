@@ -11,7 +11,6 @@ using ExitGames.Logging.Log4Net;
 
 using arena.Common;
 using arena.battle.logic;
-using arena.matchmaking;
 
 using shared.net;
 using shared.net.interfaces;
@@ -41,11 +40,12 @@ namespace arena.battle
         private int id_ = 0;
         private modes.GameMode mode_;
         private long gameFinishAt_;
-        private Room room_;
         private Map map_;
         private DetermenisticScheduler scheduler_ = new DetermenisticScheduler();
         private long prevUpdateTime_ = 0;
         private long startUpTime_ = 0;
+
+        #region Getters & Setters
 
         public long Time
         {
@@ -58,9 +58,39 @@ namespace arena.battle
             private set;
         }
 
-        public Game(modes.GameMode mode, Room room)    
+        public int PlayersConnected
         {
-            room_ = room; 
+            get;
+            private set;
+        }
+
+        public Map Map
+        {
+            get { return map_; }
+        }
+
+        public bool PlayerCanJoin
+        {
+            get;
+            private set;
+        }
+
+        public Guid ID
+        {
+            get;
+            private set;
+        }
+
+        public delegate void GameClosedDelegate(Game game);
+        public event GameClosedDelegate OnGameClosed;
+
+        #endregion
+
+        public Game(modes.GameMode mode)    
+        {
+            PlayersConnected = 0;
+            PlayerCanJoin = true;
+            ID = Guid.NewGuid(); 
             gameFinishAt_ = CurrentTime.Instance.CurrentTimeInMs + mode.GetMatchDuration();
 
             startUpTime_ = CurrentTime.Instance.CurrentTimeInMs;
@@ -123,9 +153,6 @@ namespace arena.battle
             scheduler_.Update(dt);  
             prevUpdateTime_ = CurrentTime.Instance.CurrentTimeInMs;
         }
-
-        public Map Map
-        { get { return map_; } }  
 
         public int GenerateID()
         {
@@ -190,6 +217,7 @@ namespace arena.battle
         {
             fiber_.Enqueue(() =>
             {
+                PlayersConnected++;
                 //player.ID = GenerateID();
                 mode_.SpawnPlayer(player);
                 player.AssignStats();
@@ -281,6 +309,7 @@ namespace arena.battle
         {
             fiber_.Enqueue(() =>
             {
+                PlayersConnected--;
                 players_.Remove(player);
                 joinedPlayers_.Remove(player);
                 player.Game = null;
@@ -673,12 +702,11 @@ namespace arena.battle
                 //kick
                 Remove(player);
             }  
-
-            room_.OnGameFinished();
         }
 
-        public void Close()
+        public void Destroy()
         {
+            OnGameClosed = null;
             players_.Clear();
             fiber_.Dispose(); 
             entities_.Clear();

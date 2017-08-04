@@ -3,6 +3,8 @@ using ExitGames.Logging;
 
 namespace arena.serv.load_balancing
 {
+    using FeedbackLevel = proto_server.FeedbackLevel;
+
     internal class FeedbackController
     {
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();
@@ -98,28 +100,28 @@ namespace arena.serv.load_balancing
                 }
 
                 this.currentInput = input;
-                if (next != this.currentFeedbackLevel)
+                if (next != currentFeedbackLevel)
                 {
                     if (log.IsInfoEnabled)
                     {
                         log.InfoFormat("Transit {0} from {1} to {2} with input {3}", this.FeedbackName, this.currentFeedbackLevel, next, input);
                     }
 
-                    this.currentFeedbackLevel = next;
+                    currentFeedbackLevel = next;
                     return true;
                 }
             }
-            else if (input < this.currentInput)
+            else if (input < currentInput)
             {
                 int threshold;
-                FeedbackLevel last = this.currentFeedbackLevel;
-                FeedbackLevel next = this.GetNextLowerThreshold(last, out threshold);
+                FeedbackLevel last = currentFeedbackLevel;
+                FeedbackLevel next = GetNextLowerThreshold(last, out threshold);
                 while (next != last)
                 {
                     if (input <= threshold)
                     {
                         last = next;
-                        next = this.GetNextLowerThreshold(last, out threshold);
+                        next = GetNextLowerThreshold(last, out threshold);
                     }
                     else
                     {

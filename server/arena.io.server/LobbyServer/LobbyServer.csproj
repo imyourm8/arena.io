@@ -84,10 +84,12 @@
     </Compile>
     <Compile Include="Application.cs" />
     <Compile Include="controller\LobbyController.cs" />
+    <Compile Include="controller\ProfileHandlers.cs" />
     <Compile Include="controller\ServerController.cs" />
     <Compile Include="load_balancing\GameNode.cs" />
     <Compile Include="load_balancing\GameNodeStatus.cs" />
     <Compile Include="load_balancing\NodeAssigner.cs" />
+    <Compile Include="matchmaking\MatchMaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

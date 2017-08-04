@@ -50,3 +50,6 @@ server/arena.io.server/DebugAttacher/Release/
 Assets/lib/Protobuf/Debug/
 *.lastcodeanalysissucceeded
 server/lib/SharedCode.dll.CodeAnalysisLog.xml
+server/lib/
+server/deploy/arena.io.server/bin/SharedCode.dll
+server/deploy/arena.io.server/bin/LibTessDotNet.dll
