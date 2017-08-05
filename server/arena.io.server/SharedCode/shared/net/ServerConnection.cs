@@ -21,13 +21,13 @@ namespace shared.net
 {
     using interfaces;
 
-    public class ServerConnection : OutboundS2SPeer, IConnection<ServerController>
+    public class ServerConnection : IServerConnection<ServerController>, IServerPeerResponder
     {
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();
         private SendParameters defaultSendParams_;
+        private S2SPeerBase baseConnection_;
 
-        public ServerConnection(ServerApplication application)
-            : base(application)
+        public ServerConnection(ServerApplication application, S2SPeerBase baseConnection)
         {
             defaultSendParams_.ChannelId = 0;
             defaultSendParams_.Encrypted = false;
@@ -35,6 +35,7 @@ namespace shared.net
             defaultSendParams_.Unreliable = true;
 
             Application = application;
+            baseConnection_ = baseConnection;
         }
 
         #region Properties
@@ -49,9 +50,12 @@ namespace shared.net
         public void SetController(ServerController controller)
         {
             Controller = controller;
+            Controller.Connection = this;
         }
 
         #endregion
+
+        #region IServerConnection implementation
 
         #region Send Routine
 
@@ -62,7 +66,7 @@ namespace shared.net
 
         public void Send(Response response, SendParameters sendParameters)
         {
-            if (!Connected)
+            if (!baseConnection_.Connected)
                 return;
             using (MemoryStream stream = new MemoryStream())
             {
@@ -79,7 +83,7 @@ namespace shared.net
                     Parameters = parameters
                 };
 
-                var result = SendOperationResponse(opResponse, sendParameters);
+                var result = baseConnection_.SendOperationResponse(opResponse, sendParameters);
                 if (result != SendResult.Ok)
                 {
                     log.Error("Response send failed with result code: " + result.ToString() + ". Response type " + response.type);
@@ -90,7 +94,7 @@ namespace shared.net
 
         public void Send(Request request, SendParameters sendParameters)
         {
-            if (!Connected)
+            if (!baseConnection_.Connected)
                 return;
             using (MemoryStream stream = new MemoryStream())
             {
@@ -105,7 +109,7 @@ namespace shared.net
                     Parameters = parameters
                 };
 
-                var result = SendOperationRequest(opRequest, sendParameters);
+                var result = baseConnection_.SendOperationRequest(opRequest, sendParameters);
                 if (result != SendResult.Ok)
                 {
                     log.Error("Request send failed with result code: " + result.ToString());
@@ -127,7 +131,7 @@ namespace shared.net
 
         public void Send(Event evt, SendParameters sendParameters)
         {
-            if (!Connected)
+            if (!baseConnection_.Connected)
                 return;
             using (MemoryStream stream = new MemoryStream())
             {
@@ -142,7 +146,7 @@ namespace shared.net
                     Parameters = parameters
                 };
 
-                var result = SendEvent(evtData, sendParameters);
+                var result = baseConnection_.SendEvent(evtData, sendParameters);
                 if (result != SendResult.Ok)
                 {
                     log.Error("Event send failed with result code: " + result.ToString() + ". Event type " + evt.type);
@@ -152,18 +156,7 @@ namespace shared.net
         }
 #endregion
 
-#region OutboundS2SPeer implementation
-        protected override void OnConnectionEstablished(object responseObject)
-        {
-            
-        }
-
-        protected override void OnConnectionFailed(int errorCode, string errorMessage)
-        {
-            
-        }
-
-        protected override void OnEvent(IEventData eventData, SendParameters sendParameters)
+        public void OnEvent(IEventData eventData, SendParameters sendParameters)
         {
             Event evt;
             byte[] data = (byte[])eventData.Parameters[OperationParameters.ProtoData];
@@ -182,7 +175,7 @@ namespace shared.net
             }
         }
 
-        protected override void OnOperationResponse(OperationResponse operationResponse, SendParameters sendParameters)
+        public void OnOperationResponse(OperationResponse operationResponse, SendParameters sendParameters)
         {
             Response response;
             byte[] data = (byte[])operationResponse.Parameters[OperationParameters.ProtoData];
@@ -198,16 +191,16 @@ namespace shared.net
             catch (System.Exception exc)
             {
                 log.Error(exc.Message);
-                Disconnect();
+                baseConnection_.Disconnect();
             }
         }
 
-        protected override void OnDisconnect(DisconnectReason reasonCode, string reasonDetail)
+        public void OnDisconnect(DisconnectReason reasonCode, string reasonDetail)
         {
             Controller.HandleDisconnect();
         }
 
-        protected override void OnOperationRequest(OperationRequest operationRequest, SendParameters sendParameters)
+        public void OnOperationRequest(OperationRequest operationRequest, SendParameters sendParameters)
         {
             Request request;
             byte[] data = (byte[])operationRequest.Parameters[OperationParameters.ProtoData];
@@ -223,7 +216,7 @@ namespace shared.net
             catch (System.Exception exc)
             {
                 log.Error(exc.Message);
-                Disconnect();
+                baseConnection_.Disconnect();
             }
         }
 #endregion

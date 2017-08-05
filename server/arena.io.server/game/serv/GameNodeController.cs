@@ -23,14 +23,14 @@ namespace arena.serv
         private IFiber fiber_;
         private Application app_;
 
-        public GameNodeController(Application app, ServerConnection conn):
-            base(conn)
+        public GameNodeController(Application app):
+            base()
         {
             app_ = app;
             fiber_ = new PoolFiber();
             fiber_.Start();
 
-            fiber_.ScheduleOnInterval(SendNodeStatus, 0, 1000);
+            fiber_.ScheduleOnInterval(SendNodeStatus, 1000, 1000);
         }
 
         #region Private Methods

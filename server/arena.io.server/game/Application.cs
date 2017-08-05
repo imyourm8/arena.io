@@ -54,10 +54,11 @@ namespace arena
             var loginServerIp = Path.Combine(ApplicationPath, "lobby_server_ip");  
             if (File.Exists(loginServerIp))
             {
-                var ip = File.ReadAllText(loginServerIp);
+                var ip = File.ReadAllText(loginServerIp);       
                 MasterServerConnection connection = new MasterServerConnection(this, ip, Ports.LobbyPort, 500);
-                serverController_ = new GameNodeController(this, connection);
-                connection.Connect();
+                serverController_ = new GameNodeController(this);
+                connection.SetController(serverController_); 
+                connection.Connect();  
             }
             else
             {

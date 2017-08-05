@@ -10,7 +10,7 @@ using ExitGames.Concurrency.Fibers;
 
 namespace shared.net
 {
-    public class MasterServerConnection : ServerConnection
+    public class MasterServerConnection : OutboundServerConection
     {
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();
 

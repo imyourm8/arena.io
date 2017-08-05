@@ -32,10 +32,12 @@ namespace LobbyServer
 
         protected override PeerBase CreatePeer(InitRequest initRequest)
         {
-            PeerBase connectionPeer = null;
+            PeerBase connectionPeer = null;    
             if (IsGameNodeConnection(initRequest))
             {
-                ServerConnection connection = new ServerConnection(this);
+                InboundServerConnection connection = new InboundServerConnection(this, initRequest);
+                connection.SetController(new GameNodeController());
+                connectionPeer = connection;
             }
             else
             {
@@ -84,7 +86,7 @@ namespace LobbyServer
 
         private bool IsGameNodeConnection(InitRequest request)
         {
-            return request.RemotePort == Ports.GameNodePort;
+            return request.LocalPort == Ports.LobbyPort; 
         }
 
         #endregion

@@ -9,8 +9,8 @@ namespace LobbyServer.controller
 {
     public class GameNodeController : ServerController
     {
-        public GameNodeController(ServerConnection conn)
-            : base(conn)
+        public GameNodeController()
+            : base()
         {
         }
     }
