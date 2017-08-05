@@ -16,26 +16,25 @@ namespace shared.net
     using HandlersArray = List<OperationHandler<Request>>;
     using ResponseHandlerType = OperationHandler<Response>;
     using EventHandlerType = OperationHandler<Event>;
+    using interfaces;
 
-    public class ServerController
+    public class ServerController : IController<ServerConnection>
     {
         private ServerConnection connection_;
         private Dictionary<int, ResponseHandlerType> pendingRequests_ = new Dictionary<int, ResponseHandlerType>();
         private Dictionary<Commands, HandlersArray> opHandlers_ = new Dictionary<Commands, HandlersArray>();
         private Dictionary<Events, EventHandlerType> eventHandlers_ = new Dictionary<Events, EventHandlerType>();
 
-        public ServerController(ServerConnection connection)
-        {
-            connection_ = connection;
-        }
-
         public ClientState State { get; private set; }
 
-        protected ServerConnection Connection 
+        public ServerConnection Connection 
         {
             get { return connection_; }
+            set { connection_ = value; }
         }
+
 #region Public Methods
+
         public void SendRequest(Request request, object data = null, int error = 0)
         {
             SendRequest(request.type, data, request.id, error);

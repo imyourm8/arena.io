@@ -7,9 +7,9 @@ using shared.net;
 
 namespace LobbyServer.controller
 {
-    public class ServerController : ServerRequestHandler
+    public class GameNodeController : ServerController
     {
-        public ServerController(ServerConnection conn)
+        public GameNodeController(ServerConnection conn)
             : base(conn)
         {
         }

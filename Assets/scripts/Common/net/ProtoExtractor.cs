@@ -1,5 +1,4 @@
 ﻿using ProtoBuf;
-using proto_common;
 
 public static class ProtoExtractor
 {

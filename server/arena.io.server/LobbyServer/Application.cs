@@ -24,7 +24,7 @@ using LobbyServer.controller;
 
 namespace LobbyServer
 {
-    public class Application : ApplicationBase
+    public class Application : ServerApplication
     {
         private static ILogger log = LogManager.GetCurrentClassLogger();
 
@@ -32,9 +32,18 @@ namespace LobbyServer
 
         protected override PeerBase CreatePeer(InitRequest initRequest)
         {
-            PlayerConnection connection = new PlayerConnection(initRequest);
-            connection.SetController(new LobbyController());
-            return connection;
+            PeerBase connectionPeer = null;
+            if (IsGameNodeConnection(initRequest))
+            {
+                ServerConnection connection = new ServerConnection(this);
+            }
+            else
+            {
+                PlayerConnection connection = new PlayerConnection(initRequest);
+                connection.SetController(new LobbyController());
+                connectionPeer = connection;
+            }
+            return connectionPeer;
         }
 
         protected override void Setup()
@@ -67,6 +76,15 @@ namespace LobbyServer
         protected override void TearDown()
         {
             
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private bool IsGameNodeConnection(InitRequest request)
+        {
+            return request.RemotePort == Ports.GameNodePort;
         }
 
         #endregion

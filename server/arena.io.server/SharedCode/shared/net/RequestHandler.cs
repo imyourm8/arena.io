@@ -16,7 +16,7 @@ namespace shared.net
     using HandlerType = OperationHandler<Request>;
     using HandlersArray = List<OperationHandler<Request>>;
 
-    public class RequestHandler : IRequestFilter
+    public class RequestHandler : IRequestFilter, IController<IGameConnection>
     {
         // Store current request id. Warning will work only if any callback based code will be called synced on calling thread!
         protected int processedRequestId_ = -1;
@@ -32,8 +32,8 @@ namespace shared.net
 
         public IGameConnection Connection
         {
-            set { connection_ = value; }
             protected get { return connection_; }
+            set { connection_ = value; }
         }
 
         public ClientState State { get; private set; }

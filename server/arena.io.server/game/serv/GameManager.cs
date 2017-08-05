@@ -13,7 +13,6 @@ namespace arena.serv
     {
         private List<Game> games_;
         private int activeGames_;
-        private object lock_;
 
         #region Constructor & Destructor
 
@@ -43,7 +42,7 @@ namespace arena.serv
         public Game GetSuitableGame(proto_game.GameMode modeID)
         {
             Game suitableGame = null;
-            lock (lock_)
+            lock (games_)
             {
                 
                 // if any available game

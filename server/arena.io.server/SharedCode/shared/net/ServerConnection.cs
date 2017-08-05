@@ -19,20 +19,14 @@ using Event = proto_server.Event;
 
 namespace shared.net
 {
-    public class ServerConnection : OutboundS2SPeer
+    using interfaces;
+
+    public class ServerConnection : OutboundS2SPeer, IConnection<ServerController>
     {
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();
         private SendParameters defaultSendParams_;
 
-        private string masterIp_;
-        private int port_;
-        private int connectRetryIntervalMs_;
-        private IPEndPoint endpoint_;
-        private IFiber fiber_;
-        private IDisposable reconnectTimer_;
-        private byte isReconnecting_ = 0;
-
-        public ServerConnection(ServerApplication application, string masterIp, int port, int connectRetryIntervalMs)
+        public ServerConnection(ServerApplication application)
             : base(application)
         {
             defaultSendParams_.ChannelId = 0;
@@ -41,101 +35,26 @@ namespace shared.net
             defaultSendParams_.Unreliable = true;
 
             Application = application;
-            connectRetryIntervalMs_ = connectRetryIntervalMs;
-            masterIp_ = masterIp;
-            port_ = port;
-
-            fiber_ = new PoolFiber();
-            fiber_.Start();
         }
+
+        #region Properties
 
         public ServerApplication Application { get; private set; }
+        protected ServerController Controller { get; set; }
 
-        public ServerController Controller { private get; set; }
+        #endregion
 
-        public void Connect()
+        #region IConnection implementation
+
+        public void SetController(ServerController controller)
         {
-            if (reconnectTimer_ != null)
-            {
-                reconnectTimer_.Dispose();
-                reconnectTimer_ = null;
-            }
-
-            // check if the photon application is shuting down
-            if (this.Application.Running == false)
-            {
-                return;
-            }
-
-            try
-            {
-                UpdateEndpoint();
-
-                if (log.IsDebugEnabled)
-                    log.DebugFormat("MasterServer endpoint for address {0} updated to {1}", this.masterIp_, this.endpoint_);
-
-                if (ConnectTcp(endpoint_, Application.ApplicationName))
-                {
-                    if (log.IsInfoEnabled)
-                        log.InfoFormat("Connecting to master at {0}, serverId={1}", endpoint_, Application.ServerId);
-                }
-                else
-                {
-                    if (log.IsWarnEnabled)
-                        log.WarnFormat("Connection refused - is the process shutting down ? {0}", this.Application.ServerId);
-                }
-            }
-            catch (Exception e)
-            {
-                log.Error(e);
-                if (isReconnecting_ == 1)
-                {
-                    Reconnect();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            Controller = controller;
         }
 
-        public void UpdateEndpoint()
-        {
-            IPAddress masterAddress;
-            if (!IPAddress.TryParse(masterIp_, out masterAddress))
-            {
-                var hostEntry = Dns.GetHostEntry(this.masterIp_);
-                if (hostEntry.AddressList == null || hostEntry.AddressList.Length == 0)
-                {
-                    throw new ExitGames.Configuration.ConfigurationException(
-                        "MasterIPAddress setting is neither an IP nor an DNS entry: " + this.masterIp_);
-                }
+        #endregion
 
-                masterAddress = hostEntry.AddressList.First(address => address.AddressFamily == AddressFamily.InterNetwork);
+        #region Send Routine
 
-                if (masterAddress == null)
-                {
-                    throw new ExitGames.Configuration.ConfigurationException(
-                        "MasterIPAddress does not resolve to an IPv4 address! Found: "
-                        + string.Join(", ", hostEntry.AddressList.Select(a => a.ToString()).ToArray()));
-                }
-            }
-
-            endpoint_ = new IPEndPoint(masterAddress, port_);
-        }
-
-        protected void Reconnect()
-        {
-            if (this.Application.Running == false)
-            {
-                return;
-            }
-
-            reconnectTimer_ = fiber_.ScheduleOnInterval(() => Connect(), connectRetryIntervalMs_, connectRetryIntervalMs_);
-            Thread.VolatileWrite(ref isReconnecting_, 1);
-        }
-
-#region Send Routine
         public void Send(Response response)
         {
             Send(response, defaultSendParams_);
@@ -236,29 +155,12 @@ namespace shared.net
 #region OutboundS2SPeer implementation
         protected override void OnConnectionEstablished(object responseObject)
         {
-            Thread.VolatileWrite(ref isReconnecting_, 0);
+            
         }
 
         protected override void OnConnectionFailed(int errorCode, string errorMessage)
         {
-            if (isReconnecting_ == 0)
-            {
-                log.ErrorFormat(
-                    "Connection failed: address={0}, errorCode={1}, msg={2}",
-                    endpoint_,
-                    errorCode,
-                    errorMessage);
-            }
-            else if (log.IsWarnEnabled)
-            {
-                log.WarnFormat(
-                    "Master connection failed: address={0}, errorCode={1}, msg={2}",
-                    endpoint_,
-                    errorCode,
-                    errorMessage);
-            }
-
-            Reconnect();
+            
         }
 
         protected override void OnEvent(IEventData eventData, SendParameters sendParameters)

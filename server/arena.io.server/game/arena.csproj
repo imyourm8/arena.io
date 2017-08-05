@@ -186,9 +186,6 @@
     <Compile Include="..\..\..\Assets\scripts\Common\PlayerProfileExperience.cs">
       <Link>Common\PlayerProfileExperience.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\Assets\scripts\Common\ProtoExtractor.cs">
-      <Link>Common\ProtoExtractor.cs</Link>
-    </Compile>
     <Compile Include="..\..\clipper_library\clipper.cs">
       <Link>helpers\clipper.cs</Link>
     </Compile>
@@ -292,7 +289,6 @@
     <Compile Include="serv\load_balancing\ServerState.cs" />
     <Compile Include="serv\load_balancing\ValueHistory.cs" />
     <Compile Include="serv\load_balancing\WorkloadController.cs" />
-    <Compile Include="serv\MasterServerConnection.cs" />
     <Compile Include="serv\perfomance\AverageCounterReader.cs" />
     <Compile Include="serv\perfomance\Counter.cs" />
     <Compile Include="serv\perfomance\ValueHistory.cs" />

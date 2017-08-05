@@ -74,20 +74,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\Assets\scripts\Common\net\OperationParameters.cs">
-      <Link>net\OperationParameters.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\Assets\scripts\Common\net\Ports.cs">
-      <Link>net\Ports.cs</Link>
-    </Compile>
-    <Compile Include="..\..\..\Assets\scripts\Common\Singleton.cs">
-      <Link>Singleton.cs</Link>
-    </Compile>
     <Compile Include="Application.cs" />
     <Compile Include="LoginController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="net\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -89,14 +89,11 @@
     <Compile Include="..\..\..\Assets\scripts\Common\net\ClientState.cs">
       <Link>common\ClientState.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\Assets\scripts\Common\net\OperationConditions.cs">
-      <Link>common\OperationConditions.cs</Link>
-    </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\net\OperationParameters.cs">
       <Link>common\OperationParameters.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\Assets\scripts\Common\net\Ports.cs">
-      <Link>common\Ports.cs</Link>
+    <Compile Include="..\..\..\Assets\scripts\Common\net\ProtoExtractor.cs">
+      <Link>common\ProtoExtractor.cs</Link>
     </Compile>
     <Compile Include="..\..\..\Assets\scripts\Common\PlayerProfileExperience.cs">
       <Link>common\PlayerProfileExperience.cs</Link>
@@ -221,15 +218,20 @@
     <Compile Include="shared\helpers\Parsing.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="shared\net\interfaces\IConnection.cs" />
+    <Compile Include="shared\net\interfaces\IController.cs" />
     <Compile Include="shared\net\interfaces\IGameConnection.cs" />
     <Compile Include="shared\net\interfaces\IRequestFilter.cs" />
     <Compile Include="shared\net\interfaces\IActionInvoker.cs" />
+    <Compile Include="shared\net\MasterServerConnection.cs" />
+    <Compile Include="shared\net\OperationConditions.cs" />
     <Compile Include="shared\net\OperationHandler.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="shared\net\PlayerConnection.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="shared\net\Ports.cs" />
     <Compile Include="shared\net\RequestHandler.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -238,12 +240,16 @@
     <Compile Include="shared\net\ServerController.cs" />
     <Compile Include="shared\security\Token.cs" />
     <Compile Include="shared\security\TokenGenerator.cs" />
+    <Compile Include="shared\ServerProtoExtractor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shared\database\arena_db_dump.backup" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="shared\database\UserEnumsShow.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="shared\net\load_balancing\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

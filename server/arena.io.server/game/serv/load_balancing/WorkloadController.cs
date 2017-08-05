@@ -18,12 +18,12 @@ namespace arena.serv.load_balancing
 
         private const int AverageHistoryLength = 100;
 
-        private readonly ApplicationBase application;
+        private readonly ApplicationBase application_;
 
         private readonly string applicationName;
 
-        private readonly AverageCounterReader businessLogicQueueCounter;
-        private readonly AverageCounterReader bytesInCounter;
+        private readonly AverageCounterReader businessLogicQueueCounter_;
+        private readonly AverageCounterReader bytesInCounter_;
         private readonly AverageCounterReader bytesOutCounter;
         private readonly AverageCounterReader cpuCounter;
         private readonly AverageCounterReader enetQueueCounter;
@@ -41,7 +41,7 @@ namespace arena.serv.load_balancing
 
         private readonly PoolFiber fiber;
 
-        private readonly long updateIntervalInMs;
+        private readonly long updateIntervalInMs_;
 
         private IDisposable timerControl;
 
@@ -55,107 +55,107 @@ namespace arena.serv.load_balancing
         {
             try
             {
-                this.updateIntervalInMs = updateIntervalInMs;
-                this.FeedbackLevel = FeedbackLevel.Normal;
-                this.application = application;
+                updateIntervalInMs_ = updateIntervalInMs;
+                FeedbackLevel = FeedbackLevel.Normal;
+                application_ = application;
 
-                this.fiber = new PoolFiber();
-                this.fiber.Start();
+                fiber = new PoolFiber();
+                fiber.Start();
 
-                this.cpuCounter = new AverageCounterReader(AverageHistoryLength, "Processor", "% Processor Time", "_Total");
-                if (!this.cpuCounter.InstanceExists)
+                cpuCounter = new AverageCounterReader(AverageHistoryLength, "Processor", "% Processor Time", "_Total");
+                if (!cpuCounter.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.cpuCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", cpuCounter.Name);
                 }
 
-                this.businessLogicQueueCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: Threads and Queues", "Business Logic Queue", instanceName);
-                if (!this.businessLogicQueueCounter.InstanceExists)
+                businessLogicQueueCounter_ = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: Threads and Queues", "Business Logic Queue", instanceName);
+                if (!businessLogicQueueCounter_.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.businessLogicQueueCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", businessLogicQueueCounter_.Name);
                 }
 
-                this.enetQueueCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: Threads and Queues", "ENet Queue", instanceName);
-                if (!this.enetQueueCounter.InstanceExists)
+                enetQueueCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: Threads and Queues", "ENet Queue", instanceName);
+                if (!enetQueueCounter.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.enetQueueCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", enetQueueCounter.Name);
                 }
 
                 // amazon instances do not have counter for network interfaces
-                this.bytesInCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server", "bytes in/sec", instanceName);
-                if (!this.bytesInCounter.InstanceExists)
+                bytesInCounter_ = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server", "bytes in/sec", instanceName);
+                if (!bytesInCounter_.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.bytesInCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", bytesInCounter_.Name);
                 }
 
-                this.bytesOutCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server", "bytes out/sec", instanceName);
-                if (!this.bytesOutCounter.InstanceExists)
+                bytesOutCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server", "bytes out/sec", instanceName);
+                if (!bytesOutCounter.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.bytesOutCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", bytesOutCounter.Name);
                 }
 
-                this.enetThreadsProcessingCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: Threads and Queues", "ENet Threads Processing", instanceName);
-                if (!this.enetThreadsProcessingCounter.InstanceExists)
+                enetThreadsProcessingCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: Threads and Queues", "ENet Threads Processing", instanceName);
+                if (!enetThreadsProcessingCounter.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.enetThreadsProcessingCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", enetThreadsProcessingCounter.Name);
                 }
 
-                this.enetThreadsActiveCounter = new PerformanceCounterReader("Photon Socket Server: Threads and Queues", "ENet Threads Active", instanceName);
-                if (!this.enetThreadsActiveCounter.InstanceExists)
+                enetThreadsActiveCounter = new PerformanceCounterReader("Photon Socket Server: Threads and Queues", "ENet Threads Active", instanceName);
+                if (!enetThreadsActiveCounter.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.enetThreadsActiveCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", enetThreadsActiveCounter.Name);
                 }
 
-                this.timeSpentInServerInCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: ENet", "Time Spent In Server: In (ms)", instanceName);
-                if (!this.timeSpentInServerInCounter.InstanceExists)
+                timeSpentInServerInCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: ENet", "Time Spent In Server: In (ms)", instanceName);
+                if (!timeSpentInServerInCounter.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.timeSpentInServerInCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", timeSpentInServerInCounter.Name);
                 }
 
-                this.timeSpentInServerOutCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: ENet", "Time Spent In Server: Out (ms)", instanceName);
-                if (!this.timeSpentInServerOutCounter.InstanceExists)
+                timeSpentInServerOutCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: ENet", "Time Spent In Server: Out (ms)", instanceName);
+                if (!timeSpentInServerOutCounter.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.timeSpentInServerOutCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", timeSpentInServerOutCounter.Name);
                 }
 
-                this.tcpDisconnectsPerSecondCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: TCP", "TCP: Disconnected Peers +/sec", instanceName);
-                if (!this.tcpDisconnectsPerSecondCounter.InstanceExists)
+                tcpDisconnectsPerSecondCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: TCP", "TCP: Disconnected Peers +/sec", instanceName);
+                if (!tcpDisconnectsPerSecondCounter.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.tcpDisconnectsPerSecondCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", tcpDisconnectsPerSecondCounter.Name);
                 }
 
-                this.tcpClientDisconnectsPerSecondCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: TCP", "TCP: Disconnected Peers (C) +/sec", instanceName);
-                if (!this.tcpClientDisconnectsPerSecondCounter.InstanceExists)
+                tcpClientDisconnectsPerSecondCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: TCP", "TCP: Disconnected Peers (C) +/sec", instanceName);
+                if (!tcpClientDisconnectsPerSecondCounter.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.tcpClientDisconnectsPerSecondCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", tcpClientDisconnectsPerSecondCounter.Name);
                 }
 
-                this.tcpPeersCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: TCP", "TCP: Peers", instanceName);
-                if (!this.tcpPeersCounter.InstanceExists)
+                tcpPeersCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: TCP", "TCP: Peers", instanceName);
+                if (!tcpPeersCounter.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.tcpPeersCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", tcpPeersCounter.Name);
                 }
 
-                this.udpDisconnectsPerSecondCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: UDP", "UDP: Disconnected Peers +/sec", instanceName);
-                if (!this.udpDisconnectsPerSecondCounter.InstanceExists)
+                udpDisconnectsPerSecondCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: UDP", "UDP: Disconnected Peers +/sec", instanceName);
+                if (!udpDisconnectsPerSecondCounter.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.udpDisconnectsPerSecondCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", udpDisconnectsPerSecondCounter.Name);
                 }
 
-                this.udpClientDisconnectsPerSecondCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: UDP", "UDP: Disconnected Peers (C) +/sec", instanceName);
-                if (!this.udpClientDisconnectsPerSecondCounter.InstanceExists)
+                udpClientDisconnectsPerSecondCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: UDP", "UDP: Disconnected Peers (C) +/sec", instanceName);
+                if (!udpClientDisconnectsPerSecondCounter.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.udpClientDisconnectsPerSecondCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", udpClientDisconnectsPerSecondCounter.Name);
                 }
 
-                this.udpPeersCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: UDP", "UDP: Peers", instanceName);
-                if (!this.udpPeersCounter.InstanceExists)
+                udpPeersCounter = new AverageCounterReader(AverageHistoryLength, "Photon Socket Server: UDP", "UDP: Peers", instanceName);
+                if (!udpPeersCounter.InstanceExists)
                 {
-                    log.WarnFormat("Did not find counter {0}", this.udpPeersCounter.Name);
+                    log.WarnFormat("Did not find counter {0}", udpPeersCounter.Name);
                 }
 
-                this.feedbackControlSystem = new FeedbackControlSystem(2000);
+                feedbackControlSystem = new FeedbackControlSystem(2000);
 
-                this.IsInitialized = true;
+                IsInitialized = true;
             }
             catch (Exception e)
             {
@@ -180,21 +180,21 @@ namespace arena.serv.load_balancing
         {
             get
             {
-                return this.serverState;
+                return serverState;
             }
 
             set
             {
-                if (value != this.serverState)
+                if (value != serverState)
                 {
-                    var oldValue = this.serverState;
-                    this.serverState = value;
-                    Counter.ServerState.RawValue = (long)this.ServerState;
-                    this.RaiseFeedbacklevelChanged();
+                    var oldValue = serverState;
+                    serverState = value;
+                    Counter.ServerState.RawValue = (long)ServerState;
+                    RaiseFeedbacklevelChanged();
 
                     if (log.IsInfoEnabled)
                     {
-                        log.InfoFormat("ServerState changed: old={0}, new={1}", oldValue, this.serverState);
+                        log.InfoFormat("ServerState changed: old={0}, new={1}", oldValue, serverState);
                     }
 
                 }
@@ -213,22 +213,22 @@ namespace arena.serv.load_balancing
         /// </summary>
         public void Start()
         {
-            if (!this.IsInitialized)
+            if (!IsInitialized)
             {
                 return;
             }
 
-            if (this.timerControl == null)
+            if (timerControl == null)
             {
-                this.timerControl = this.fiber.ScheduleOnInterval(this.Update, 100, this.updateIntervalInMs);
+                timerControl = fiber.ScheduleOnInterval(Update, 100, updateIntervalInMs_);
             }
         }
 
         public void Stop()
         {
-            if (this.timerControl != null)
+            if (timerControl != null)
             {
-                this.timerControl.Dispose();
+                timerControl.Dispose();
             }
         }
 
@@ -238,45 +238,45 @@ namespace arena.serv.load_balancing
 
         private void Update()
         {
-            if (!this.IsInitialized)
+            if (!IsInitialized)
             {
                 return;
             }
 
-            FeedbackLevel oldValue = this.feedbackControlSystem.Output;
+            FeedbackLevel oldValue = feedbackControlSystem.Output;
 
-            if (this.cpuCounter.InstanceExists)
+            if (cpuCounter.InstanceExists)
             {
-                var cpuUsage = (int)this.cpuCounter.GetNextAverage();
+                var cpuUsage = (int)cpuCounter.GetNextAverage();
                 Counter.CpuAvg.RawValue = cpuUsage;
-                this.feedbackControlSystem.SetCpuUsage(cpuUsage);
+                feedbackControlSystem.SetCpuUsage(cpuUsage);
             }
 
-            if (this.businessLogicQueueCounter.InstanceExists)
+            if (businessLogicQueueCounter_.InstanceExists)
             {
-                var businessLogicQueue = (int)this.businessLogicQueueCounter.GetNextAverage();
+                var businessLogicQueue = (int)businessLogicQueueCounter_.GetNextAverage();
                 Counter.BusinessQueueAvg.RawValue = businessLogicQueue;
             }
 
-            if (this.enetQueueCounter.InstanceExists)
+            if (enetQueueCounter.InstanceExists)
             {
-                var enetQueue = (int)this.enetQueueCounter.GetNextAverage();
+                var enetQueue = (int)enetQueueCounter.GetNextAverage();
                 Counter.EnetQueueAvg.RawValue = enetQueue;
             }
 
-            if (this.bytesInCounter.InstanceExists && this.bytesOutCounter.InstanceExists)
+            if (bytesInCounter_.InstanceExists && bytesOutCounter.InstanceExists)
             {
-                int bytes = (int)this.bytesInCounter.GetNextAverage() + (int)this.bytesOutCounter.GetNextAverage();
+                int bytes = (int)bytesInCounter_.GetNextAverage() + (int)bytesOutCounter.GetNextAverage();
                 Counter.BytesInAndOutAvg.RawValue = bytes;
-                this.feedbackControlSystem.SetBandwidthUsage(bytes);
+                feedbackControlSystem.SetBandwidthUsage(bytes);
             }
 
-            if (this.enetThreadsProcessingCounter.InstanceExists && this.enetThreadsActiveCounter.InstanceExists)
+            if (enetThreadsProcessingCounter.InstanceExists && enetThreadsActiveCounter.InstanceExists)
             {
                 try
                 {
-                    var enetThreadsProcessingAvg = this.enetThreadsProcessingCounter.GetNextAverage();
-                    var enetThreadsActiveAvg = this.enetThreadsActiveCounter.GetNextValue();
+                    var enetThreadsProcessingAvg = enetThreadsProcessingCounter.GetNextAverage();
+                    var enetThreadsActiveAvg = enetThreadsActiveCounter.GetNextValue();
 
                     int enetThreadsProcessing;
                     if (enetThreadsActiveAvg > 0)
@@ -297,14 +297,15 @@ namespace arena.serv.load_balancing
             }
 
 
-            if (this.tcpPeersCounter.InstanceExists && this.tcpDisconnectsPerSecondCounter.InstanceExists && this.tcpClientDisconnectsPerSecondCounter.InstanceExists)
+            if (tcpPeersCounter.InstanceExists && tcpDisconnectsPerSecondCounter.InstanceExists 
+                && tcpClientDisconnectsPerSecondCounter.InstanceExists)
             {
                 try
                 {
-                    var tcpDisconnectsTotal = this.tcpDisconnectsPerSecondCounter.GetNextAverage();
-                    var tcpDisconnectsClient = this.tcpClientDisconnectsPerSecondCounter.GetNextAverage();
+                    var tcpDisconnectsTotal = tcpDisconnectsPerSecondCounter.GetNextAverage();
+                    var tcpDisconnectsClient = tcpClientDisconnectsPerSecondCounter.GetNextAverage();
                     var tcpDisconnectsWithoutClientDisconnects = tcpDisconnectsTotal - tcpDisconnectsClient;
-                    var tcpPeerCount = this.tcpPeersCounter.GetNextAverage();
+                    var tcpPeerCount = tcpPeersCounter.GetNextAverage();
 
                     int tcpDisconnectRate;
                     if (tcpPeerCount > 0)
@@ -327,14 +328,15 @@ namespace arena.serv.load_balancing
                 }
             }
 
-            if (this.udpPeersCounter.InstanceExists && this.udpDisconnectsPerSecondCounter.InstanceExists && this.udpClientDisconnectsPerSecondCounter.InstanceExists)
+            if (udpPeersCounter.InstanceExists && udpDisconnectsPerSecondCounter.InstanceExists 
+                && udpClientDisconnectsPerSecondCounter.InstanceExists)
             {
                 try
                 {
-                    var udpDisconnectsTotal = this.udpDisconnectsPerSecondCounter.GetNextAverage();
-                    var udpDisconnectsClient = this.udpClientDisconnectsPerSecondCounter.GetNextAverage();
+                    var udpDisconnectsTotal = udpDisconnectsPerSecondCounter.GetNextAverage();
+                    var udpDisconnectsClient = udpClientDisconnectsPerSecondCounter.GetNextAverage();
                     var udpDisconnectsWithoutClientDisconnects = udpDisconnectsTotal - udpDisconnectsClient;
-                    var udpPeerCount = this.udpPeersCounter.GetNextAverage();
+                    var udpPeerCount = udpPeersCounter.GetNextAverage();
 
                     int udpDisconnectRate;
                     if (udpPeerCount > 0)
@@ -354,29 +356,29 @@ namespace arena.serv.load_balancing
                 }
             }
 
-            if (this.timeSpentInServerInCounter.InstanceExists && this.timeSpentInServerOutCounter.InstanceExists)
+            if (timeSpentInServerInCounter.InstanceExists && timeSpentInServerOutCounter.InstanceExists)
             {
-                var timeSpentInServer = (int)this.timeSpentInServerInCounter.GetNextAverage() + (int)this.timeSpentInServerOutCounter.GetNextAverage();
+                var timeSpentInServer = (int)timeSpentInServerInCounter.GetNextAverage() + (int)timeSpentInServerOutCounter.GetNextAverage();
                 Counter.TimeInServerInAndOutAvg.RawValue = timeSpentInServer;
             }
 
-            this.FeedbackLevel = this.feedbackControlSystem.Output;
-            Counter.LoadLevel.RawValue = (byte)this.FeedbackLevel;
+            FeedbackLevel = feedbackControlSystem.Output;
+            Counter.LoadLevel.RawValue = (byte)FeedbackLevel;
 
-            if (oldValue != this.FeedbackLevel)
+            if (oldValue != FeedbackLevel)
             {
                 if (log.IsInfoEnabled)
                 {
-                    log.InfoFormat("FeedbackLevel changed: old={0}, new={1}", oldValue, this.FeedbackLevel);
+                    log.InfoFormat("FeedbackLevel changed: old={0}, new={1}", oldValue, FeedbackLevel);
                 }
 
-                this.RaiseFeedbacklevelChanged();
+                RaiseFeedbacklevelChanged();
             }
         }
 
         private void RaiseFeedbacklevelChanged()
         {
-            var e = this.FeedbacklevelChanged;
+            var e = FeedbacklevelChanged;
             if (e != null)
             {
                 e(FeedbackLevel);

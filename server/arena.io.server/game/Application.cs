@@ -55,7 +55,7 @@ namespace arena
             if (File.Exists(loginServerIp))
             {
                 var ip = File.ReadAllText(loginServerIp);
-                var connection = new ServerConnection(this, ip, Ports.LobbyPort, 500);
+                MasterServerConnection connection = new MasterServerConnection(this, ip, Ports.LobbyPort, 500);
                 serverController_ = new GameNodeController(this, connection);
                 connection.Connect();
             }
