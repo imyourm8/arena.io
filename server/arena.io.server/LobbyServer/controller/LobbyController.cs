@@ -15,6 +15,8 @@ using OperationHandler = shared.net.OperationHandler<proto_common.Request>;
 
 namespace LobbyServer.controller
 {
+    using matchmaking;
+
     partial class LobbyController : RequestHandler
     {
         private bool loginInProcess_ = false;
@@ -96,9 +98,8 @@ namespace LobbyServer.controller
 
         private void HandleFindRoom(proto_common.Request request)
         {
-            SendResponse(request);
-            //RoomManager.Instance.AssignPlayerToRandomRoom(player_);
-            SetState(ClientState.SwitchGameServer);
+            //SendResponse(request);
+            MatchMaker.Instance.AddToQueue(profile_);
         }
 
         

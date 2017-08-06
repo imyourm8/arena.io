@@ -17,14 +17,16 @@ using OperationHandler = shared.net.OperationHandler<proto_server.Request>;
 
 namespace arena.serv
 {
+    using proto_server;
+
     class GameNodeController : ServerController
     {
         private static ILogger log = LogManager.GetCurrentClassLogger();
         private IFiber fiber_;
-        private Application app_;
+        private GameApplication app_;
 
-        public GameNodeController(Application app):
-            base()
+        public GameNodeController(GameApplication app)
+            :base()
         {
             app_ = app;
             fiber_ = new PoolFiber();
@@ -33,18 +35,53 @@ namespace arena.serv
             fiber_.ScheduleOnInterval(SendNodeStatus, 1000, 1000);
         }
 
+        #region Public Methods
+
+
+
+        #endregion
+
         #region Private Methods
-        void SendNodeStatus()
+
+        private void SendNodeStatus()
         {
             var nodeStatus = new proto_server.GameNodeStatus();
             nodeStatus.workload_level = app_.WorkloadController.FeedbackLevel;
             nodeStatus.players_connected = (int)Counter.PeerCount.RawValue;
-            //nodeStatus.active_rooms
+            var gameList = GameManager.Instance.GetGameList();
+            foreach (var game in gameList)
+            {
+                var session = new GameSession();
+                session.game_id = game.ID.ToString();
+                session.closed = game.IsClosed;
+                nodeStatus.games.Add(session);
+            }
+
             SendEvent(Events.NODE_STATUS, nodeStatus);
         }
+
+        private void SendNodeInfo()
+        {
+            var request = new RegisterGameNode.Request();
+            request.id = app_.ServerId.ToString();
+            request.ip = app_.Ip;
+
+            SendRequest(Commands.REGISTER_GAME_NODE, request);
+        }
+
         #endregion
 
         #region Handlers
+
+        #endregion
+
+        #region Internal
+
+        internal void Initialize()
+        {
+            Connection.OnConnectionEstablishedEvent += SendNodeInfo;
+        } 
+
         #endregion
     }
 }

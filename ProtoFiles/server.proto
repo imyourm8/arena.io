@@ -47,12 +47,13 @@ message Event
 	extensions 10 to max;
 }
 
-
+// ========================== REQUESTS ========================
 message RegisterGameNode
 {
   message Request
   {
     required string ip = 1;
+    required string id = 2;
     
     extend proto_server.Request 
     {
@@ -69,10 +70,17 @@ message RegisterGameNode
   }
 }
 
+// ========================= EVENTS ================================
+message GameSession
+{
+  required string game_id = 1;
+  required bool closed = 2; // true if players can join
+}
+
 message GameNodeStatus
 {
   required FeedbackLevel workload_level = 1;
-  required int32 active_games = 2;
+  repeated GameSession games = 2;
   required int32 players_connected = 3;
   
   extend proto_server.Event 

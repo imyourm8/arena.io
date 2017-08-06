@@ -5,12 +5,19 @@ namespace shared.net
 {
     public class ServerApplication : ApplicationBase
     {
-        public Guid ServerId { get; private set; }
-
         public ServerApplication()
         {
             ServerId = Guid.NewGuid();
         }
+
+        #region Properties
+
+        public Guid ServerId { get; private set; }
+        public string Ip { get; private set; }
+
+        #endregion
+
+        #region ApplicationBase implemtation
 
         protected override PeerBase CreatePeer(InitRequest initRequest)
         {
@@ -26,5 +33,7 @@ namespace shared.net
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

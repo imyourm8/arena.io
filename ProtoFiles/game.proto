@@ -199,6 +199,8 @@ message FindRoom
 {
   message Request 
   {
+    required GameMode game_mode = 1;
+    
     extend proto_common.Request
     {
       optional proto_game.FindRoom.Request fnd_room_req = 2013;

@@ -61,7 +61,7 @@
     <Reference Include="ProtoLib">
       <HintPath>..\..\..\Assets\lib\Protobuf\Debug\ProtoLib.dll</HintPath>
     </Reference>
-    <Reference Include="SharedCode, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SharedCode, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\SharedCode.dll</HintPath>
     </Reference>

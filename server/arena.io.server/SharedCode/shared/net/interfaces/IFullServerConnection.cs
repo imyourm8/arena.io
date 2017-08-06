@@ -6,13 +6,7 @@ using System.Threading.Tasks;
 
 namespace shared.net.interfaces
 {
-    public interface IBaseConnection
+    public interface IFullServerConnection : IServerConnection, IServerPeerResponder, IServerConnectionOutbound
     {
-        void Disconnect();
-    }
-
-    public interface IConnection : IBaseConnection
-    {
-        
     }
 }

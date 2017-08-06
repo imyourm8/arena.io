@@ -20,13 +20,25 @@ using ExitGames.Logging.Log4Net;
 using log4net.Config;
 
 using shared.net;
-using LobbyServer.controller;
 
 namespace LobbyServer
 {
-    public class Application : ServerApplication
+    using controller;
+    using load_balancing;
+
+    public class LobbyApplication : ServerApplication
     {
+        #region Fields
+
         private static ILogger log = LogManager.GetCurrentClassLogger();
+
+        #endregion
+
+        #region Properties
+
+        internal Loadbalancer Loadbalancer { get; private set; }
+
+        #endregion
 
         #region ApplicationBase implementation
 
@@ -36,7 +48,8 @@ namespace LobbyServer
             if (IsGameNodeConnection(initRequest))
             {
                 InboundServerConnection connection = new InboundServerConnection(this, initRequest);
-                connection.SetController(new GameNodeController());
+                ServerController controller = new GameNodeController(this);
+                connection.SetController(controller);
                 connectionPeer = connection;
             }
             else
@@ -73,6 +86,8 @@ namespace LobbyServer
             {
                 log.FatalFormat("Can't connect to login server. File {0} is not exist.", loginServerIp);
             }*/
+
+            Loadbalancer = new Loadbalancer();
         }
 
         protected override void TearDown()

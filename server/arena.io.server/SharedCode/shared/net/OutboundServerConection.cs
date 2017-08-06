@@ -7,7 +7,7 @@ namespace shared.net
 {
     using interfaces;
 
-    public class OutboundServerConection : OutboundS2SPeer, IServerConnection<ServerController>
+    public class OutboundServerConection : OutboundS2SPeer, IServerConnection
     {
         private ServerConnection connection_;
 
@@ -59,6 +59,7 @@ namespace shared.net
 
         protected override void OnConnectionEstablished(object responseObject)
         {
+            connection_.OnConnectionEstablished(responseObject);
         }
 
         protected override void OnConnectionFailed(int errorCode, string errorMessage)

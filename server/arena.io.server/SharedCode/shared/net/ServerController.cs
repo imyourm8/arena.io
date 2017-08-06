@@ -18,33 +18,35 @@ namespace shared.net
     using EventHandlerType = OperationHandler<Event>;
     using interfaces;
 
-    public class ServerController : IController<ServerConnection>
+    public class ServerController : IServerController<IFullServerConnection>
     {
-        private ServerConnection connection_;
+        private IFullServerConnection connection_;
+        private int currentRequestId_ = 0;
         private Dictionary<int, ResponseHandlerType> pendingRequests_ = new Dictionary<int, ResponseHandlerType>();
         private Dictionary<Commands, HandlersArray> opHandlers_ = new Dictionary<Commands, HandlersArray>();
         private Dictionary<Events, EventHandlerType> eventHandlers_ = new Dictionary<Events, EventHandlerType>();
 
+        #region Properties
+
         public ClientState State { get; private set; }
 
-        public ServerConnection Connection 
+        public IFullServerConnection Connection 
         {
-            get { return connection_; }
             set { connection_ = value; }
+            get { return connection_; }
         }
 
-#region Public Methods
+        #endregion
 
-        public void SendRequest(Request request, object data = null, int error = 0)
-        {
-            SendRequest(request.type, data, request.id, error);
-        }
+        #region Public Methods
 
-        public void SendRequest(Commands cmd, object data = null, int id = 0, int error = 0)
+        #region IServerController implementation
+
+        public void SendRequest(Commands cmd, object data = null, int error = 0)
         {
             var request = new Request();
             request.type = cmd;
-            request.id = id;
+            request.id = currentRequestId_++;
             if (data != null)
             {
                 ProtoBuf.Extensible.AppendValue(request, (int)cmd, data);
@@ -84,6 +86,16 @@ namespace shared.net
             ProtoBuf.Extensible.AppendValue(evt, (int)evtCode, data);
             Send(evt);
         }
+
+        public void Send(Event evt)
+        {
+            if (connection_ != null)
+            {
+                connection_.Send(evt);
+            }
+        }
+
+#endregion
 
         public virtual void HandleDisconnect()
         {
@@ -135,9 +147,11 @@ namespace shared.net
         {
             HandleEventInternal(evt);
         }
+
 #endregion
 
 #region Private Methods
+
         private void HandleEventInternal(Event evt)
         { 
             if (FilterEvent(evt))
@@ -176,18 +190,11 @@ namespace shared.net
             return;
         }
 
-        private void Send(Event evt)
-        {
-            if (connection_ != null)
-            {
-                connection_.Send(evt);
-            }
-        }
-
         protected virtual IActionInvoker GetActionInvoker()
         {
             return null;
         }
+
 #endregion
     }
 }

@@ -299,6 +299,13 @@ namespace proto_game
   {
     public Request() {}
     
+    private proto_game.GameMode _game_mode;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"game_mode", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public proto_game.GameMode game_mode
+    {
+      get { return _game_mode; }
+      set { _game_mode = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }

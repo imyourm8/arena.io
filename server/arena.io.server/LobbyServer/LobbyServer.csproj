@@ -64,7 +64,7 @@
     <Reference Include="ProtoLib">
       <HintPath>..\..\..\Assets\lib\Protobuf\Debug\ProtoLib.dll</HintPath>
     </Reference>
-    <Reference Include="SharedCode, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SharedCode, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\SharedCode.dll</HintPath>
     </Reference>
@@ -77,13 +77,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application.cs" />
+    <Compile Include="LobbyApplication.cs" />
     <Compile Include="controller\LobbyController.cs" />
     <Compile Include="controller\ProfileHandlers.cs" />
     <Compile Include="controller\GameNodeController.cs" />
     <Compile Include="load_balancing\GameNode.cs" />
-    <Compile Include="load_balancing\GameNodeStatus.cs" />
-    <Compile Include="load_balancing\NodeAssigner.cs" />
+    <Compile Include="load_balancing\Loadbalancer.cs" />
+    <Compile Include="matchmaking\interfaces\IMatchResponser.cs" />
     <Compile Include="matchmaking\MatchMaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

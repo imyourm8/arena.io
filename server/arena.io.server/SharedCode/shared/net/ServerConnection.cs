@@ -21,7 +21,7 @@ namespace shared.net
 {
     using interfaces;
 
-    public class ServerConnection : IServerConnection<ServerController>, IServerPeerResponder
+    public class ServerConnection : IFullServerConnection
     {
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();
         private SendParameters defaultSendParams_;
@@ -219,6 +219,21 @@ namespace shared.net
                 baseConnection_.Disconnect();
             }
         }
+
+        public void Disconnect()
+        {
+            baseConnection_.Disconnect();
+        }
 #endregion
+
+        public void OnConnectionEstablished(object responseObject)
+        {
+            if (OnConnectionEstablishedEvent != null)
+            {
+                OnConnectionEstablishedEvent();
+            }
+        }
+
+        public event Action OnConnectionEstablishedEvent;
     }
 }

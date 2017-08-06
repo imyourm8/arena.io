@@ -27,13 +27,24 @@ using shared.factories;
 
 namespace arena
 {
-    public class Application : ServerApplication
+    public class GameApplication : ServerApplication
     {
         private static ILogger log = LogManager.GetCurrentClassLogger();
 
+        #region Fields
+
         private GameNodeController serverController_;
 
-#region ApplicationBase implementation
+        #endregion
+
+        #region Properties
+
+        public WorkloadController WorkloadController { get; set; }
+
+        #endregion
+
+        #region ApplicationBase implementation
+
         protected override PeerBase CreatePeer(InitRequest initRequest)
         {
             PlayerConnection connection = new PlayerConnection(initRequest);
@@ -57,8 +68,17 @@ namespace arena
                 var ip = File.ReadAllText(loginServerIp);       
                 MasterServerConnection connection = new MasterServerConnection(this, ip, Ports.LobbyPort, 500);
                 serverController_ = new GameNodeController(this);
-                connection.SetController(serverController_); 
-                connection.Connect();  
+                connection.SetController(serverController_);  
+            }
+            else
+            {
+                log.FatalFormat("Can't connect to login server. File {0} is not exist.", loginServerIp);
+            }
+
+            var publicIp = Path.Combine(ApplicationPath, "public_ip");
+            if (File.Exists(publicIp))
+            {
+                var ip = File.ReadAllText(loginServerIp);
             }
             else
             {
@@ -78,20 +98,19 @@ namespace arena
             SkillFactory.Instance.Init(ApplicationPath);
             PickUpFactory.Instance.Init(ApplicationPath);
             BoosterFactory.Instance.Init();
-
             battle.factories.MobScriptsFactory.Instance.Init();
+
+            if (serverController_ != null)
+                serverController_.Initialize();
+            else
+                log.FatalFormat("Can't initialize Server Controller!");
         }
 
         protected override void TearDown()
         {
 
         }
-#endregion
 
-        public WorkloadController WorkloadController
-        {
-            get;
-            set;
-        }
+        #endregion
     }
 }

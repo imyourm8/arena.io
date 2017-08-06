@@ -11,30 +11,6 @@
 // Note: requires additional types generated from: ProtoFiles/common.proto
 namespace proto_profile
 {
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"BumpInfo")]
-  public partial class BumpInfo : global::ProtoBuf.IExtensible
-  {
-    public BumpInfo() {}
-    
-    private int _id;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"id", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int id
-    {
-      get { return _id; }
-      set { _id = value; }
-    }
-    private int _max_value;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"max_value", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int max_value
-    {
-      get { return _max_value; }
-      set { _max_value = value; }
-    }
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ClassInfo")]
   public partial class ClassInfo : global::ProtoBuf.IExtensible
   {
@@ -46,27 +22,6 @@ namespace proto_profile
     {
       get { return _class; }
       set { _class = value; }
-    }
-    private bool _unlocked;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"unlocked", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public bool unlocked
-    {
-      get { return _unlocked; }
-      set { _unlocked = value; }
-    }
-    private int _levelRequired;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"levelRequired", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int levelRequired
-    {
-      get { return _levelRequired; }
-      set { _levelRequired = value; }
-    }
-    private int _coinsPrice;
-    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"coinsPrice", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int coinsPrice
-    {
-      get { return _coinsPrice; }
-      set { _coinsPrice = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -85,26 +40,26 @@ namespace proto_profile
       get { return _coins; }
       set { _coins = value; }
     }
+    private int _premium_coins;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"premium_coins", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int premium_coins
+    {
+      get { return _premium_coins; }
+      set { _premium_coins = value; }
+    }
     private readonly global::System.Collections.Generic.List<proto_profile.ClassInfo> _classesInfo = new global::System.Collections.Generic.List<proto_profile.ClassInfo>();
-    [global::ProtoBuf.ProtoMember(2, Name=@"classesInfo", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::ProtoBuf.ProtoMember(3, Name=@"classesInfo", DataFormat = global::ProtoBuf.DataFormat.Default)]
     public global::System.Collections.Generic.List<proto_profile.ClassInfo> classesInfo
     {
       get { return _classesInfo; }
     }
   
     private string _name;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"name", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"name", DataFormat = global::ProtoBuf.DataFormat.Default)]
     public string name
     {
       get { return _name; }
       set { _name = value; }
-    }
-    private int _level;
-    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"level", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int level
-    {
-      get { return _level; }
-      set { _level = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -159,11 +114,14 @@ namespace proto_profile
     public enum PlayerClasses
     {
             
-      [global::ProtoBuf.ProtoEnum(Name=@"Assault", Value=1)]
-      Assault = 1,
+      [global::ProtoBuf.ProtoEnum(Name=@"TypeA", Value=1)]
+      TypeA = 1,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"Gunner", Value=2)]
-      Gunner = 2
+      [global::ProtoBuf.ProtoEnum(Name=@"TypeB", Value=2)]
+      TypeB = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"TypeC", Value=3)]
+      TypeC = 3
     }
   
 }

@@ -6,30 +6,22 @@ package proto_profile;
 
 enum PlayerClasses
 {
-  Assault = 1;
-  Gunner = 2;
-}
-
-message BumpInfo
-{
-  required int32 id = 1;
-  required int32 max_value = 2;
+  TypeA = 1;
+  TypeB = 2;
+  TypeC = 3;
 }
 
 message ClassInfo
 {
   required PlayerClasses class = 1;
-  required bool unlocked = 2;
-  required int32 levelRequired = 3;
-  required int32 coinsPrice = 4;
 }
 
 message UserInfo
 {
   required int32 coins = 1;
-  repeated ClassInfo classesInfo = 2;
-  required string name = 3;
-  required int32 level = 4;
+  required int32 premium_coins = 2;
+  repeated ClassInfo classesInfo = 3;
+  required string name = 4;
   
   extend proto_common.Event 
   {

@@ -137,6 +137,13 @@ namespace proto_server
       get { return _ip; }
       set { _ip = value; }
     }
+    private string _id;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string id
+    {
+      get { return _id; }
+      set { _id = value; }
+    }
     private proto_server.RegisterGameNode.Request _register_game_node = null;
     [global::ProtoBuf.ProtoMember(11, IsRequired = false, Name=@"register_game_node", DataFormat = global::ProtoBuf.DataFormat.Default)]
     [global::System.ComponentModel.DefaultValue(null)]
@@ -173,6 +180,30 @@ namespace proto_server
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"GameSession")]
+  public partial class GameSession : global::ProtoBuf.IExtensible
+  {
+    public GameSession() {}
+    
+    private string _game_id;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"game_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string game_id
+    {
+      get { return _game_id; }
+      set { _game_id = value; }
+    }
+    private bool _closed;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"closed", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public bool closed
+    {
+      get { return _closed; }
+      set { _closed = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"GameNodeStatus")]
   public partial class GameNodeStatus : global::ProtoBuf.IExtensible
   {
@@ -185,13 +216,13 @@ namespace proto_server
       get { return _workload_level; }
       set { _workload_level = value; }
     }
-    private int _active_games;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"active_games", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int active_games
+    private readonly global::System.Collections.Generic.List<proto_server.GameSession> _games = new global::System.Collections.Generic.List<proto_server.GameSession>();
+    [global::ProtoBuf.ProtoMember(2, Name=@"games", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<proto_server.GameSession> games
     {
-      get { return _active_games; }
-      set { _active_games = value; }
+      get { return _games; }
     }
+  
     private int _players_connected;
     [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"players_connected", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     public int players_connected

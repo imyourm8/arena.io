@@ -162,14 +162,10 @@ namespace arena.net
             var info = player_.Profile.GetInfoPacket();
             authRes.info = info;
 
-            var unlockedClasses = player_.Profile.GetUnlockedClasses();
             foreach (var entry in PlayerClassFactory.Instance.GetAllClasses())
             {
                 proto_profile.ClassInfo clInfo = new proto_profile.ClassInfo();
                 clInfo.@class = entry.Value.Class;
-                clInfo.coinsPrice = entry.Value.Price;
-                clInfo.levelRequired = entry.Value.MinLevel;
-                clInfo.unlocked = unlockedClasses.Contains(clInfo.@class);
                 info.classesInfo.Add(clInfo);
             }
 

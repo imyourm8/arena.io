@@ -13,7 +13,8 @@ namespace arena.battle.modes
         { get; set; }
 
         public virtual void SpawnPlayer(Player player) { }
-        public virtual int GetMatchDuration() { return 0; }
+        public virtual int GetMatchDurationMs() { return 0; }
+        public virtual int CloseGameAfterMs() { return 0; }
         public virtual void HandleEntityKill(Player killer, Entity victim) { }
         public virtual int GetExpFor(Player killer, Player victim) { return 0; }
         public virtual int GetCoinsFor(Player killer, Player victim) { return 0; }

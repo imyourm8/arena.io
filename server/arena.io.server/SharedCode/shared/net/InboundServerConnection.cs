@@ -7,7 +7,9 @@ namespace shared.net
 {
     using interfaces;
 
-    public class InboundServerConnection : InboundS2SPeer, IServerConnection<ServerController>
+    public class InboundServerConnection : 
+        InboundS2SPeer, 
+        IServerConnection
     {
         private ServerConnection connection_;
 

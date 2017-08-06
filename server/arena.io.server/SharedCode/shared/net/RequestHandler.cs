@@ -162,7 +162,7 @@ namespace shared.net
         }
 #endregion
 
-#region Public Methods
+#region Private Methods
         private bool HandleRequestInternal(Request request)
         {
             //If filtering successed, then discard this request

@@ -6,8 +6,7 @@ using Event = proto_server.Event;
 
 namespace shared.net.interfaces
 {
-    public interface IServerConnection<TController> : IConnection<TController>
-        where TController : IBaseController
+    public interface IServerConnection : IConnection
     {
         void Send(Response response);
         void Send(Response response, SendParameters sendParameters);

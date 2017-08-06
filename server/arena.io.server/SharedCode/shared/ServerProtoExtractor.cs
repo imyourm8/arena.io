@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-static class ServerProtoExtractor
+public static class ServerProtoExtractor
 {
     public static T Extract<T>(this proto_server.Request msg, int field)
     {

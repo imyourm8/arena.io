@@ -15,7 +15,6 @@ namespace shared.account
     public class Profile : PlayerExperience.IExpProvider
     {
         private PlayerProfileExperience exp_;
-        private HashSet<proto_profile.PlayerClasses> unlockedClasses_ = new HashSet<proto_profile.PlayerClasses>();
 
         public Profile(IDataReader data)
         {
@@ -26,25 +25,6 @@ namespace shared.account
             Coins = (int)data["coins"];
             Name = (string)data["name"];
             UniqueID = (string)data["authUserID"];
-
-            var reader = new JsonTextReader(new StringReader((string)data["unlocked_classes"]));
-            HashSet<proto_profile.PlayerClasses> unclockedClasses = new HashSet<proto_profile.PlayerClasses>();
-            while (reader.Read())
-            {
-                if (reader.TokenType == JsonToken.StartArray || reader.TokenType == JsonToken.EndArray) continue;
-                //json looks like array of classes ids
-                unclockedClasses.Add(helpers.Parsing.ParseEnum<proto_profile.PlayerClasses>((string)reader.Value));
-            }
-        }
-
-        public string GetSerializedUnlockedClasses()
-        {
-            return JsonConvert.SerializeObject(unlockedClasses_);
-        }
-
-        public HashSet<proto_profile.PlayerClasses> GetUnlockedClasses()
-        {
-            return unlockedClasses_;
         }
 
         public string UniqueID
@@ -72,8 +52,6 @@ namespace shared.account
             Coins += coins;
         }
 
-        public void d() { }
-
         public bool TryWithdrawCoins(int amount)
         {
             if (amount < 0 || Coins < amount) return false;
@@ -85,7 +63,6 @@ namespace shared.account
         {
             proto_profile.UserInfo info = new proto_profile.UserInfo();
             info.coins = Coins;
-            info.level = Level;
             info.name = Name;
             return info;
         }

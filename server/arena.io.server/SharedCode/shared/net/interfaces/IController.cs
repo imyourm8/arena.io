@@ -11,8 +11,7 @@ namespace shared.net.interfaces
         
     }
 
-    public interface IController<TConnection> : IBaseController
-        where TConnection : IBaseConnection
+    public interface IController<TConnection>
     {
         TConnection Connection { set; }
     }

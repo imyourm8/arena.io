@@ -19,7 +19,7 @@
     <OutputPath>..\..\lib\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>2</WarningLevel>
+    <WarningLevel>3</WarningLevel>
     <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -221,10 +221,13 @@
     <Compile Include="shared\net\InboundServerConnection.cs" />
     <Compile Include="shared\net\interfaces\IConnection.cs" />
     <Compile Include="shared\net\interfaces\IController.cs" />
+    <Compile Include="shared\net\interfaces\IFullServerConnection.cs" />
     <Compile Include="shared\net\interfaces\IGameConnection.cs" />
     <Compile Include="shared\net\interfaces\IRequestFilter.cs" />
     <Compile Include="shared\net\interfaces\IActionInvoker.cs" />
     <Compile Include="shared\net\interfaces\IServerConnection.cs" />
+    <Compile Include="shared\net\interfaces\IServerConnectionOutbound.cs" />
+    <Compile Include="shared\net\interfaces\IServerController.cs" />
     <Compile Include="shared\net\interfaces\IServerPeerResponder.cs" />
     <Compile Include="shared\net\MasterServerConnection.cs" />
     <Compile Include="shared\net\OperationConditions.cs" />

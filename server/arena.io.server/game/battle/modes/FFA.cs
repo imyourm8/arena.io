@@ -25,9 +25,14 @@ namespace arena.battle.modes
             Game.Map.SpawnPlayer(player);
         }
 
-        public override int GetMatchDuration()
+        public override int GetMatchDurationMs()
         {
-            return 1500000;
+            return 300000;
+        }
+
+        public override int CloseGameAfterMs()
+        {
+            return GetMatchDurationMs() - 60000; //1 min before end, close game
         }
 
         public override int GetExpFor(Player killer, Player victim)

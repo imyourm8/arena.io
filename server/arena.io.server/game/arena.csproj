@@ -189,7 +189,7 @@
     <Compile Include="..\..\clipper_library\clipper.cs">
       <Link>helpers\clipper.cs</Link>
     </Compile>
-    <Compile Include="Application.cs" />
+    <Compile Include="GameApplication.cs" />
     <Compile Include="battle\AttackData.cs" />
     <Compile Include="battle\boosters\Booster.cs" />
     <Compile Include="battle\Bullet.cs" />

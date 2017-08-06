@@ -26,10 +26,7 @@ namespace arena.serv
 
         #region Getters & Setters
 
-        public int ActiveGames
-        {
-            get { return activeGames_; }
-        }
+        public int ActiveGames { get { return activeGames_; } }
 
         #endregion
 
@@ -64,6 +61,21 @@ namespace arena.serv
                 }
             }
             return suitableGame;
+        }
+
+        /// <summary>
+        /// Returns current running game.
+        /// Creates new List 
+        /// </summary>
+        /// <returns>Game list</returns>
+        public List<Game> GetGameList()
+        {
+            List<Game> gameList = null;
+            lock (games_)
+            {
+                gameList = new List<Game>(games_);
+            }
+            return gameList;
         }
 
         #endregion

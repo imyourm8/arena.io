@@ -14,6 +14,8 @@ namespace shared.net
     {
         private static readonly ILogger log = LogManager.GetCurrentClassLogger();
 
+        #region Fields
+
         private string masterIp_;
         private int port_;
         private int connectRetryIntervalMs_;
@@ -21,6 +23,8 @@ namespace shared.net
         private IFiber fiber_;
         private IDisposable reconnectTimer_;
         private long isReconnecting_ = 0;
+
+        #endregion
 
         public MasterServerConnection(ServerApplication app, string masterIp, int port, int connectRetryIntervalMs)
             :base(app)
