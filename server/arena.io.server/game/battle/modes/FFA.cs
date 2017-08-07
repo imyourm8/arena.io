@@ -21,19 +21,14 @@ namespace arena.battle.modes
         public override void SpawnPlayer(Player player)
         {
             base.SpawnPlayer(player);
-
             Game.Map.SpawnPlayer(player);
         }
 
-        public override int GetMatchDurationMs()
-        {
-            return 300000;
-        }
+        public override int MaxPlayersAllowed { get { return 20; } }
 
-        public override int CloseGameAfterMs()
-        {
-            return GetMatchDurationMs() - 60000; //1 min before end, close game
-        }
+        public override int GetMatchDurationMs { get { return 300000; } }
+
+        public override int CloseGameAfterMs { get { return GetMatchDurationMs - 60000; } }
 
         public override int GetExpFor(Player killer, Player victim)
         {
@@ -51,10 +46,7 @@ namespace arena.battle.modes
             return victim.BattleStats.Score / 10;
         }
 
-        public override string GetMapPath()
-        {
-            return MapIDs.FFA_1;
-        }
+        public override string MapFilePath { get { return MapIDs.FFA_1; } }
 
         public override void Update(float dt)
         {

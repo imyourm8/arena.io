@@ -13,9 +13,9 @@ namespace shared.net.interfaces
     public interface IServerController<TConnection> : IController<TConnection>
         where TConnection : IServerConnection
     {
-        void SendRequest(Commands cmd, object data, int error);
-        void SendResponse(Request request, object data, ResponseHandlerType responseCallback, int error);
-        void SendResponse(Commands cmd, object data, int id, ResponseHandlerType responseCallback, int error);
+        void SendRequest(Commands cmd, object data, ResponseHandlerType responseCallback, int error);
+        void SendResponse(Request request, object data, int error);
+        void SendResponse(Commands cmd, object data, int id, int error);
         void SendEvent(Events evtCode, object data);
         void Send(Event evt);
 

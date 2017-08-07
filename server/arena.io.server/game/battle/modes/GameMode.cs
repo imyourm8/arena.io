@@ -13,14 +13,15 @@ namespace arena.battle.modes
         { get; set; }
 
         public virtual void SpawnPlayer(Player player) { }
-        public virtual int GetMatchDurationMs() { return 0; }
-        public virtual int CloseGameAfterMs() { return 0; }
+        public virtual int MaxPlayersAllowed { get; }
+        public virtual int GetMatchDurationMs { get; }
+        public virtual int CloseGameAfterMs { get; }
         public virtual void HandleEntityKill(Player killer, Entity victim) { }
         public virtual int GetExpFor(Player killer, Player victim) { return 0; }
         public virtual int GetCoinsFor(Player killer, Player victim) { return 0; }
         public virtual int GetScoreFor(Player killer, Player victim) { return 0; }
         public virtual void Update(float dt) { }
-        public virtual string GetMapPath() { return ""; }
-        public int GetMapID() { return map.MapIDs.MapNameToID[GetMapPath()]; }
+        public virtual string MapFilePath { get; }
+        public int GetMapID() { return map.MapIDs.MapNameToID[MapFilePath]; }
     }
 }

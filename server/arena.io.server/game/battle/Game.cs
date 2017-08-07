@@ -20,6 +20,8 @@ using shared.factories;
 
 namespace arena.battle
 {
+    using modes;
+
     class Game : 
         IActionInvoker, 
         BlockSpawner.IBlockControl
@@ -56,7 +58,12 @@ namespace arena.battle
         public int PlayersConnected { get; private set; }
         public Map Map { get { return map_; } }
         public Guid ID { get; private set; }
-        public bool IsClosed { get; private set; }
+        public proto_game.GameMode GameModeID { get; private set; }
+        private bool IsClosed { get; set; }
+        public bool PlayersCanJoin
+        {
+            get { return !IsClosed && players_.Count < mode_.MaxPlayersAllowed; }
+        }
         public int MaxTickDelta
         {
             get { return (int)(1.0f / GlobalDefs.GetUpdateInterval() * 1.0f); }
@@ -67,20 +74,22 @@ namespace arena.battle
 
         #endregion
 
-        public Game(modes.GameMode mode)    
+        #region Constructors 
+
+        public Game(proto_game.GameMode modeID)    
         {
+            GameModeID = modeID;
+            mode_ = GameModeFactory.Instance.Get(modeID);
             PlayersConnected = 0;
-            IsClosed = true;
+            IsClosed = false;
             ID = Guid.NewGuid(); 
-            gameFinishAt_ = CurrentTime.Instance.CurrentTimeInMs + mode.GetMatchDurationMs();
+            gameFinishAt_ = CurrentTime.Instance.CurrentTimeInMs + mode_.GetMatchDurationMs;
 
             startUpTime_ = CurrentTime.Instance.CurrentTimeInMs;
             prevUpdateTime_ = startUpTime_;
-
-            mode_ = mode;
             mode_.Game = this; 
 
-            var mapLoader = new MapLoader(mode_.GetMapPath(), this);    
+            var mapLoader = new MapLoader(mode_.MapFilePath, this);    
             map_ = mapLoader.Load();
 
             scheduler_.SetStep(GlobalDefs.EventPoolInterval);      
@@ -94,11 +103,13 @@ namespace arena.battle
             fiber_.ScheduleOnInterval(UpdateMap, 0, 15000);
             //fiber_.ScheduleOnInterval(BroadcastEntities, 0, GlobalDefs.BroadcastEntitiesInterval);
             //fiber_.ScheduleOnInterval(HandleAIUpdate, GlobalDefs.AITickInterval, GlobalDefs.AITickInterval);
-            fiber_.Schedule(Close, mode.CloseGameAfterMs());
-            fiber_.Schedule(FinishGame, mode.GetMatchDurationMs());
+            fiber_.Schedule(Close, mode.CloseGameAfterMs);
+            fiber_.Schedule(FinishGame, mode.GetMatchDurationMs);
 
             fiber_.Start();
         }
+
+        #endregion
 
         #region System Methods
 
@@ -110,6 +121,8 @@ namespace arena.battle
         private void Close()
         {
             IsClosed = true;
+            if (OnGameClosed != null)
+                OnGameClosed(this);
         }
 
         private void FinishGame()
@@ -178,6 +191,11 @@ namespace arena.battle
         #endregion
 
         #region Game Logic
+
+        private bool IsPlayerConnected(Player player)
+        {
+            return players_.Find(p => p == player) != null;
+        }
 
         private void HandleAIUpdate() 
         {
@@ -254,6 +272,11 @@ namespace arena.battle
 
         public void ConnectPlayer(Player player)
         {
+            if (IsPlayerConnected(player))
+            {
+                log.FatalFormat("[Game::ConnectPlayer] Player {0} already connected!", player.Profile.UniqueID);
+                return;
+            }
             player.Game = this;
             player.BattleStats.Reset();
             player.ResetLevel();
@@ -293,6 +316,12 @@ namespace arena.battle
 
         public void PlayerJoin(Player player)
         {
+            if (!IsPlayerConnected(player))
+            {
+                log.FatalFormat("[Game::ConnectPlayer] Player {0} is not connected!", player.Profile.UniqueID);
+                return;
+            }
+
             fiber_.Enqueue(() =>
             {
                 PlayersConnected++;

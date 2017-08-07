@@ -42,7 +42,7 @@ namespace shared.net
 
         #region IServerController implementation
 
-        public void SendRequest(Commands cmd, object data = null, int error = 0)
+        public void SendRequest(Commands cmd, object data = null, ResponseHandlerType responseCallback = null, int error = 0)
         {
             var request = new Request();
             request.type = cmd;
@@ -52,14 +52,17 @@ namespace shared.net
                 ProtoBuf.Extensible.AppendValue(request, (int)cmd, data);
             }
             connection_.Send(request);
+
+            if (responseCallback != null)
+                pendingRequests_.Add(request.id, responseCallback);
         }
 
-        public void SendResponse(Request request, object data = null, ResponseHandlerType responseCallback = null, int error = 0)
+        public void SendResponse(Request request, object data = null, int error = 0)
         {
-            SendResponse(request.type, data, request.id, responseCallback, error);
+            SendResponse(request.type, data, request.id, error);
         }
 
-        public void SendResponse(Commands cmd, object data = null, int id = 0, ResponseHandlerType responseCallback = null, int error = 0)
+        public void SendResponse(Commands cmd, object data = null, int id = 0, int error = 0)
         {
             var response = new Response();
             response.type = cmd;
@@ -71,9 +74,6 @@ namespace shared.net
                 ProtoBuf.Extensible.AppendValue(response, (int)cmd, data);
             }
             connection_.Send(response);
-
-            if (responseCallback != null)
-                pendingRequests_.Add(id, responseCallback);
         }
 
         public void SendEvent(Events evtCode, object data)

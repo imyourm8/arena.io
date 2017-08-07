@@ -2,14 +2,19 @@ option optimize_for = SPEED;
 
 package proto_server;
 
+import "ProtoFiles/game.proto";
+
 enum Commands
 {
   REGISTER_GAME_NODE = 11;
+  CREATE_REMOTE_GAME = 12;
 }
 
 enum Events
 {
   NODE_STATUS = 11;
+  GAME_FINISHED = 12;
+  GAME_STATUS_UPDATE = 13;
 }
 
 enum FeedbackLevel
@@ -26,7 +31,7 @@ message Request
 	required int32 id = 1;
 	required Commands type = 2;
 
-	extensions 10 to max;
+	extensions 10 to max; 
 }
 
 message Response 
@@ -70,21 +75,61 @@ message RegisterGameNode
   }
 }
 
-// ========================= EVENTS ================================
-message GameSession
+message CreateRemoteGame
 {
-  required string game_id = 1;
-  required bool closed = 2; // true if players can join
+  message Request
+  {
+    required proto_game.GameMode mode = 1;
+    
+    extend proto_server.Request 
+    {
+      optional CreateRemoteGame.Request create_game_req = 12;
+    }
+  }
+  
+  message Response
+  {
+    required string id = 1;
+    required int32 max_players_allowed = 2;
+    required int32 auto_close_after = 3;
+    
+    extend proto_server.Response 
+    {
+      optional CreateRemoteGame.Response create_game_res = 12;
+    }
+  }
 }
+
+// ========================= EVENTS ================================
 
 message GameNodeStatus
 {
   required FeedbackLevel workload_level = 1;
-  repeated GameSession games = 2;
-  required int32 players_connected = 3;
+  required int32 players_connected = 2;
   
   extend proto_server.Event 
   {
     optional GameNodeStatus game_node_status = 11;
+  }
+}
+
+message GameStatusUpdate
+{
+  required string game_id = 1;
+  required int32 players_connected = 2;
+  
+  extend proto_server.Event 
+  {
+    optional GameStatusUpdate game_status_upd = 13;
+  }
+}
+
+message GameFinished
+{
+  required string id = 1;
+  
+  extend proto_server.Event 
+  {
+    optional GameFinished game_finished = 12;
   }
 }

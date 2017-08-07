@@ -277,7 +277,7 @@
     <Compile Include="helpers\TriangulatedPolygon.cs" />
     <Compile Include="player\PlayerController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="serv\GameManager.cs" />
+    <Compile Include="matchmaking\GameManager.cs" />
     <Compile Include="serv\GameNodeController.cs" />
     <Compile Include="serv\load_balancing\configuration\Default.cs" />
     <Compile Include="serv\load_balancing\FeedbackController.cs" />

@@ -170,7 +170,10 @@ namespace proto_common
       DAMAGE_APPLY = 2017,
             
       [global::ProtoBuf.ProtoEnum(Name=@"DOWNLOAD_MAP", Value=2018)]
-      DOWNLOAD_MAP = 2018
+      DOWNLOAD_MAP = 2018,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"JOIN_SERVER", Value=2019)]
+      JOIN_SERVER = 2019
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"Events")]

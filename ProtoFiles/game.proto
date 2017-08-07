@@ -174,7 +174,7 @@ message PlayerInput
    
     extend proto_common.Request 
     {
-      optional proto_game.PlayerInput.Request plr_input_req = 2019;
+      optional proto_game.PlayerInput.Request plr_input_req = 2016;
     }
   }
   
@@ -190,7 +190,7 @@ message PlayerInput
     
     extend proto_common.Response 
 		{
-			optional proto_game.PlayerInput.Response plr_input_res = 2019;
+			optional proto_game.PlayerInput.Response plr_input_res = 2016;
 		}
   }
 }
@@ -209,9 +209,30 @@ message FindRoom
   
   message Response 
   {
+    required string game_server_ip = 1;
+    
     extend proto_common.Response
     {
       optional proto_game.FindRoom.Response fnd_room_res = 2013;
+    }
+  }
+}
+
+message JoinServer
+{
+  message Request 
+  {
+    extend proto_common.Request
+    {
+      optional proto_game.JoinServer.Request join_srv_req = 2019;
+    }
+  }
+  
+  message Response 
+  {
+    extend proto_common.Response
+    {
+      optional proto_game.JoinServer.Response join_srv_res = 2019;
     }
   }
 }
@@ -220,7 +241,7 @@ message JoinGame
 {
   message Request
   {
-    required proto_profile.PlayerClasses class = 1;
+    required string game_id = 1;
   
     extend proto_common.Request
     {
@@ -336,7 +357,7 @@ message SyncTick
   }
 }
 
-/*  EVENTS */ 
+/*  ====================================== EVENTS ====================================== */ 
 
 message BulletAppeared
 {

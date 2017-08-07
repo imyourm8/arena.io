@@ -25,6 +25,7 @@ namespace LobbyServer
 {
     using controller;
     using load_balancing;
+    using matchmaking;
 
     public class LobbyApplication : ServerApplication
     {
@@ -37,6 +38,7 @@ namespace LobbyServer
         #region Properties
 
         internal Loadbalancer Loadbalancer { get; private set; }
+        internal MatchMaker MatchMaker { get; private set; }
 
         #endregion
 
@@ -88,6 +90,7 @@ namespace LobbyServer
             }*/
 
             Loadbalancer = new Loadbalancer();
+            MatchMaker = new MatchMaker(this);
         }
 
         protected override void TearDown()

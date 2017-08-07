@@ -4,18 +4,19 @@ using System.Collections.Generic;
 namespace LobbyServer.load_balancing
 {
     using controller;
+    using matchmaking.interfaces;
 
     class GameNode
     {
-        public GameNode(string id, string ip)
+        public GameNode(string id, string ip, IGameList gameList)
         {
             Id = id;
             Ip = ip;
+            GameList = gameList;
         }
 
         #region Properties
 
-        public int GameSessions { get; set; }
         public int PlayersConnected { get; set; }
         public proto_server.FeedbackLevel FeedbackLevel { get; set; }
 
@@ -23,6 +24,9 @@ namespace LobbyServer.load_balancing
         public string Ip { get; private set; }
 
         public GameNodeController Controller { get; private set; }
+        public IGameList GameList { get; private set; }
+
+        public bool IsJoinable { get { return FeedbackLevel != proto_server.FeedbackLevel.Highest; } }
 
         #endregion
 
@@ -31,8 +35,18 @@ namespace LobbyServer.load_balancing
         public void UpdateStatus(proto_server.GameNodeStatus status)
         {
             FeedbackLevel = status.workload_level;
-            GameSessions = status.active_games;
             PlayersConnected = status.players_connected;
+        }
+
+        public void UpdateGameStatus(string gameId, int playersConnected)
+        {
+            var game = GameList.FindGame(gameId);
+            game.PlayersConnected = playersConnected;
+        }
+
+        public void CreateGame(IGameFinderResponder responder)
+        {
+            Controller.CreateGame(responder);
         }
 
         #endregion

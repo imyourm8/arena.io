@@ -5,7 +5,7 @@ using ExitGames.Logging;
 using ExitGames.Concurrency.Fibers;
 
 using shared.net;
-using arena.serv.load_balancing;
+using arena.matchmaking;
 using arena.serv.perfomance;
 
 using Commands = proto_server.Commands;
@@ -48,14 +48,6 @@ namespace arena.serv
             var nodeStatus = new proto_server.GameNodeStatus();
             nodeStatus.workload_level = app_.WorkloadController.FeedbackLevel;
             nodeStatus.players_connected = (int)Counter.PeerCount.RawValue;
-            var gameList = GameManager.Instance.GetGameList();
-            foreach (var game in gameList)
-            {
-                var session = new GameSession();
-                session.game_id = game.ID.ToString();
-                session.closed = game.IsClosed;
-                nodeStatus.games.Add(session);
-            }
 
             SendEvent(Events.NODE_STATUS, nodeStatus);
         }

@@ -14,72 +14,70 @@ namespace LobbyServer.load_balancing
 
         #region Public Methods
 
-        public void AddGameNode(GameNode node)
+        public bool AddGameNode(GameNode node)
         {
-            lock (servers_)
+            GameNode possiblyExistentNode;
+            if (servers_.TryGetValue(node.Id, out possiblyExistentNode))
             {
-                GameNode possiblyExistentNode;
-                if (servers_.TryGetValue(node.Id, out possiblyExistentNode))
-                {
-                    // smth is wrong, disconnect what just connected 
-                    node.Controller.Disconnect();
-                }
-                else
-                {
-                    servers_.Add(node.Id, node);
-                    flatList_.Add(node);
-                }
+                // smth is wrong, skip this node 
+                return false;
             }
+            else
+            {
+                servers_.Add(node.Id, node);
+                flatList_.Add(node);
+            }
+            return true;
         }
 
         public void RemoveGameNode(GameNode node)
         {
-            lock (servers_)
-            {
-                node.Controller.Disconnect();
-                servers_.Remove(node.Id);
-                flatList_.Remove(node);
-            }
+            servers_.Remove(node.Id);
+            flatList_.Remove(node);
         }
 
         public void UpdateStatus(string nodeId, proto_server.GameNodeStatus status)
         {
-            lock (servers_)
+            GameNode node;
+            if (servers_.TryGetValue(nodeId, out node))
             {
-                GameNode node;
-                if (servers_.TryGetValue(nodeId, out node))
-                {
-                    node.FeedbackLevel = status.workload_level;
-                    node.GameSessions = status.active_games;
-                    node.PlayersConnected = status.players_connected;
+                node.FeedbackLevel = status.workload_level;
+                node.PlayersConnected = status.players_connected;
 
-                    flatList_.Sort((GameNode n1, GameNode n2) => 
-                    { 
-                        int lvl1 = (int)n1.FeedbackLevel;
-                        int lvl2 = (int)n2.FeedbackLevel;
-                        return lvl1.CompareTo(lvl2);
-                    });
-                }
+                flatList_.Sort((GameNode n1, GameNode n2) => 
+                { 
+                    int lvl1 = (int)n1.FeedbackLevel;
+                    int lvl2 = (int)n2.FeedbackLevel;
+                    // from highest to lowest
+                    return lvl2.CompareTo(lvl1);
+                });
             }
         }
 
         /// <summary>
         /// Find most suitable game node
         /// </summary>
-        /// <returns>Returns Ip of Game Server</returns>
-        public string GetFreeNodeIp()
+        /// <returns>Returns Game Server</returns>
+        public GameNode GetBestNode(proto_game.GameMode mode)
         {
-            string ip = null;
-
-            lock (servers_)
+            if (flatList_.Count == 0)
             {
-                if (flatList_.Count > 0)
+                return null;
+            }
+
+            //in case there are no games running at all, choose the most crowded one
+            GameNode bestNode = flatList_[0];
+            foreach (var node in flatList_)
+            { 
+                //if there are no empty games, try find on less crowded servers
+                if (node.GameList.HasAnyNonEmptyGame(mode))
                 {
-                    ip = flatList_[0].Ip;
+                    bestNode = node;
+                    break;
                 }
             }
 
-            return ip;
+            return bestNode;
         }
 
         #endregion

@@ -8,6 +8,7 @@
 //------------------------------------------------------------------------------
 
 // Generated from: ProtoFiles/server.proto
+// Note: requires additional types generated from: ProtoFiles/game.proto
 namespace proto_server
 {
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Request")]
@@ -36,6 +37,14 @@ namespace proto_server
     {
       get { return _register_game_node; }
       set { _register_game_node = value; }
+    }
+    private proto_server.CreateRemoteGame.Request _create_game_req = null;
+    [global::ProtoBuf.ProtoMember(12, IsRequired = false, Name=@"create_game_req", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.CreateRemoteGame.Request create_game_req
+    {
+      get { return _create_game_req; }
+      set { _create_game_req = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -83,6 +92,14 @@ namespace proto_server
       get { return _register_game_node; }
       set { _register_game_node = value; }
     }
+    private proto_server.CreateRemoteGame.Response _create_game_res = null;
+    [global::ProtoBuf.ProtoMember(12, IsRequired = false, Name=@"create_game_res", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.CreateRemoteGame.Response create_game_res
+    {
+      get { return _create_game_res; }
+      set { _create_game_res = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -114,6 +131,22 @@ namespace proto_server
     {
       get { return _game_node_status; }
       set { _game_node_status = value; }
+    }
+    private proto_server.GameStatusUpdate _game_status_upd = null;
+    [global::ProtoBuf.ProtoMember(13, IsRequired = false, Name=@"game_status_upd", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.GameStatusUpdate game_status_upd
+    {
+      get { return _game_status_upd; }
+      set { _game_status_upd = value; }
+    }
+    private proto_server.GameFinished _game_finished = null;
+    [global::ProtoBuf.ProtoMember(12, IsRequired = false, Name=@"game_finished", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.GameFinished game_finished
+    {
+      get { return _game_finished; }
+      set { _game_finished = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -152,6 +185,14 @@ namespace proto_server
       get { return _register_game_node; }
       set { _register_game_node = value; }
     }
+    private proto_server.CreateRemoteGame.Request _create_game_req = null;
+    [global::ProtoBuf.ProtoMember(12, IsRequired = false, Name=@"create_game_req", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.CreateRemoteGame.Request create_game_req
+    {
+      get { return _create_game_req; }
+      set { _create_game_req = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -170,6 +211,14 @@ namespace proto_server
       get { return _register_game_node; }
       set { _register_game_node = value; }
     }
+    private proto_server.CreateRemoteGame.Response _create_game_res = null;
+    [global::ProtoBuf.ProtoMember(12, IsRequired = false, Name=@"create_game_res", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.CreateRemoteGame.Response create_game_res
+    {
+      get { return _create_game_res; }
+      set { _create_game_res = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -180,25 +229,91 @@ namespace proto_server
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"GameSession")]
-  public partial class GameSession : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"CreateRemoteGame")]
+  public partial class CreateRemoteGame : global::ProtoBuf.IExtensible
   {
-    public GameSession() {}
+    public CreateRemoteGame() {}
     
-    private string _game_id;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"game_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string game_id
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Request")]
+  public partial class Request : global::ProtoBuf.IExtensible
+  {
+    public Request() {}
+    
+    private proto_game.GameMode _mode;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"mode", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public proto_game.GameMode mode
     {
-      get { return _game_id; }
-      set { _game_id = value; }
+      get { return _mode; }
+      set { _mode = value; }
     }
-    private bool _closed;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"closed", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public bool closed
+    private proto_server.RegisterGameNode.Request _register_game_node = null;
+    [global::ProtoBuf.ProtoMember(11, IsRequired = false, Name=@"register_game_node", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.RegisterGameNode.Request register_game_node
     {
-      get { return _closed; }
-      set { _closed = value; }
+      get { return _register_game_node; }
+      set { _register_game_node = value; }
     }
+    private proto_server.CreateRemoteGame.Request _create_game_req = null;
+    [global::ProtoBuf.ProtoMember(12, IsRequired = false, Name=@"create_game_req", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.CreateRemoteGame.Request create_game_req
+    {
+      get { return _create_game_req; }
+      set { _create_game_req = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Response")]
+  public partial class Response : global::ProtoBuf.IExtensible
+  {
+    public Response() {}
+    
+    private string _id;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string id
+    {
+      get { return _id; }
+      set { _id = value; }
+    }
+    private int _max_players_allowed;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"max_players_allowed", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int max_players_allowed
+    {
+      get { return _max_players_allowed; }
+      set { _max_players_allowed = value; }
+    }
+    private int _auto_close_after;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"auto_close_after", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int auto_close_after
+    {
+      get { return _auto_close_after; }
+      set { _auto_close_after = value; }
+    }
+    private proto_server.RegisterGameNode.Response _register_game_node = null;
+    [global::ProtoBuf.ProtoMember(11, IsRequired = false, Name=@"register_game_node", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.RegisterGameNode.Response register_game_node
+    {
+      get { return _register_game_node; }
+      set { _register_game_node = value; }
+    }
+    private proto_server.CreateRemoteGame.Response _create_game_res = null;
+    [global::ProtoBuf.ProtoMember(12, IsRequired = false, Name=@"create_game_res", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.CreateRemoteGame.Response create_game_res
+    {
+      get { return _create_game_res; }
+      set { _create_game_res = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -216,19 +331,53 @@ namespace proto_server
       get { return _workload_level; }
       set { _workload_level = value; }
     }
-    private readonly global::System.Collections.Generic.List<proto_server.GameSession> _games = new global::System.Collections.Generic.List<proto_server.GameSession>();
-    [global::ProtoBuf.ProtoMember(2, Name=@"games", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<proto_server.GameSession> games
-    {
-      get { return _games; }
-    }
-  
     private int _players_connected;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"players_connected", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"players_connected", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     public int players_connected
     {
       get { return _players_connected; }
       set { _players_connected = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"GameStatusUpdate")]
+  public partial class GameStatusUpdate : global::ProtoBuf.IExtensible
+  {
+    public GameStatusUpdate() {}
+    
+    private string _game_id;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"game_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string game_id
+    {
+      get { return _game_id; }
+      set { _game_id = value; }
+    }
+    private int _players_connected;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"players_connected", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int players_connected
+    {
+      get { return _players_connected; }
+      set { _players_connected = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"GameFinished")]
+  public partial class GameFinished : global::ProtoBuf.IExtensible
+  {
+    public GameFinished() {}
+    
+    private string _id;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string id
+    {
+      get { return _id; }
+      set { _id = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -240,7 +389,10 @@ namespace proto_server
     {
             
       [global::ProtoBuf.ProtoEnum(Name=@"REGISTER_GAME_NODE", Value=11)]
-      REGISTER_GAME_NODE = 11
+      REGISTER_GAME_NODE = 11,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"CREATE_REMOTE_GAME", Value=12)]
+      CREATE_REMOTE_GAME = 12
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"Events")]
@@ -248,7 +400,13 @@ namespace proto_server
     {
             
       [global::ProtoBuf.ProtoEnum(Name=@"NODE_STATUS", Value=11)]
-      NODE_STATUS = 11
+      NODE_STATUS = 11,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"GAME_FINISHED", Value=12)]
+      GAME_FINISHED = 12,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"GAME_STATUS_UPDATE", Value=13)]
+      GAME_STATUS_UPDATE = 13
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"FeedbackLevel")]
