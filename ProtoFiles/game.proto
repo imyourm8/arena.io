@@ -195,7 +195,7 @@ message PlayerInput
   }
 }
 
-message FindRoom
+message FindGame
 {
   message Request 
   {
@@ -203,7 +203,7 @@ message FindRoom
     
     extend proto_common.Request
     {
-      optional proto_game.FindRoom.Request fnd_room_req = 2013;
+      optional proto_game.FindGame.Request fnd_room_req = 2013;
     }
   }
   
@@ -213,7 +213,7 @@ message FindRoom
     
     extend proto_common.Response
     {
-      optional proto_game.FindRoom.Response fnd_room_res = 2013;
+      optional proto_game.FindGame.Response fnd_room_res = 2013;
     }
   }
 }
@@ -222,6 +222,8 @@ message JoinServer
 {
   message Request 
   {
+    required string login_token = 1;
+    
     extend proto_common.Request
     {
       optional proto_game.JoinServer.Request join_srv_req = 2019;

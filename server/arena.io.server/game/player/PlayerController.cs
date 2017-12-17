@@ -17,6 +17,10 @@ using shared.account;
 using shared.helpers;
 using shared.database;
 
+using proto_game;
+using proto_profile;
+
+using Request = proto_common.Request;
 using Commands = proto_common.Commands;
 
 namespace arena.net
@@ -43,6 +47,7 @@ namespace arena.net
             AddOperationHandler(Commands.SYNC_TICK, new OperationHandler(HandleSyncTick));
             AddOperationHandler(Commands.DAMAGE_APPLY, new OperationHandler(HandleDamageApply));
             AddOperationHandler(Commands.DOWNLOAD_MAP, new OperationHandler(HandleDownloadMap));
+            AddOperationHandler(Commands.JOIN_SERVER, new OperationHandler(HandleJoinServer));
             AddOperationHandler(Commands.JOIN_GAME, new OperationHandler(HandleJoinGame));
 
             fiber_.Start();
@@ -186,11 +191,16 @@ namespace arena.net
             }
         }
 
-        private void HandleJoinGame(proto_common.Request request)
+        private void HandleJoinServer(Request request)
+        {
+            var joinReq = request.Extract<JoinServer.Request>(Commands.JOIN_SERVER);
+            
+        }
+
+        private void HandleJoinGame(Request request)
         {
             var joinReq = request.Extract<proto_game.JoinGame.Request>(proto_common.Commands.JOIN_GAME);
 
-            player_.SelectedClass = joinReq.@class;
             player_.Game.PlayerJoin(player_);
 
             RemoveState(ClientState.SwitchGameServer);

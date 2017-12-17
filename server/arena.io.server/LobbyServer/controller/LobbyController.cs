@@ -1,10 +1,14 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 
 using shared;
 using shared.net;
 using shared.database;
 using shared.helpers;
 using shared.account;
+using shared.security;
+
+using proto_game;
 
 using Request = proto_common.Request;
 using Response = proto_common.Response;
@@ -19,14 +23,19 @@ namespace LobbyServer.controller
 
     partial class LobbyController : RequestHandler
     {
+        private static readonly int GameTokenLifetime = 30000;
+
         private bool loginInProcess_ = false;
         private Profile profile_ = null;
+        private LobbyApplication app_;
 
-        public LobbyController()
+        public LobbyController(LobbyApplication app)
         {
+            app_ = app;
+
             AddOperationHandler(Commands.CONNECT_TO_LOBBY, new OperationHandler(HandleConnection));
             AddOperationHandler(Commands.CHANGE_NICKNAME, new OperationHandler(HandleChangeNickname));
-            AddOperationHandler(Commands.FIND_ROOM, new OperationHandler(HandleFindRoom));
+            AddOperationHandler(Commands.FIND_GAME, new OperationHandler(HandleFindGame));
         }
 
         public override bool FilterRequest(proto_common.Request request)
@@ -94,16 +103,39 @@ namespace LobbyServer.controller
             ResetState(ClientState.Logged);
             SendResponse(proto_common.Commands.AUTH, authRes);
         }
+
 #region Lobby Handlers
 
-        private void HandleFindRoom(proto_common.Request request)
+        private void HandleFindGame(proto_common.Request request)
         {
-            //SendResponse(request);
-            MatchMaker.Instance.AddToQueue(profile_);
-        }
+            FindGame.Request findGameReq = request.Extract<FindGame.Request>(Commands.FIND_GAME);
+            SetState(ClientState.SwitchGameServer);
 
+            Action<GameSession, string> HandleGameFound = (GameSession game, string serverIp)=>
+            {
+                RemoveState(ClientState.SwitchGameServer);
+                if (game == null)
+                {
+                    // send error
+                    SendResponse(request, null, -1);
+                }
+                else
+                {
+                    var token = new TokenGenerator(GameTokenLifetime).Generate(CurrentTime.Instance.CurrentTimeInMs);
+                    Database.Instance.GetAuthDB().SetGameToken(profile_.UniqueID, token.ToString(), (QueryResult result) =>
+                        {
+                            var response = new FindGame.Response();
+                            response.game_server_ip = serverIp;
+                            SendResponse(request, response);
+                        });
+                }
+            };
+
+            app_.GameManager.FindGame(findGameReq.game_mode, profile_, HandleGameFound);
+        }
         
 #endregion
+
 #endregion
     }
 }

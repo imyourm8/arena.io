@@ -99,7 +99,7 @@ namespace shared.database.Postgres
             }
         }
 
-        async void IAuthDB.SetLoginToken(string id, string token, long tokenExpiryDate, NonQueryCallback cb)
+        async void IAuthDB.SetLoginToken(string id, string token, NonQueryCallback cb)
         {
             int result = 0;
 
@@ -109,9 +109,26 @@ namespace shared.database.Postgres
 
                 using (var cmd = new NpgsqlCommand("UPDATE users (login_token) VALUES (@login_token) WHERE id=@id", conn))
                 {
-                    var loginToken = token + ":" + tokenExpiryDate.ToString();
-                    cmd.Parameters.AddWithValue("login_token", loginToken);
+                    cmd.Parameters.AddWithValue("login_token", token);
                     cmd.Parameters.AddWithValue("id", id);
+                    result = await cmd.ExecuteNonQueryAsync();
+                    cb(QueryResult.Success);
+                }
+            }
+        }
+
+        async void IAuthDB.SetGameToken(string userID, string token, NonQueryCallback cb)
+        {
+            int result = 0;
+
+            using (var conn = new NpgsqlConnection(DatabaseConnectionDefines.PostgresParams))
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand("UPDATE users (game_token) VALUES (@game_token) WHERE id=@id", conn))
+                {
+                    cmd.Parameters.AddWithValue("game_token", token);
+                    cmd.Parameters.AddWithValue("id", userID);
                     result = await cmd.ExecuteNonQueryAsync();
                     cb(QueryResult.Success);
                 }

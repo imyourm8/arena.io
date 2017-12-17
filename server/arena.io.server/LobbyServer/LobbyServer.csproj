@@ -77,7 +77,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="matchmaking\GameFinderResponder.cs" />
+    <Compile Include="matchmaking\GameQueueEntry.cs" />
     <Compile Include="matchmaking\SimpleGameList.cs" />
     <Compile Include="matchmaking\interfaces\IGameList.cs" />
     <Compile Include="matchmaking\RemoteGameManager.cs" />
@@ -88,8 +88,6 @@
     <Compile Include="load_balancing\GameNode.cs" />
     <Compile Include="load_balancing\Loadbalancer.cs" />
     <Compile Include="matchmaking\GameSession.cs" />
-    <Compile Include="matchmaking\interfaces\IGameFinderResponder.cs" />
-    <Compile Include="matchmaking\MatchMaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

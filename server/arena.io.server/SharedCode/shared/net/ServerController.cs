@@ -18,8 +18,9 @@ namespace shared.net
     using EventHandlerType = OperationHandler<Event>;
     using interfaces;
 
-    public class ServerController : IServerController<IFullServerConnection>
+    public class ServerController : IServerController<IFullServerConnection>, IActionInvoker
     {
+        private ServerApplication application_;
         private IFullServerConnection connection_;
         private int currentRequestId_ = 0;
         private Dictionary<int, ResponseHandlerType> pendingRequests_ = new Dictionary<int, ResponseHandlerType>();
@@ -35,6 +36,15 @@ namespace shared.net
             set { connection_ = value; }
             get { return connection_; }
         }
+
+        #endregion
+
+        #region Constructor 
+
+        public ServerController(ServerApplication application)
+        {
+            application_ = application;
+        } 
 
         #endregion
 
@@ -192,9 +202,14 @@ namespace shared.net
 
         protected virtual IActionInvoker GetActionInvoker()
         {
-            return null;
+            return this;
         }
 
 #endregion
+
+        public void Execute(Action action)
+        {
+            application_.Execute(action);
+        }
     }
 }

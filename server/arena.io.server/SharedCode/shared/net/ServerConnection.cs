@@ -167,7 +167,10 @@ namespace shared.net
 
             try
             {
-                Controller.HandleEvent(evt);
+                Controller.Execute(() =>
+                    {
+                        Controller.HandleEvent(evt);
+                    });
             }
             catch (System.Exception exc)
             {
@@ -186,7 +189,10 @@ namespace shared.net
 
             try
             {
-                Controller.HandleResponse(response);
+                Controller.Execute(() =>
+                    {
+                        Controller.HandleResponse(response);
+                    });
             }
             catch (System.Exception exc)
             {
@@ -211,7 +217,10 @@ namespace shared.net
 
             try
             {
-                Controller.HandleRequest(request);
+                Controller.Execute(() =>
+                    {
+                        Controller.HandleRequest(request);
+                    });
             }
             catch (System.Exception exc)
             {

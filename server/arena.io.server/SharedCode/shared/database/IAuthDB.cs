@@ -11,7 +11,8 @@ namespace shared.database
     public interface IAuthDB
     {        
         Task<IDataReader> LoginUser(AuthEntry authEntry);
-        void SetLoginToken(string userID, string token, long tokenExpiryDate, NonQueryCallback cb);
+        void SetLoginToken(string userID, string token, NonQueryCallback cb);
+        void SetGameToken(string userID, string token, NonQueryCallback cb);
         void LoginUserByNickname(string name, QueryCallback cb);
         Task<IDataReader> CreateUser(AuthEntry authEntry);
         void CreateUserWithNickname(string name, QueryCallback cb);

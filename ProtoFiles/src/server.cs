@@ -46,6 +46,14 @@ namespace proto_server
       get { return _create_game_req; }
       set { _create_game_req = value; }
     }
+    private proto_server.PlayersJoin.Request _players_join_req = null;
+    [global::ProtoBuf.ProtoMember(13, IsRequired = false, Name=@"players_join_req", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.PlayersJoin.Request players_join_req
+    {
+      get { return _players_join_req; }
+      set { _players_join_req = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -193,6 +201,14 @@ namespace proto_server
       get { return _create_game_req; }
       set { _create_game_req = value; }
     }
+    private proto_server.PlayersJoin.Request _players_join_req = null;
+    [global::ProtoBuf.ProtoMember(13, IsRequired = false, Name=@"players_join_req", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.PlayersJoin.Request players_join_req
+    {
+      get { return _players_join_req; }
+      set { _players_join_req = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -262,6 +278,14 @@ namespace proto_server
       get { return _create_game_req; }
       set { _create_game_req = value; }
     }
+    private proto_server.PlayersJoin.Request _players_join_req = null;
+    [global::ProtoBuf.ProtoMember(13, IsRequired = false, Name=@"players_join_req", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.PlayersJoin.Request players_join_req
+    {
+      get { return _players_join_req; }
+      set { _players_join_req = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -286,12 +310,12 @@ namespace proto_server
       get { return _max_players_allowed; }
       set { _max_players_allowed = value; }
     }
-    private int _auto_close_after;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"auto_close_after", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int auto_close_after
+    private int _min_players_to_start;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"min_players_to_start", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int min_players_to_start
     {
-      get { return _auto_close_after; }
-      set { _auto_close_after = value; }
+      get { return _min_players_to_start; }
+      set { _min_players_to_start = value; }
     }
     private proto_server.RegisterGameNode.Response _register_game_node = null;
     [global::ProtoBuf.ProtoMember(11, IsRequired = false, Name=@"register_game_node", DataFormat = global::ProtoBuf.DataFormat.Default)]
@@ -308,6 +332,64 @@ namespace proto_server
     {
       get { return _create_game_res; }
       set { _create_game_res = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"PlayersJoin")]
+  public partial class PlayersJoin : global::ProtoBuf.IExtensible
+  {
+    public PlayersJoin() {}
+    
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Request")]
+  public partial class Request : global::ProtoBuf.IExtensible
+  {
+    public Request() {}
+    
+    private readonly global::System.Collections.Generic.List<string> _players = new global::System.Collections.Generic.List<string>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"players", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<string> players
+    {
+      get { return _players; }
+    }
+  
+    private string _game_id;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"game_id", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string game_id
+    {
+      get { return _game_id; }
+      set { _game_id = value; }
+    }
+    private proto_server.RegisterGameNode.Request _register_game_node = null;
+    [global::ProtoBuf.ProtoMember(11, IsRequired = false, Name=@"register_game_node", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.RegisterGameNode.Request register_game_node
+    {
+      get { return _register_game_node; }
+      set { _register_game_node = value; }
+    }
+    private proto_server.CreateRemoteGame.Request _create_game_req = null;
+    [global::ProtoBuf.ProtoMember(12, IsRequired = false, Name=@"create_game_req", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.CreateRemoteGame.Request create_game_req
+    {
+      get { return _create_game_req; }
+      set { _create_game_req = value; }
+    }
+    private proto_server.PlayersJoin.Request _players_join_req = null;
+    [global::ProtoBuf.ProtoMember(13, IsRequired = false, Name=@"players_join_req", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public proto_server.PlayersJoin.Request players_join_req
+    {
+      get { return _players_join_req; }
+      set { _players_join_req = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -392,7 +474,10 @@ namespace proto_server
       REGISTER_GAME_NODE = 11,
             
       [global::ProtoBuf.ProtoEnum(Name=@"CREATE_REMOTE_GAME", Value=12)]
-      CREATE_REMOTE_GAME = 12
+      CREATE_REMOTE_GAME = 12,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"PLAYERS_JOIN", Value=13)]
+      PLAYERS_JOIN = 13
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"Events")]

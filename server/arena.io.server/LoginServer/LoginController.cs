@@ -75,7 +75,7 @@ namespace LoginServer
             // send ip address of lobby server
             // send unique login token
             var loginToken = new TokenGenerator(LoginTokenLifespanMs).Generate(CurrentTime.Instance.CurrentTimeInMs);
-            Database.Instance.GetAuthDB().SetLoginToken(authEntry.authUserID, loginToken.Value, loginToken.ExpiryDateMs, (QueryResult result) =>
+            Database.Instance.GetAuthDB().SetLoginToken(authEntry.authUserID, loginToken.ToString(), (QueryResult result) =>
             {
                 // send everything to client
                 var response = new proto_auth.Auth.Response();

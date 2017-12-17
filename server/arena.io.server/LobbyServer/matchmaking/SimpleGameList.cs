@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using proto_game;
 
@@ -33,28 +34,6 @@ namespace LobbyServer.matchmaking
             gamesById_.Remove(session.Id);
         }
 
-        public void GetSuitableGame(GameMode mode, IGameFinderResponder responder)
-        {
-            var list = GetList(mode);
-            list.Sort(SortGameSessions);
-            if (list.Count > 0)
-            {
-                // if there are non full game, return it
-                foreach (var game in list)
-                {
-                    if (game.IsFull)
-                    {
-                        responder.OnGameFound(game);
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                responder.OnNoGameFound();
-            }
-        }
-
         public GameSession FindGame(string id)
         {
             GameSession game;
@@ -75,14 +54,22 @@ namespace LobbyServer.matchmaking
             return false;
         }
 
+        public IReadOnlyList<GameSession> GetGames(GameMode mode)
+        {
+            return GetList(mode);
+        }
+
+        public IReadOnlyList<GameSession> GetJoinableGames(GameMode mode)
+        {
+            return GetList(mode)
+                .FindAll(x=>!x.IsFull)
+                .OrderByDescending(x=>x.PlayersConnected)
+                .ToList();
+        }
+
         #endregion
 
         #region Private Methods
-
-        private int SortGameSessions(GameSession game1, GameSession game2)
-        {
-            return game1.PlayersConnected.CompareTo(game2.PlayersConnected);
-        }
 
         private GameList GetList(GameMode mode)
         {

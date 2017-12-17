@@ -1,8 +1,11 @@
-﻿using Photon.SocketServer;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using Photon.SocketServer;
 using PhotonHostRuntimeInterfaces;
 using Photon.SocketServer.ServerToServer;
 
-using System.Collections.Generic;
 using shared.net;
 using shared;
 
@@ -36,15 +39,25 @@ namespace LobbyServer.controller
         #endregion
 
         public GameNodeController(LobbyApplication app)
-            : base()
+            : base(app)
         {
             application_ = app;
 
             AddOperationHandler(Commands.REGISTER_GAME_NODE, new RequestHandler(HandleRegisterGameNode));
 
             AddEventHandler(Events.NODE_STATUS, new EventHandler(HandleNodeStatus));
+            AddEventHandler(Events.GAME_FINISHED, new EventHandler(HandleGameFinished));
         }
 
+        public override void HandleDisconnect()
+        {
+            base.HandleDisconnect();
+
+            if (node_ != null)
+            {
+                application_.Loadbalancer.RemoveGameNode(node_);
+            }
+        }
 
         #region Public Methods
 
@@ -53,19 +66,34 @@ namespace LobbyServer.controller
             Connection.Disconnect();
         }
 
-        public void CreateGame(GameMode mode, IGameFinderResponder responder)
+        public void CreateGame(GameMode mode)
         {
             var request = new CreateRemoteGame.Request();
             request.mode = mode;
 
-            SendRequest(Commands.CREATE_REMOTE_GAME, request, new ResponseHandler((Response response) => 
+            var responseHandler = new ResponseHandler((Response response) => 
             { 
                 if (response.error != 0)
                 {
                     return;
                 }
                 var gameResponse = response.Extract<CreateRemoteGame.Response>(Commands.CREATE_REMOTE_GAME);
-            }));
+                var session = new GameSession(mode, gameResponse.id, gameResponse.max_players_allowed, gameResponse.min_players_to_start, node_);
+                application_.GameManager.Add(session);
+            });
+
+            SendRequest(Commands.CREATE_REMOTE_GAME, request, responseHandler);
+        }
+
+        public void SendPlayersJoin(List<string> playersId, string gameId, Action<bool> callback)
+        {
+            var req = new PlayersJoin.Request();
+            req.players.AddRange(playersId);
+            req.game_id = gameId;
+            SendRequest(Commands.PLAYERS_JOIN, req, new ResponseHandler((Response response) =>
+                {
+                    callback(response.error == 0);
+                }));
         }
 
         #endregion
@@ -88,6 +116,12 @@ namespace LobbyServer.controller
         {
             GameNodeStatus status = evt.Extract<GameNodeStatus>(Events.NODE_STATUS);
             application_.Loadbalancer.UpdateStatus(node_.Id, status);
+        }
+
+        private void HandleGameFinished(Event evt)
+        {
+            GameFinished gameEvt = evt.Extract<GameFinished>(Events.GAME_FINISHED);
+            application_.GameManager.Remove(node_, gameEvt.id);
         }
 
         #endregion

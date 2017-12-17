@@ -10,6 +10,12 @@ namespace shared.security
         }
 
         public string Value { get; private set; }
+
         public long ExpiryDateMs { get; private set; }
+
+        public override string ToString()
+        {
+            return Value + ":" + ExpiryDateMs.ToString();
+        }
     }
 }

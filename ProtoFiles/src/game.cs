@@ -289,10 +289,10 @@ namespace proto_game
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"FindRoom")]
-  public partial class FindRoom : global::ProtoBuf.IExtensible
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"FindGame")]
+  public partial class FindGame : global::ProtoBuf.IExtensible
   {
-    public FindRoom() {}
+    public FindGame() {}
     
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Request")]
   public partial class Request : global::ProtoBuf.IExtensible
@@ -343,6 +343,13 @@ namespace proto_game
   {
     public Request() {}
     
+    private string _login_token;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"login_token", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string login_token
+    {
+      get { return _login_token; }
+      set { _login_token = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }

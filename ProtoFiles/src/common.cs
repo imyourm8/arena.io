@@ -154,8 +154,8 @@ namespace proto_common
       [global::ProtoBuf.ProtoEnum(Name=@"CHANGE_NICKNAME", Value=2012)]
       CHANGE_NICKNAME = 2012,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"FIND_ROOM", Value=2013)]
-      FIND_ROOM = 2013,
+      [global::ProtoBuf.ProtoEnum(Name=@"FIND_GAME", Value=2013)]
+      FIND_GAME = 2013,
             
       [global::ProtoBuf.ProtoEnum(Name=@"STAT_UPGRADE", Value=2014)]
       STAT_UPGRADE = 2014,

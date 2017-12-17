@@ -19,8 +19,7 @@ namespace shared.net
     public class RequestHandler : IRequestFilter, IController<IGameConnection>
     {
         // Store current request id. Warning will work only if any callback based code will be called synced on calling thread!
-        protected int processedRequestId_ = -1;
-        protected IGameConnection connection_;
+        private IGameConnection connection_;
         private RequestHandler parent_ = null;
         private Dictionary<Commands, HandlersArray> opHandlers_ = new Dictionary<Commands, HandlersArray>();
         private List<RequestHandler> nestedHandlers_ = new List<RequestHandler>();
@@ -176,7 +175,6 @@ namespace shared.net
             //if there is any operation handler then execute it, otherwise chain it to nested handlers
             if (opHandlers_.TryGetValue(request.type, out handlersForCmd))
             {
-                processedRequestId_ = request.id;
                 foreach (var handler in handlersForCmd)
                 {
                     handler.TryExecute(request);

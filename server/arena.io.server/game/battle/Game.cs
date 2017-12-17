@@ -83,10 +83,6 @@ namespace arena.battle
             PlayersConnected = 0;
             IsClosed = false;
             ID = Guid.NewGuid(); 
-            gameFinishAt_ = CurrentTime.Instance.CurrentTimeInMs + mode_.GetMatchDurationMs;
-
-            startUpTime_ = CurrentTime.Instance.CurrentTimeInMs;
-            prevUpdateTime_ = startUpTime_;
             mode_.Game = this; 
 
             var mapLoader = new MapLoader(mode_.MapFilePath, this);    
@@ -103,15 +99,23 @@ namespace arena.battle
             fiber_.ScheduleOnInterval(UpdateMap, 0, 15000);
             //fiber_.ScheduleOnInterval(BroadcastEntities, 0, GlobalDefs.BroadcastEntitiesInterval);
             //fiber_.ScheduleOnInterval(HandleAIUpdate, GlobalDefs.AITickInterval, GlobalDefs.AITickInterval);
-            fiber_.Schedule(Close, mode.CloseGameAfterMs);
-            fiber_.Schedule(FinishGame, mode.GetMatchDurationMs);
-
-            fiber_.Start();
+            fiber_.Schedule(Close, mode_.CloseGameAfterMs);
+            fiber_.Schedule(FinishGame, mode_.GetMatchDurationMs);
         }
 
         #endregion
 
         #region System Methods
+
+        public void Start()
+        {
+            gameFinishAt_ = CurrentTime.Instance.CurrentTimeInMs + mode_.GetMatchDurationMs;
+
+            startUpTime_ = CurrentTime.Instance.CurrentTimeInMs;
+            prevUpdateTime_ = startUpTime_;
+
+            fiber_.Start();
+        }
 
         public void Execute(Action action)
         {

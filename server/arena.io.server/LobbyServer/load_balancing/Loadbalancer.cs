@@ -54,35 +54,11 @@ namespace LobbyServer.load_balancing
             }
         }
 
-        /// <summary>
-        /// Find most suitable game node
-        /// </summary>
-        /// <returns>Returns Game Server</returns>
-        public GameNode GetBestNode(proto_game.GameMode mode)
+        public IReadOnlyList<GameNode> GetNodes()
         {
-            if (flatList_.Count == 0)
-            {
-                return null;
-            }
-
-            //in case there are no games running at all, choose the most crowded one
-            GameNode bestNode = flatList_[0];
-            foreach (var node in flatList_)
-            { 
-                //if there are no empty games, try find on less crowded servers
-                if (node.GameList.HasAnyNonEmptyGame(mode))
-                {
-                    bestNode = node;
-                    break;
-                }
-            }
-
-            return bestNode;
+            return flatList_;
         }
 
-        #endregion
-
-        #region Private Methods
         #endregion
     }
 }

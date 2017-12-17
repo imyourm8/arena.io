@@ -17,9 +17,6 @@ using ExitGames.Logging.Log4Net;
 
 using log4net.Config;
 
-using arena.net;
-using arena.serv;
-using arena.serv.load_balancing;
 using shared.database;
 using shared.database.Postgres;
 using shared.net;
@@ -27,19 +24,24 @@ using shared.factories;
 
 namespace arena
 {
+    using matchmaking;
+    using net;
+    using serv;
+    using serv.load_balancing;
+
     public class GameApplication : ServerApplication
     {
         private static ILogger log = LogManager.GetCurrentClassLogger();
 
         #region Fields
 
-        private GameNodeController serverController_;
-
         #endregion
 
         #region Properties
 
-        public WorkloadController WorkloadController { get; set; }
+        public WorkloadController WorkloadController { get; private set; }
+        public GameNodeController Controller { get; private set; }
+        public GameManager GameManager { get; private set; }
 
         #endregion
 
@@ -67,8 +69,8 @@ namespace arena
             {
                 var ip = File.ReadAllText(loginServerIp);       
                 MasterServerConnection connection = new MasterServerConnection(this, ip, Ports.LobbyPort, 500);
-                serverController_ = new GameNodeController(this);
-                connection.SetController(serverController_);  
+                Controller = new GameNodeController(this);
+                connection.SetController(Controller);  
             }
             else
             {
@@ -86,6 +88,7 @@ namespace arena
             }
 
             WorkloadController = new WorkloadController(this, "GameNode", 1000, workLoadConfigFile: "");
+            GameManager = new GameManager(this);
 
             Database.Instance.SetDatabaseImplementation(new PostgresImpl());
 
@@ -100,8 +103,8 @@ namespace arena
             BoosterFactory.Instance.Init();
             battle.factories.MobScriptsFactory.Instance.Init();
 
-            if (serverController_ != null)
-                serverController_.Initialize();
+            if (Controller != null)
+                Controller.Initialize();
             else
                 log.FatalFormat("Can't initialize Server Controller!");
         }

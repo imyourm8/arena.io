@@ -1,4 +1,5 @@
-﻿using proto_game;
+﻿using System.Collections.Generic;
+using proto_game;
 
 namespace LobbyServer.matchmaking.interfaces
 {
@@ -6,13 +7,9 @@ namespace LobbyServer.matchmaking.interfaces
     {
         void AddGame(GameSession session);
         void RemoveGame(GameSession session);
-
-        /// <summary>
-        /// Get most suitable game 
-        /// </summary>
-        /// <returns>Game session. Can be null.</returns>
-        GameSession GetSuitableGame(GameMode mode);
         GameSession FindGame(string id);
         bool HasAnyNonEmptyGame(GameMode mode);
+        IReadOnlyList<GameSession> GetGames(GameMode mode);
+        IReadOnlyList<GameSession> GetJoinableGames(GameMode mode);
     }
 }

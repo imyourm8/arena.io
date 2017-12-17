@@ -9,15 +9,17 @@ using arena.battle.modes;
 
 namespace arena.matchmaking
 {
-    class GameManager : Singleton<GameManager>
+    class GameManager
     {
         private List<Game> games_;
         private int activeGames_;
+        private GameApplication app_;
 
-        #region Constructor & Destructor
+        #region Constructors
 
-        public GameManager()
+        public GameManager(GameApplication app)
         {
+            app_ = app;
             games_ = new List<Game>();
             activeGames_ = 0;
         }
@@ -53,6 +55,12 @@ namespace arena.matchmaking
             return gameList;
         }
 
+        public Game CreateGame(proto_game.GameMode mode)
+        {
+            Game game = new Game(mode);
+            return game;
+        }
+
         #endregion
 
         #region Private Methods
@@ -60,6 +68,7 @@ namespace arena.matchmaking
         private void HandleGameClosed(Game game)
         {
             Interlocked.Decrement(ref activeGames_);
+            app_.Controller.OnGameFinished(game);
         }
 
         #endregion

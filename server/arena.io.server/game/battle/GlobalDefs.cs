@@ -8,7 +8,7 @@ namespace arena.battle
 {
     static class GlobalDefs
     {
-        public static readonly int EventPoolInterval = 10;
+        public static readonly int EventPoolInterval = 33;
         public static readonly int MainTickInterval = 100;
         public static float GetUpdateInterval()
         {

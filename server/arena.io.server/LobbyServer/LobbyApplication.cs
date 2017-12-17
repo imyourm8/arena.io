@@ -38,7 +38,7 @@ namespace LobbyServer
         #region Properties
 
         internal Loadbalancer Loadbalancer { get; private set; }
-        internal MatchMaker MatchMaker { get; private set; }
+        internal RemoteGameManager GameManager { get; private set; }
 
         #endregion
 
@@ -57,7 +57,7 @@ namespace LobbyServer
             else
             {
                 PlayerConnection connection = new PlayerConnection(initRequest);
-                connection.SetController(new LobbyController());
+                connection.SetController(new LobbyController(this));
                 connectionPeer = connection;
             }
             return connectionPeer;
@@ -65,6 +65,8 @@ namespace LobbyServer
 
         protected override void Setup()
         {
+            base.Setup();
+
             log4net.GlobalContext.Properties["Photon:ApplicationLogPath"] = Path.Combine(this.ApplicationPath, "log");
             var configFileInfo = new FileInfo(Path.Combine(this.BinaryPath, "log4net.config"));
             if (configFileInfo.Exists)
@@ -90,7 +92,7 @@ namespace LobbyServer
             }*/
 
             Loadbalancer = new Loadbalancer();
-            MatchMaker = new MatchMaker(this);
+            GameManager = new RemoteGameManager(this);
         }
 
         protected override void TearDown()

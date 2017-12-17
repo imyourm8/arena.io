@@ -229,6 +229,7 @@
     <Compile Include="shared\net\interfaces\IServerConnectionOutbound.cs" />
     <Compile Include="shared\net\interfaces\IServerController.cs" />
     <Compile Include="shared\net\interfaces\IServerPeerResponder.cs" />
+    <Compile Include="shared\net\load_balancing\NodeState.cs" />
     <Compile Include="shared\net\MasterServerConnection.cs" />
     <Compile Include="shared\net\OperationConditions.cs" />
     <Compile Include="shared\net\OperationHandler.cs">
@@ -255,9 +256,7 @@
   <ItemGroup>
     <Content Include="shared\database\UserEnumsShow.sql" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="shared\net\load_balancing\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

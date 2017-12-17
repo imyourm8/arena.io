@@ -5,8 +5,6 @@ using ExitGames.Logging;
 using ExitGames.Concurrency.Fibers;
 
 using shared.net;
-using arena.matchmaking;
-using arena.serv.perfomance;
 
 using Commands = proto_server.Commands;
 using Events = proto_server.Events;
@@ -17,27 +15,38 @@ using OperationHandler = shared.net.OperationHandler<proto_server.Request>;
 
 namespace arena.serv
 {
+    using matchmaking;
+    using battle;
+    using serv.perfomance;
     using proto_server;
 
     class GameNodeController : ServerController
     {
         private static ILogger log = LogManager.GetCurrentClassLogger();
-        private IFiber fiber_;
         private GameApplication app_;
 
         public GameNodeController(GameApplication app)
-            :base()
+            :base(app)
         {
             app_ = app;
-            fiber_ = new PoolFiber();
-            fiber_.Start();
+            app_.ScheduleOnInterval(SendNodeStatus, 1000, 1000);
 
-            fiber_.ScheduleOnInterval(SendNodeStatus, 1000, 1000);
+            AddOperationHandler(Commands.CREATE_REMOTE_GAME, new OperationHandler(HandleCreateNewGame));
         }
 
         #region Public Methods
 
+        public void Initialize()
+        {
+            Connection.OnConnectionEstablishedEvent += SendNodeInfo;
+        }
 
+        public void OnGameFinished(Game game)
+        {
+            var evt = new GameFinished();
+            evt.id = game.ID.ToString();
+            SendEvent(Events.GAME_FINISHED, evt);
+        }
 
         #endregion
 
@@ -65,14 +74,11 @@ namespace arena.serv
 
         #region Handlers
 
-        #endregion
-
-        #region Internal
-
-        internal void Initialize()
-        {
-            Connection.OnConnectionEstablishedEvent += SendNodeInfo;
-        } 
+        private void HandleCreateNewGame(Request request)
+        { 
+            var createGameReq = request.Extract<CreateRemoteGame.Request>(Commands.CREATE_REMOTE_GAME);
+            app_.GameManager.CreateGame(createGameReq.mode);
+        }
 
         #endregion
     }
