@@ -1,1 +1,1 @@
-[ {"weapon":"MachineGun", "radius":"0.5", "class":"Assault", "linear_dumping":"1.25"}, {"weapon":"DualMachineGun", "radius":"0.29", "class":"Gunner", "linear_dumping":"5"} ]
+[ {"weapon":"MachineGun", "radius":"0.5", "class":"TypeA", "linear_dumping":"1.25"}, {"weapon":"DualMachineGun", "radius":"0.29", "class":"TypeB", "linear_dumping":"5"} ]

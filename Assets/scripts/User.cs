@@ -6,7 +6,7 @@ public class User : shared.Singleton<User>, PlayerExperience.IExpProvider
     public User()
     {
         exp_ = new PlayerProfileExperience(this);
-        ClassSelected = proto_profile.PlayerClasses.Assault;
+        ClassSelected = proto_profile.PlayerClasses.TypeA;
     }
 
     private PlayerProfileExperience exp_;

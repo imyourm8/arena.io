@@ -11,6 +11,7 @@ namespace shared.net
         public ServerApplication()
         {
             ServerId = Guid.NewGuid();
+            executionFiber_ = new PoolFiber();
         }
 
         #region Properties
@@ -29,7 +30,6 @@ namespace shared.net
 
         protected override void Setup()
         {
-            executionFiber_ = new PoolFiber();
             executionFiber_.Start();
         }
 
