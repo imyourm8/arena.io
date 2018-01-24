@@ -22,7 +22,7 @@ namespace arena.battle
 {
     using modes;
 
-    class Game : 
+    internal class Game : 
         IActionInvoker, 
         BlockSpawner.IBlockControl
     {

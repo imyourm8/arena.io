@@ -241,7 +241,7 @@ public class LoginSceneController : Scene
 		var authRes = 
 			ProtoBuf.Extensible.GetValue<proto_auth.Auth.Response> (response, (int)proto_common.Commands.AUTH);
 
-        LoadUser(authRes.info);
+        
 	}
 
     private void LoadUser(proto_profile.UserInfo info)
@@ -249,7 +249,7 @@ public class LoginSceneController : Scene
         User.Instance.Coins = info.coins;
         User.Instance.Classes = info.classesInfo;
         User.Instance.Name = info.name;
-        User.Instance.Level = info.level;
+        //User.Instance.Level = info.level;
 
         ShowHeroSelection();
     }

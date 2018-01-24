@@ -4,8 +4,6 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
-using ProtoBuf;
-using proto_common;
 
 public class ServerClient  : IPhotonPeerListener {
 	public delegate void ResponseDelegate (proto_common.Response response);
@@ -103,8 +101,8 @@ public class ServerClient  : IPhotonPeerListener {
 			stream.Flush();
 			stream.Position = 0;
 			var dict = new Dictionary<byte, object>();
-			dict[TapCommon.OperationParameters.ProtoData] = stream.ToArray();
-			result = connection_.OpCustom(TapCommon.OperationParameters.ProtoCmd, dict, reliable);
+			dict[shared.net.OperationParameters.ProtoData] = stream.ToArray();
+			result = connection_.OpCustom(shared.net.OperationParameters.ProtoCmd, dict, reliable);
 		}
 		return result;
 	}
@@ -127,7 +125,7 @@ public class ServerClient  : IPhotonPeerListener {
 		ProtoSerializer serializer = new ProtoSerializer();
 		proto_common.Response response = null;
 
-		byte[] protoData = (byte[])operationResponse[TapCommon.OperationParameters.ProtoData];
+		byte[] protoData = (byte[])operationResponse[shared.net.OperationParameters.ProtoData];
 		using (MemoryStream stream = new MemoryStream(protoData,0,protoData.Length,false))
 		{
 			try {
@@ -156,7 +154,7 @@ public class ServerClient  : IPhotonPeerListener {
 		ProtoSerializer serializer = new ProtoSerializer();
 		proto_common.Event evt = null;
 
-		byte[] protoData = (byte[])eventData[TapCommon.OperationParameters.ProtoData];
+		byte[] protoData = (byte[])eventData[shared.net.OperationParameters.ProtoData];
 		using (MemoryStream stream = new MemoryStream(protoData,0,protoData.Length,false))
 		{
 			try {

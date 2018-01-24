@@ -29,7 +29,7 @@ namespace arena
     using serv;
     using serv.load_balancing;
 
-    public class GameApplication : ServerApplication
+    public class Application : ServerApplication
     {
         private static ILogger log = LogManager.GetCurrentClassLogger();
 
@@ -40,8 +40,8 @@ namespace arena
         #region Properties
 
         public WorkloadController WorkloadController { get; private set; }
-        public GameNodeController Controller { get; private set; }
-        public GameManager GameManager { get; private set; }
+        internal GameNodeController Controller { get; private set; }
+        internal GameManager GameManager { get; private set; }
 
         #endregion
 

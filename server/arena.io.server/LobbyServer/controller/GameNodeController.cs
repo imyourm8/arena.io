@@ -33,12 +33,12 @@ namespace LobbyServer.controller
     {
         #region Fields
 
-        private LobbyApplication application_;
+        private Application application_;
         private GameNode node_;
 
         #endregion
 
-        public GameNodeController(LobbyApplication app)
+        public GameNodeController(Application app)
             : base(app)
         {
             application_ = app;

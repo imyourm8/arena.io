@@ -59,7 +59,7 @@
       <HintPath>..\..\lib\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="ProtoLib">
-      <HintPath>..\..\..\Assets\lib\Protobuf\Debug\ProtoLib.dll</HintPath>
+      <HintPath>..\..\..\Assets\Plugins\Protobuf\ProtoLib.dll</HintPath>
     </Reference>
     <Reference Include="SharedCode, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

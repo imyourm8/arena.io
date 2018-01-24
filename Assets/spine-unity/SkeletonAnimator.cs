@@ -81,14 +81,14 @@ public class SkeletonAnimator : SkeletonRenderer, ISkeletonAnimation {
 			var clipInfo = animator.GetCurrentAnimatorClipInfo(i);
 			var nextClipInfo = animator.GetNextAnimatorClipInfo(i);
 #else
-			var clipInfo = animator.GetCurrentAnimationClipState(i);
-			var nextClipInfo = animator.GetNextAnimationClipState(i);
+			var clipInfo = animator.GetCurrentAnimatorClipInfo(i);
+			var nextClipInfo = animator.GetNextAnimatorClipInfo(i);
 #endif
 			MixMode mode = layerMixModes[i];
 
 			if (mode == MixMode.AlwaysMix) {
 				//always use Mix instead of Applying the first non-zero weighted clip
-				foreach (var info in clipInfo) {
+				foreach (AnimatorClipInfo info in clipInfo) {
 					float weight = info.weight * layerWeight;
 					if (weight == 0)
 						continue;
@@ -97,7 +97,7 @@ public class SkeletonAnimator : SkeletonRenderer, ISkeletonAnimation {
 					animationTable[info.clip.name].Mix(skeleton, Mathf.Max(0, time - deltaTime), time, stateInfo.loop, null, weight);
 				}
 
-				foreach (var info in nextClipInfo) {
+				foreach (AnimatorClipInfo info in nextClipInfo) {
 					float weight = info.weight * layerWeight;
 					if (weight == 0)
 						continue;
@@ -110,7 +110,7 @@ public class SkeletonAnimator : SkeletonRenderer, ISkeletonAnimation {
 				int c = 0;
 
 				for (; c < clipInfo.Length; c++) {
-					var info = clipInfo[c];
+					AnimatorClipInfo info = clipInfo[c];
 					float weight = info.weight * layerWeight;
 					if (weight == 0)
 						continue;
@@ -122,7 +122,7 @@ public class SkeletonAnimator : SkeletonRenderer, ISkeletonAnimation {
 
 				//mix the rest
 				for (; c < clipInfo.Length; c++) {
-					var info = clipInfo[c];
+					AnimatorClipInfo info = clipInfo[c];
 					float weight = info.weight * layerWeight;
 					if (weight == 0)
 						continue;
@@ -136,7 +136,7 @@ public class SkeletonAnimator : SkeletonRenderer, ISkeletonAnimation {
 				//apply next clip directly instead of mixing (ie:  no crossfade, ignores mecanim transition weights)
 				if (mode == MixMode.SpineStyle) {
 					for (; c < nextClipInfo.Length; c++) {
-						var info = nextClipInfo[c];
+						AnimatorClipInfo info = nextClipInfo[c];
 						float weight = info.weight * layerWeight;
 						if (weight == 0)
 							continue;
@@ -149,7 +149,7 @@ public class SkeletonAnimator : SkeletonRenderer, ISkeletonAnimation {
 
 				//mix the rest
 				for (; c < nextClipInfo.Length; c++) {
-					var info = nextClipInfo[c];
+					AnimatorClipInfo info = nextClipInfo[c];
 					float weight = info.weight * layerWeight;
 					if (weight == 0)
 						continue;

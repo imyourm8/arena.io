@@ -10,7 +10,7 @@ using shared.helpers;
 
 namespace arena.battle
 {
-    class Map
+    internal class Map
     {
         private PowerUpLayer powerUps_;
         private ExpLayer expLayer_;

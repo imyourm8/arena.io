@@ -16,7 +16,7 @@ using arena.common.battle;
 
 namespace arena.battle
 {
-    class Player : Unit, PlayerExperience.IExpProvider
+    internal class Player : Unit, PlayerExperience.IExpProvider
     {
         private static readonly int MaxStoredInputs = 100;
         private static ILogger log = LogManager.GetCurrentClassLogger();

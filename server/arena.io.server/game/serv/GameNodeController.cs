@@ -20,12 +20,12 @@ namespace arena.serv
     using serv.perfomance;
     using proto_server;
 
-    class GameNodeController : ServerController
+    internal class GameNodeController : ServerController
     {
         private static ILogger log = LogManager.GetCurrentClassLogger();
-        private GameApplication app_;
+        private Application app_;
 
-        public GameNodeController(GameApplication app)
+        public GameNodeController(Application app)
             :base(app)
         {
             app_ = app;

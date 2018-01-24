@@ -56,13 +56,13 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="PowerCollections">
-      <HintPath>..\..\lib\PowerCollections.dll</HintPath>
+      <HintPath>..\..\deploy\arena.io.server\lib\PowerCollections.dll</HintPath>
     </Reference>
     <Reference Include="protobuf-net">
       <HintPath>..\..\lib\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="ProtoLib">
-      <HintPath>..\..\..\Assets\lib\Protobuf\Debug\ProtoLib.dll</HintPath>
+      <HintPath>..\..\..\Assets\Plugins\Protobuf\ProtoLib.dll</HintPath>
     </Reference>
     <Reference Include="SharedCode, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -81,7 +81,7 @@
     <Compile Include="matchmaking\SimpleGameList.cs" />
     <Compile Include="matchmaking\interfaces\IGameList.cs" />
     <Compile Include="matchmaking\RemoteGameManager.cs" />
-    <Compile Include="LobbyApplication.cs" />
+    <Compile Include="Application.cs" />
     <Compile Include="controller\LobbyController.cs" />
     <Compile Include="controller\ProfileHandlers.cs" />
     <Compile Include="controller\GameNodeController.cs" />

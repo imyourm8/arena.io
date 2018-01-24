@@ -17,7 +17,7 @@ using Box2CS;
 
 namespace arena.battle
 {
-    class Entity : NetworkEntity, SpatialHash.IEntity
+    internal class Entity : NetworkEntity, SpatialHash.IEntity
     {
         private static ILogger log = LogManager.GetCurrentClassLogger();
 

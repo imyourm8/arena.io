@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace arena.battle
 {
-    sealed class PhysicsDefs
+    internal sealed class PhysicsDefs
     {
         public enum Category : ushort
         {

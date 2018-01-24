@@ -124,7 +124,7 @@
       <HintPath>..\..\lib\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="ProtoLib">
-      <HintPath>..\..\..\Assets\lib\Protobuf\Debug\ProtoLib.dll</HintPath>
+      <HintPath>..\..\..\Assets\Plugins\Protobuf\ProtoLib.dll</HintPath>
     </Reference>
     <Reference Include="SharedCode, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -189,7 +189,7 @@
     <Compile Include="..\..\clipper_library\clipper.cs">
       <Link>helpers\clipper.cs</Link>
     </Compile>
-    <Compile Include="GameApplication.cs" />
+    <Compile Include="Application.cs" />
     <Compile Include="battle\AttackData.cs" />
     <Compile Include="battle\boosters\Booster.cs" />
     <Compile Include="battle\Bullet.cs" />

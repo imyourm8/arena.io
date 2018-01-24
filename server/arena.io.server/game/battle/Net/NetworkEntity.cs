@@ -2,7 +2,7 @@
 
 namespace arena.battle.Net
 {
-    struct EventPacket
+    public struct EventPacket
     {
         public EventPacket(Events eventID, object packet):this()
         {
@@ -25,7 +25,7 @@ namespace arena.battle.Net
         }
     }
 
-    class NetworkEntity
+    public class NetworkEntity
     {
         public virtual EventPacket GetAppearedPacket()
         {

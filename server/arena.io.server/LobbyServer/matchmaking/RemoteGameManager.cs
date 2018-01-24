@@ -17,14 +17,14 @@ namespace LobbyServer.matchmaking
     {
         #region Fields
 
-        private LobbyApplication application_;
+        private Application application_;
         private Dictionary<GameMode, AwaitingQueue> awaitingQueues_ = new Dictionary<GameMode, AwaitingQueue>();
 
         #endregion
 
         #region Constructors
 
-        public RemoteGameManager(LobbyApplication app)
+        public RemoteGameManager(Application app)
         {
             application_ = app;
         }

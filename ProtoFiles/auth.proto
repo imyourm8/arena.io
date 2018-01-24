@@ -7,17 +7,17 @@ package proto_auth;
 
 message Auth 
 {
-  enum AuthType
-  {
-      OAuth = 2;
-  }
+	enum AuthType
+	{
+	  OAuth = 2;
+	}
   
 	enum OAuthProvider
 	{
 		VK = 0;
 		FB = 1;
 	}
-	
+
 	message Request 
 	{
 		message OAuth
@@ -27,20 +27,21 @@ message Auth
 			required string ip = 3;
 			required OAuthProvider provider = 4;
 		};
+		
 		extend proto_common.Request 
 		{
 			optional proto_auth.Auth.Request auth_req = 10;
 		}
-	
+
 		required AuthType type = 1;
 		optional OAuth m_oauth = 2;
 	}
-	
+
 	message Response 
 	{
-    required string login_token = 1;
-    optional string lobby_ip = 2;
-  
+		required string login_token = 1;
+		optional string lobby_ip = 2;
+
 		extend proto_common.Response 
 		{
 			optional proto_auth.Auth.Response auth_res = 10;
@@ -53,7 +54,7 @@ message ConnectToLobby
   message Request 
 	{
 		required string login_token = 1;
-    required string uid = 2;
+		required string uid = 2;
     
 		extend proto_common.Request 
 		{
@@ -63,7 +64,7 @@ message ConnectToLobby
 	
 	message Response 
 	{
-    required proto_profile.UserInfo info = 1;
+		required proto_profile.UserInfo info = 1;
   
 		extend proto_common.Response 
 		{
@@ -76,9 +77,9 @@ message AdminAuth
 {
   message Request
   {
-    required string name = 1;
+		required string name = 1;
     
-    extend proto_common.Request 
+		extend proto_common.Request 
 		{
 			optional proto_auth.AdminAuth.Request adm_auth_req = 13;
 		}
@@ -86,7 +87,7 @@ message AdminAuth
 
   message Response 
 	{
-    required proto_profile.UserInfo info = 1;
+		required proto_profile.UserInfo info = 1;
   
 		extend proto_common.Response 
 		{

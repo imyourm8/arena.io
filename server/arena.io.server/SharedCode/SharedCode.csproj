@@ -34,42 +34,51 @@
     <Reference Include="Box2CS">
       <HintPath>..\..\deploy\arena.io.server\bin\Box2CS.dll</HintPath>
     </Reference>
-    <Reference Include="ExitGames.Logging.Log4Net">
+    <Reference Include="ExitGames.Logging.Log4Net, Version=1.0.4.0, Culture=neutral, PublicKeyToken=eac0edd9746a4aa0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\ExitGames.Logging.Log4Net.dll</HintPath>
     </Reference>
-    <Reference Include="ExitGamesLibs">
+    <Reference Include="ExitGamesLibs, Version=1.0.4.0, Culture=neutral, PublicKeyToken=eac0edd9746a4aa0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\ExitGamesLibs.dll</HintPath>
     </Reference>
-    <Reference Include="log4net">
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Npgsql">
-      <HintPath>..\..\lib\Npgsql.dll</HintPath>
+      <HintPath>..\..\deploy\arena.io.server\lib\Npgsql.dll</HintPath>
     </Reference>
     <Reference Include="Npgsql.EntityFramework">
-      <HintPath>..\..\lib\Npgsql.EntityFramework.dll</HintPath>
+      <HintPath>..\..\deploy\arena.io.server\lib\Npgsql.EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Npgsql.EntityFrameworkLegacy">
-      <HintPath>..\..\lib\Npgsql.EntityFrameworkLegacy.dll</HintPath>
+      <HintPath>..\..\deploy\arena.io.server\lib\Npgsql.EntityFrameworkLegacy.dll</HintPath>
     </Reference>
-    <Reference Include="Photon.SocketServer">
+    <Reference Include="Photon.SocketServer, Version=4.0.28.11245, Culture=neutral, PublicKeyToken=48c2fa3b6988090e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\lib\Photon.SocketServer.dll</HintPath>
     </Reference>
-    <Reference Include="PhotonHostRuntimeInterfaces">
-      <HintPath>..\..\lib\PhotonHostRuntimeInterfaces.dll</HintPath>
+    <Reference Include="PhotonHostRuntimeInterfaces, Version=3.58.0.0, Culture=neutral, PublicKeyToken=6cb1467adaa73020, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\lib\PhotonHostRuntimeInterfaces.dll</HintPath>
     </Reference>
-    <Reference Include="PowerCollections">
-      <HintPath>..\..\lib\PowerCollections.dll</HintPath>
+    <Reference Include="PhotonLoadbalancingApi, Version=4.0.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\PhotonLoadbalancingApi.dll</HintPath>
     </Reference>
     <Reference Include="protobuf-net">
-      <HintPath>..\..\lib\protobuf-net.dll</HintPath>
+      <HintPath>..\..\..\Assets\Plugins\Protobuf\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="ProtoLib">
-      <HintPath>..\..\..\Assets\lib\Protobuf\Debug\ProtoLib.dll</HintPath>
+      <HintPath>..\..\..\Assets\Plugins\Protobuf\ProtoLib.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtoSerializer">
+      <HintPath>..\..\..\Assets\Plugins\Protobuf\ProtoSerializer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

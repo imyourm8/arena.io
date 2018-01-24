@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace Events 
 {
-    public sealed class GlobalNotifier : TapCommon.Singleton<GlobalNotifier>, INotifier<string>
+    public sealed class GlobalNotifier : shared.Singleton<GlobalNotifier>, INotifier<string>
     {
         private INotifier<string> notifier_;
         

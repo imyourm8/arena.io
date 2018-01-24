@@ -9,15 +9,15 @@ using arena.battle.modes;
 
 namespace arena.matchmaking
 {
-    class GameManager
+    internal class GameManager
     {
         private List<Game> games_;
         private int activeGames_;
-        private GameApplication app_;
+        private Application app_;
 
         #region Constructors
 
-        public GameManager(GameApplication app)
+        public GameManager(Application app)
         {
             app_ = app;
             games_ = new List<Game>();

@@ -10,7 +10,7 @@ public class ClassHolder : MonoBehaviour
     public Action<proto_profile.PlayerClasses> OnSelect;
 
     [SerializeField]
-    private proto_profile.PlayerClasses playerClass = proto_profile.PlayerClasses.Assault;
+    private proto_profile.PlayerClasses playerClass = proto_profile.PlayerClasses.TypeA;
 
     [SerializeField]
     private bool unlocked = false;
@@ -43,8 +43,6 @@ public class ClassHolder : MonoBehaviour
 
     void Start()
     {
-        if (unlockPrice != null)
-            unlockPrice.text = info_.coinsPrice.ToString();
     }
 
     public void Refresh()
@@ -54,13 +52,13 @@ public class ClassHolder : MonoBehaviour
             return info.@class == Class;
         });
 
-        if (info_ != null)
-        {
-            if (info_.levelRequired <= User.Instance.Level || info_.unlocked)
-            {
-                SetUnlocked();
-            }
-        }
+        //if (info_ != null)
+        //{
+        //    if (info_.levelrequired <= user.instance.level || info_.unlocked)
+        //    {
+        //        setunlocked();
+        //    }
+        //}
 
         if (Class == User.Instance.ClassSelected)
         {

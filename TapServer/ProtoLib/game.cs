@@ -387,6 +387,13 @@ namespace proto_game
       get { return _game_id; }
       set { _game_id = value; }
     }
+    private proto_profile.PlayerClasses _plr_class;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"plr_class", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public proto_profile.PlayerClasses plr_class
+    {
+      get { return _plr_class; }
+      set { _plr_class = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -403,6 +410,14 @@ namespace proto_game
     {
       get { return _map_id; }
       set { _map_id = value; }
+    }
+    private int _match_time = default(int);
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"match_time", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int match_time
+    {
+      get { return _match_time; }
+      set { _match_time = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)

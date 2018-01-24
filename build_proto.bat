@@ -1,4 +1,4 @@
-@echo off
+:: @echo off
 
 set SCRIPT_DIR=%~dp0%
 set PROTO_TOOLS=protobuf-tools
@@ -25,8 +25,9 @@ pushd %PROTO_TOOLS%\Precompile
 precompile.exe dll\ProtoLib.dll -o:ProtoSerializer.dll -t:ProtoSerializer /p:detectMissing
 popd
 ::copy ProtoLib.dll and ProtoSerializer.dll to Unity Assets folder
-copy %SCRIPT_DIR%%PROTO_TOOLS%\Precompile\dll\ProtoLib.dll %SCRIPT_DIR%\Assets\lib\Protobuf\%CONF%\ProtoLib.dll
-copy %SCRIPT_DIR%%PROTO_TOOLS%\Precompile\ProtoSerializer.dll %SCRIPT_DIR%\Assets\lib\Protobuf\%CONF%\ProtoSerializer.dll
+echo %SCRIPT_DIR%\Assets\lib\Protobuf\%CONF%\ProtoLib.dll
+copy %SCRIPT_DIR%%PROTO_TOOLS%\Precompile\dll\ProtoLib.dll %SCRIPT_DIR%\Assets\Plugins\Protobuf\ProtoLib.dll
+copy %SCRIPT_DIR%%PROTO_TOOLS%\Precompile\ProtoSerializer.dll %SCRIPT_DIR%\Assets\Plugins\Protobuf\ProtoSerializer.dll
 ::remove everything
 del %SCRIPT_DIR%%PROTO_TOOLS%\Precompile\ProtoSerializer.dll
 pushd %SCRIPT_DIR%%PROTO_TOOLS%\Precompile\dll\

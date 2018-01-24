@@ -27,9 +27,9 @@ namespace LobbyServer.controller
 
         private bool loginInProcess_ = false;
         private Profile profile_ = null;
-        private LobbyApplication app_;
+        private Application app_;
 
-        public LobbyController(LobbyApplication app)
+        public LobbyController(Application app)
         {
             app_ = app;
 

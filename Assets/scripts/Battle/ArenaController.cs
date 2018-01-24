@@ -93,8 +93,8 @@ namespace arena
             arenaUI.StatsPanel.OnStatUpgrade = HandleUpgradeStat;
             networkProjectileManager_.Clear();
 
-            var findRequest = new proto_game.FindRoom.Request();
-            var id = GameApp.Instance.Client.Send(findRequest, proto_common.Commands.FIND_ROOM);
+            var findRequest = new proto_game.FindGame.Request();
+            var id = GameApp.Instance.Client.Send(findRequest, proto_common.Commands.FIND_GAME);
 
             GameApp.Instance.RequestsManager.AddRequest(id, 
             (proto_common.Response response)=>
@@ -547,12 +547,11 @@ namespace arena
 
             //onGameJoin will create player script
             OnGameJoin();
-            arenaUI.Init(joinResponse.time_left, player_);
+            arenaUI.Init(joinResponse.match_time, player_);
 
-            var bottomLeft = new Vector2(joinResponse.outer_border[0], joinResponse.outer_border[1]);
-            var topRight = new Vector2(joinResponse.outer_border[2], joinResponse.outer_border[3]);
-            background_.transform.localScale = new Vector3(topRight.x-bottomLeft.x, topRight.y-bottomLeft.y, 1);
-            Tick = joinResponse.tick;
+            //var bottomLeft = new Vector2(joinResponse.outer_border[0], joinResponse.outer_border[1]);
+            //var topRight = new Vector2(joinResponse.outer_border[2], joinResponse.outer_border[3]);
+            //background_.transform.localScale = new Vector3(topRight.x-bottomLeft.x, topRight.y-bottomLeft.y, 1);
             gameTime_ = TickToFloatTime(Tick);
         }
 
@@ -839,7 +838,7 @@ namespace arena
         public void OnJoinGame()
         {
             var joinReq = new proto_game.JoinGame.Request();
-            joinReq.@class = User.Instance.ClassSelected;
+            joinReq.plr_class = User.Instance.ClassSelected;
             GameApp.Instance.Client.Send(joinReq, proto_common.Commands.JOIN_GAME);
         }
 

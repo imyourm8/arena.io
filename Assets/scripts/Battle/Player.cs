@@ -16,7 +16,7 @@ public class Player : Unit, PlayerExperience.IExpProvider
     private Vector3 nicknameOffset = Vector3.zero;
 
     [SerializeField]
-    private proto_profile.PlayerClasses plrClass = proto_profile.PlayerClasses.Assault;
+    private proto_profile.PlayerClasses plrClass = proto_profile.PlayerClasses.TypeA;
 
     private Vector2 desiredPosition_ = Vector2.zero;
     private PlayerExperience playerExp_;

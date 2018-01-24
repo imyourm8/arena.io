@@ -27,7 +27,7 @@ namespace LobbyServer
     using load_balancing;
     using matchmaking;
 
-    public class LobbyApplication : ServerApplication
+    public class Application : ServerApplication
     {
         #region Fields
 

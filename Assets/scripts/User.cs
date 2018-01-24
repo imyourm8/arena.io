@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class User : TapCommon.Singleton<User>, PlayerExperience.IExpProvider
+public class User : shared.Singleton<User>, PlayerExperience.IExpProvider
 {
     public User()
     {

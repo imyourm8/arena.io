@@ -244,6 +244,7 @@ message JoinGame
   message Request
   {
     required string game_id = 1;
+	required proto_profile.PlayerClasses plr_class = 2;
   
     extend proto_common.Request
     {
@@ -254,6 +255,7 @@ message JoinGame
   message Response
   {
     required int32 map_id = 1;
+	optional int32 match_time = 2;
   
     extend proto_common.Response
     {

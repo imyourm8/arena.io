@@ -53,3 +53,5 @@ server/lib/SharedCode.dll.CodeAnalysisLog.xml
 server/lib/
 server/deploy/arena.io.server/bin/SharedCode.dll
 server/deploy/arena.io.server/bin/LibTessDotNet.dll
+server/arena.io.server/.vs/
+.vs/

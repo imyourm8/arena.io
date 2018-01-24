@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-#if !UNITY_5
+#if !UNITY
 using arena.battle;
 #endif
 

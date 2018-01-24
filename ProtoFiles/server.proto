@@ -40,7 +40,7 @@ message Response
 	required int32 id = 1;
 	required Commands type = 2;
 	required int32 error = 3 [default = 0];
-  required int64 timestamp = 4;
+	required int64 timestamp = 4;
   
 	extensions 10 to max;
 }
@@ -48,7 +48,7 @@ message Response
 message Event 
 {
 	required Events type = 1;
-  required int64 timestamp = 2;
+	required int64 timestamp = 2;
   
 	extensions 10 to max;
 }
